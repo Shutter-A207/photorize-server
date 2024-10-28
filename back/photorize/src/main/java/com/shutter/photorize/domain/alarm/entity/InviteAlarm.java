@@ -39,7 +39,7 @@ public class InviteAlarm extends BaseEntity {
 	private Diary diary;
 
 	@Column(nullable = false)
-	private boolean checked = false;
+	private boolean checked;
 
 	@Column(nullable = false)
 	private String type;
