@@ -16,6 +16,6 @@ import lombok.Getter;
 public abstract class BaseEntity {
 
 	@CreatedDate
-	@Column(updatable = false)
+	@Column(updatable = false, columnDefinition = "TIMESTAMP")
 	private LocalDateTime createdAt;
 }
