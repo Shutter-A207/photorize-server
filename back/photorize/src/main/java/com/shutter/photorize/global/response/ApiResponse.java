@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.shutter.photorize.global.error.ErrorType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,10 +43,10 @@ public class ApiResponse<T> {
 	}
 
 	// 에러 응답 생성 메서드
-	public static ResponseEntity<ApiResponse<Void>> error(HttpStatus status, String message) {
-		return ResponseEntity.status(status)
+	public static ResponseEntity<ApiResponse<Void>> error(ErrorType errorType, String message) {
+		return ResponseEntity.status(errorType.getStatus())
 			.body(ApiResponse.<Void>builder()
-				.status(status.value())
+				.status(errorType.getStatus().value())
 				.message(message)
 				.build());
 	}
