@@ -11,7 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.shutter.photorize.global.jwt.filter.JwtFilter;
+import com.shutter.photorize.global.jwt.JwtFilter;
+import com.shutter.photorize.global.jwt.JwtUtil;
+import com.shutter.photorize.global.jwt.LoginFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,9 +21,11 @@ public class SecurityConfig {
 
 	//AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
 	private final AuthenticationConfiguration authenticationConfiguration;
+	private final JwtUtil jwtUtil;
 
-	public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+	public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil) {
 		this.authenticationConfiguration = authenticationConfiguration;
+		this.jwtUtil = jwtUtil;
 	}
 
 	//AuthenticationManager Bean 등록
@@ -55,8 +59,12 @@ public class SecurityConfig {
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated());
 
+		// JwtFilter 등록
 		http
-			.addFilterAt(new JwtFilter(authenticationManager(authenticationConfiguration)),
+			.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+
+		http
+			.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
 				UsernamePasswordAuthenticationFilter.class);
 
 		// 세션 설정
