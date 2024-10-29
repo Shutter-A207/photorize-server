@@ -30,4 +30,9 @@ public class PoseLike extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pose_id", nullable = false)
 	private Pose pose;
+
+	public PoseLike(Member member, Pose pose) {
+		this.member = member;
+		this.pose = pose;
+	}
 }
