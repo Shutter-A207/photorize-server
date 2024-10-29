@@ -5,6 +5,8 @@ import com.shutter.photorize.global.entity.SoftDeletableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,7 +34,8 @@ public class Album extends SoftDeletableEntity {
 	private String name;
 
 	@Column(nullable = false)
-	private String type;
+	@Enumerated(EnumType.STRING)
+	private AlbumType type;
 
 	@Column(nullable = false)
 	private String img;
