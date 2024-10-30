@@ -1,16 +1,20 @@
 package com.shutter.photorize.domain.pose.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
+import com.shutter.photorize.domain.pose.dto.response.PoseResponse;
 import com.shutter.photorize.domain.pose.entity.Pose;
 import com.shutter.photorize.domain.pose.entity.PoseLike;
 import com.shutter.photorize.domain.pose.repository.PoseLikeRepository;
 import com.shutter.photorize.domain.pose.repository.PoseRepository;
+import com.shutter.photorize.global.error.ErrorType;
+import com.shutter.photorize.global.exception.PhotorizeException;
 
 @Service
 public class PoseService {
@@ -27,19 +31,24 @@ public class PoseService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Pose> getAllPoses() {
-		return poseRepository.findAll();
+	public List<PoseResponse> getAllPoses(Long memberId) {
+		return poseRepository.findAll().stream().map(pose -> {
+			boolean isLiked = poseLikeRepository.existsByMemberAndPose(memberRepository.findById(memberId)
+				.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND)), pose);
+			int likeCount = poseLikeRepository.countByPose(pose);
+			return new PoseResponse(pose.getId(), pose.getHeadcount(), pose.getImg(), likeCount, isLiked);
+		}).collect(Collectors.toList());
 	}
 
 	@Transactional
 	public void likePose(Long poseId, Long memberId) {
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
 		Pose pose = poseRepository.findById(poseId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 포즈입니다."));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.POSE_NOT_FOUND));
 
 		if (poseLikeRepository.existsByMemberAndPose(member, pose)) {
-			throw new IllegalStateException("이미 좋아요한 포즈입니다.");
+			throw new PhotorizeException(ErrorType.ALREADY_LIKED);
 		}
 
 		PoseLike poseLike = new PoseLike(member, pose);
@@ -49,12 +58,12 @@ public class PoseService {
 	@Transactional
 	public void unlikePose(Long poseId, Long memberId) {
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
 		Pose pose = poseRepository.findById(poseId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 포즈입니다."));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.POSE_NOT_FOUND));
 
 		PoseLike poseLike = poseLikeRepository.findByMemberAndPose(member, pose)
-			.orElseThrow(() -> new IllegalStateException("좋아요하지 않은 포즈입니다."));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.NOT_LIKED));
 
 		poseLikeRepository.delete(poseLike);
 	}

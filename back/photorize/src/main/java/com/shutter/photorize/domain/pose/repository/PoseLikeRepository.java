@@ -13,5 +13,7 @@ import com.shutter.photorize.domain.pose.entity.PoseLike;
 public interface PoseLikeRepository extends JpaRepository<PoseLike, Long> {
 	boolean existsByMemberAndPose(Member member, Pose pose);
 
+	int countByPose(Pose pose);
+
 	Optional<PoseLike> findByMemberAndPose(Member member, Pose pose);
 }

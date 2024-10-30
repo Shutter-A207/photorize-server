@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shutter.photorize.domain.pose.entity.Pose;
+import com.shutter.photorize.domain.pose.dto.response.PoseResponse;
 import com.shutter.photorize.domain.pose.service.PoseService;
+import com.shutter.photorize.global.response.ApiResponse;
 
 @RestController
 @RequestMapping("/api/v1/poses")
@@ -25,20 +26,20 @@ public class PoseController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Pose>> getAllPoses() {
-		List<Pose> poses = poseService.getAllPoses();
-		return ResponseEntity.ok(poses);
+	public ResponseEntity<ApiResponse<List<PoseResponse>>> getAllPoses(@RequestParam Long memberId) {
+		List<PoseResponse> poses = poseService.getAllPoses(memberId);
+		return ApiResponse.ok(poses);
 	}
 
 	@PostMapping("/{poseId}/like")
-	public ResponseEntity<Void> likePose(@PathVariable Long poseId, @RequestParam Long memberId) {
+	public ResponseEntity<ApiResponse<Void>> likePose(@PathVariable Long poseId, @RequestParam Long memberId) {
 		poseService.likePose(poseId, memberId);
-		return ResponseEntity.ok().build();
+		return ApiResponse.created();
 	}
 
 	@DeleteMapping("/{poseId}/like")
-	public ResponseEntity<Void> unlikePose(@PathVariable Long poseId, @RequestParam Long memberId) {
+	public ResponseEntity<ApiResponse<Void>> unlikePose(@PathVariable Long poseId, @RequestParam Long memberId) {
 		poseService.unlikePose(poseId, memberId);
-		return ResponseEntity.ok().build();
+		return ApiResponse.ok(null);
 	}
 }
