@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,5 +40,13 @@ public class Album extends SoftDeletableEntity {
 
 	@Column(nullable = false)
 	private String img;
+
+	@Builder
+	public Album(Member member, String name, AlbumType type, String img) {
+		this.member = member;
+		this.name = name;
+		this.type = type;
+		this.img = img;
+	}
 
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,4 +34,11 @@ public class AlbumMemberList extends BaseEntity {
 
 	@Column(nullable = false)
 	private boolean status;
+
+	@Builder
+	public AlbumMemberList(Album album, Member member, boolean status) {
+		this.album = album;
+		this.member = member;
+		this.status = status;
+	}
 }
