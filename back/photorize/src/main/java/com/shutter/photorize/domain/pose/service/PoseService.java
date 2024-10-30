@@ -45,10 +45,10 @@ public class PoseService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
 		Pose pose = poseRepository.findById(poseId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.POSE_NOT_FOUND));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_RESOURCE_FOUND));
 
 		if (poseLikeRepository.existsByMemberAndPose(member, pose)) {
-			throw new PhotorizeException(ErrorType.ALREADY_LIKED);
+			throw new PhotorizeException(ErrorType.NO_RESOURCE_FOUND);
 		}
 
 		PoseLike poseLike = new PoseLike(member, pose);
@@ -60,10 +60,10 @@ public class PoseService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
 		Pose pose = poseRepository.findById(poseId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.POSE_NOT_FOUND));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_RESOURCE_FOUND));
 
 		PoseLike poseLike = poseLikeRepository.findByMemberAndPose(member, pose)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.NOT_LIKED));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_RESOURCE_FOUND));
 
 		poseLikeRepository.delete(poseLike);
 	}
