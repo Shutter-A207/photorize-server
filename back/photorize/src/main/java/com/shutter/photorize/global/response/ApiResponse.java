@@ -43,11 +43,11 @@ public class ApiResponse<T> {
 	}
 
 	// 에러 응답 생성 메서드
-	public static ResponseEntity<ApiResponse<Void>> error(ErrorType errorType, String message) {
+	public static ResponseEntity<ApiResponse<Void>> error(ErrorType errorType) {
 		return ResponseEntity.status(errorType.getStatus())
 			.body(ApiResponse.<Void>builder()
 				.status(errorType.getStatus().value())
-				.message(message)
+				.message(errorType.getMessage())
 				.build());
 	}
 }

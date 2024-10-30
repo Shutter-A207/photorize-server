@@ -3,6 +3,7 @@ package com.shutter.photorize.global.exception;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.response.ApiResponse;
@@ -15,14 +16,19 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(PhotorizeException.class)
 	public ResponseEntity<ApiResponse<Void>> handlePhotorizeException(PhotorizeException ex) {
-		ErrorType errorType = ex.getErrorType();
-		log.error("PhotorizeException: {}", errorType.getMessage(), ex);
-		return ApiResponse.error(errorType, errorType.getMessage());
+		log.error("PhotorizeException: {}", ex.getMessage(), ex);
+		return ApiResponse.error(ex.getErrorType());
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(NoResourceFoundException ex) {
+		log.warn("NoResourceFoundException: {}", ex.getMessage(), ex);
+		return ApiResponse.error(ErrorType.NO_RESOURCE_FOUND);
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
 		log.error("Exception: {}", ex.getMessage(), ex);
-		return ApiResponse.error(ErrorType.DEFAULT_ERROR, ErrorType.DEFAULT_ERROR.getMessage());
+		return ApiResponse.error(ErrorType.DEFAULT_ERROR);
 	}
 }
