@@ -4,6 +4,9 @@ FROM gradle:8.10.2-jdk17 AS build
 # Set the working directory for the build stage
 WORKDIR /app
 
+# Copy all project files
+COPY . /app
+
 # Copy the Gradle wrapper and build files
 COPY ./gradlew /app/gradlew
 COPY ./gradle /app/gradle
@@ -13,7 +16,8 @@ COPY ./build.gradle settings.gradle /app/
 #ENV SPRING_PROFILES_ACTIVE=server
 
 # Run the Gradle build (this will produce the JAR file in build/libs)
-RUN ./gradlew build
+#RUN ./gradlew build
+RUN ./gradlew clean build -x test
 
 # Stage 2: Create the final image
 FROM openjdk:17-jdk-slim
