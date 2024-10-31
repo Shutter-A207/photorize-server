@@ -59,7 +59,7 @@ public class AlbumService {
 
 		Member member = memberRepository.getOrThrow(memberId);
 
-		Slice<Album> publicAlbums = albumRepository.findByAlbumMemberListMemberAndTypeOrderByEarliestDiary(member,
+		Slice<Album> publicAlbums = albumRepository.findByAlbumMemberListMemberAndTypeOrderByEarliestMemory(member,
 			AlbumType.PUBLIC,
 			pageable);
 

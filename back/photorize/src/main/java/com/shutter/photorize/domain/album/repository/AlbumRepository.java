@@ -27,7 +27,7 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 		"AND a.type = :type " +
 		"GROUP BY a " +
 		"ORDER BY COALESCE(MIN(d.updatedAt), a.updatedAt) DESC")
-	Slice<Album> findByAlbumMemberListMemberAndTypeOrderByEarliestDiary(@Param("member") Member member,
+	Slice<Album> findByAlbumMemberListMemberAndTypeOrderByEarliestMemory(@Param("member") Member member,
 		@Param("type") AlbumType type,
 		Pageable pageable);
 }
