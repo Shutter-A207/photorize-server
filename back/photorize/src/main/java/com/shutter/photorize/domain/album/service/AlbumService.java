@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
+import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumMemberList;
@@ -21,6 +22,7 @@ import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
+import com.shutter.photorize.global.response.SliceResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,5 +81,10 @@ public class AlbumService {
 		}
 
 		return new SliceImpl<>(publicAlbumInfos, pageable, publicAlbums.hasNext());
+	}
+
+	public SliceResponse<AlbumDetailResponse> getAlbumDetail(Pageable pageable, Long memberId, Long albumId) {
+
+		return;
 	}
 }
