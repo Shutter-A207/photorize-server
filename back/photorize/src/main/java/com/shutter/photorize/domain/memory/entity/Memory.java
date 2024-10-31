@@ -1,4 +1,4 @@
-package com.shutter.photorize.domain.diary.entity;
+package com.shutter.photorize.domain.memory.entity;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Diary extends SoftDeletableEntity {
+public class Memory extends SoftDeletableEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

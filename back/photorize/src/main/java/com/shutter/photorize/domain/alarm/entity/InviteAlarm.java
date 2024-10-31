@@ -1,8 +1,8 @@
 package com.shutter.photorize.domain.alarm.entity;
 
 import com.shutter.photorize.domain.album.entity.Album;
-import com.shutter.photorize.domain.diary.entity.Diary;
 import com.shutter.photorize.domain.member.entity.Member;
+import com.shutter.photorize.domain.memory.entity.Memory;
 import com.shutter.photorize.global.entity.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -35,8 +35,8 @@ public class InviteAlarm extends BaseEntity {
 	private Album album;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "diary_id")
-	private Diary diary;
+	@JoinColumn(name = "memory_id")
+	private Memory memory;
 
 	@Column(nullable = false)
 	private boolean checked;

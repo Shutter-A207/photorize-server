@@ -21,7 +21,7 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 	@Query("SELECT DISTINCT a " +
 		"FROM Album a " +
 		"JOIN AlbumMemberList aml ON aml.album = a " +
-		"LEFT JOIN Diary d ON d.album = a " +
+		"LEFT JOIN Memory d ON d.album = a " +
 		"WHERE aml.member = :member " +
 		"AND aml.status = true " +
 		"AND a.type = :type " +

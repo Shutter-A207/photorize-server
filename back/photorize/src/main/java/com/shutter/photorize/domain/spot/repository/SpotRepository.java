@@ -19,6 +19,6 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 		@Param("botRightLat") Double botRightLat,
 		@Param("botRightLng") Double botRightLng);
 
-	@Query("SELECT f FROM File f JOIN f.diary d WHERE d.spot.id = :spotId")
+	@Query("SELECT f FROM File f JOIN f.memory d WHERE d.spot.id = :spotId")
 	List<Object> findFilesBySpotId(@Param("spotId") Long spotId);
 }

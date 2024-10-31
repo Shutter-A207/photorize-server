@@ -1,6 +1,6 @@
 package com.shutter.photorize.domain.file.entity;
 
-import com.shutter.photorize.domain.diary.entity.Diary;
+import com.shutter.photorize.domain.memory.entity.Memory;
 import com.shutter.photorize.global.entity.UpdatableEntity;
 
 import jakarta.persistence.Column;
@@ -25,8 +25,8 @@ public class File extends UpdatableEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "diary_id", nullable = false)
-	private Diary diary;
+	@JoinColumn(name = "memory_id", nullable = false)
+	private Memory memory;
 
 	@Column(nullable = false)
 	private String type;
