@@ -49,13 +49,12 @@ public class AlbumController {
 		return ApiResponse.ok(SliceResponse.of(response));
 	}
 
-	@GetMapping("{/albumId}")
-	public ResponseEntity<ApiResponse<SliceResponse<AlbumDetailResponse>> getAlbumDetail(
+	@GetMapping("/{albumId}")
+	public ResponseEntity<ApiResponse<SliceResponse<AlbumDetailResponse>>> getAlbumDetail(
 		@PathVariable Long albumId, @RequestParam(defaultValue = "0") int pageNumber, Long memberId) {
 
 		Pageable pageable = PageRequest.of(pageNumber, ALBUM_DETAIL_PAGE_SIZE);
-		SliceResponse<AlbumDetailResponse> response = albumService.getAlbumDetail(pageable, 1L, albumId);
+		SliceResponse<AlbumDetailResponse> response = albumService.getAlbumDetail(pageable, albumId);
 		return ApiResponse.ok(response);
 	}
-
 }

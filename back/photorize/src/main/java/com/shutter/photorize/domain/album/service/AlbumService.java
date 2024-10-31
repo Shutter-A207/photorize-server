@@ -18,8 +18,12 @@ import com.shutter.photorize.domain.album.entity.AlbumMemberList;
 import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.repository.AlbumMemberListRepository;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
+import com.shutter.photorize.domain.member.dto.MemberProfileDto;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
+import com.shutter.photorize.domain.memory.dto.MemoryInfoDto;
+import com.shutter.photorize.domain.memory.repository.MemoryRepository;
+import com.shutter.photorize.domain.memory.service.MemoryService;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.global.response.SliceResponse;
@@ -35,6 +39,8 @@ public class AlbumService {
 	private final MemberRepository memberRepository;
 	private final AlbumRepository albumRepository;
 	private final AlbumMemberListRepository albumMemberListRepository;
+	private final MemoryService memoryService;
+	private final MemoryRepository memoryRepository;
 
 	@Transactional
 	public void createPublicAlbum(AlbumCreateRequest albumCreateRequest, MultipartFile albumImage, String email) {
@@ -83,8 +89,24 @@ public class AlbumService {
 		return new SliceImpl<>(publicAlbumInfos, pageable, publicAlbums.hasNext());
 	}
 
-	public SliceResponse<AlbumDetailResponse> getAlbumDetail(Pageable pageable, Long memberId, Long albumId) {
+	public SliceResponse<AlbumDetailResponse> getAlbumDetail(Pageable pageable, Long albumId) {
+		Album album = albumRepository.getOrThrow(albumId);
 
-		return;
+		List<AlbumMemberList> albumMembers = albumMemberListRepository.findMembersByAlbum(album);
+
+		List<MemberProfileDto> memberProfileDtoList = albumMembers.stream()
+			.map(albumMember -> MemberProfileDto.from(albumMember.getMember(), albumMember.isStatus()))
+			.toList();
+
+		Slice<MemoryInfoDto> memories = memoryRepository.findMemoryInfoDtosByAlbum(album, pageable);
+
+		AlbumDetailResponse albumDetail = AlbumDetailResponse.of(album.getName(), memberProfileDtoList,
+			memories.getContent());
+
+		return SliceResponse.of(new SliceImpl<>(
+			List.of(albumDetail),
+			pageable,
+			memories.hasNext()
+		));
 	}
 }
