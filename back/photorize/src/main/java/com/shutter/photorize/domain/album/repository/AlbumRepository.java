@@ -12,9 +12,15 @@ import org.springframework.stereotype.Repository;
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.member.entity.Member;
+import com.shutter.photorize.global.error.ErrorType;
+import com.shutter.photorize.global.exception.PhotorizeException;
 
 @Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
+
+	default Album getOrThrow(Long id) {
+		return findById(id).orElseThrow(() -> new PhotorizeException(ErrorType.NO_ALBUM_FOUND));
+	}
 
 	Optional<Album> findByMemberAndType(Member member, AlbumType type);
 
