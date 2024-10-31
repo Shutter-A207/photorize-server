@@ -25,6 +25,7 @@ spring:
         static: ap-northeast-2
       s3:
         bucket: ${S3_BUCKET_NAME}
+      base-url: https://%s.s3.%s.amazonaws.com/%s
 
 logging:
   level:
