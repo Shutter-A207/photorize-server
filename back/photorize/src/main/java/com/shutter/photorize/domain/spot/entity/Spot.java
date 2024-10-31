@@ -31,4 +31,7 @@ public class Spot {
 	@Column(nullable = false)
 	private Double longitude;
 
+	@Column(nullable = false)
+	private String name;
+
 }
