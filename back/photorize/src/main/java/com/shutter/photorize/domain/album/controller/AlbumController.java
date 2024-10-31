@@ -1,5 +1,7 @@
 package com.shutter.photorize.domain.album.controller;
 
+import static com.shutter.photorize.global.constant.Number.*;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -40,7 +42,7 @@ public class AlbumController {
 		@RequestParam(defaultValue = "0") int pageNumber,
 		Long memberId) {
 
-		Pageable pageable = PageRequest.of(pageNumber, 8);
+		Pageable pageable = PageRequest.of(pageNumber, ALBUM_BOARD_PAGE_SIZE);
 		Slice<AlbumListResponse> response = albumService.getAllalbums(pageable, 1L);
 		return ApiResponse.ok(SliceResponse.of(response));
 	}
