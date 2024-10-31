@@ -24,25 +24,31 @@ public class FileService {
 	@Value("${spring.cloud.aws.s3.bucket}")
 	private String bucket;
 
+	@Value("${spring.cloud.aws.region.static}")
+	private String region;
+
+	@Value("${spring.cloud.aws.base-url}")
+	private String s3Url;
+
 	public String uploadFile(MultipartFile file) {
 		String fileName = generateFileName(file);
 
-		uploadToS3(file, fileName, "image/png");
+		uploadToS3(file, fileName);
 
-		return String.format("https://%s.s3.amazonaws.com/%s", bucket, fileName);
+		return String.format(s3Url, bucket, region, fileName);
 	}
 
 	private String generateFileName(MultipartFile file) {
 		return UUID.randomUUID() + "_" + file.getOriginalFilename();
 	}
 
-	private void uploadToS3(MultipartFile file, String fileName, String contentType) {
+	private void uploadToS3(MultipartFile file, String fileName) {
 		try {
 			s3Client.putObject(
 				PutObjectRequest.builder()
 					.bucket(bucket)
 					.key(fileName)
-					.contentType(contentType)
+					.contentType(file.getContentType())
 					.build(),
 				RequestBody.fromBytes(file.getBytes())
 			);
