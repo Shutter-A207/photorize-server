@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,4 +46,13 @@ public class Memory extends SoftDeletableEntity {
 
 	@Column(nullable = false)
 	private String content;
+
+	@Builder
+	private Memory(Member member, Album album, Spot spot, LocalDateTime date, String content) {
+		this.member = member;
+		this.album = album;
+		this.spot = spot;
+		this.date = date;
+		this.content = content;
+	}
 }
