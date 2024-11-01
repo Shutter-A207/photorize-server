@@ -17,6 +17,7 @@ public enum ErrorType {
 	NO_RESOURCE_FOUND(HttpStatus.NOT_FOUND, "요청한 리소스를 찾을 수 없습니다."),
 	NO_ALBUM_TYPE_FOUND(HttpStatus.NOT_FOUND, "앨범 타입을 찾을 수 없습니다."),
 	NO_ALBUM_FOUND(HttpStatus.NOT_FOUND, "앨범을 찾을 수 없습니다."),
+	NO_COLOR_FOUND(HttpStatus.NOT_FOUND, "컬러를 찾을 수 없습니다."),
 
 	NO_ALLOCATED_ALBUM(HttpStatus.FORBIDDEN, "해당 앨범 멤버가 아닙니다."),
 

@@ -9,11 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
@@ -33,9 +32,8 @@ public class AlbumController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> createAlbum(
-		@RequestPart AlbumCreateRequest albumCreateRequest,
-		@RequestPart(required = false) MultipartFile albumImage) {
-		albumService.createPublicAlbum(albumCreateRequest, albumImage, "member1@example.com");
+		@RequestBody AlbumCreateRequest albumCreateRequest, Long memberId) {
+		albumService.createPublicAlbum(albumCreateRequest, 1L);
 		return ApiResponse.created();
 	}
 

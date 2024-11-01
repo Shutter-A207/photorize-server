@@ -8,7 +8,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
@@ -16,8 +15,10 @@ import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumMemberList;
 import com.shutter.photorize.domain.album.entity.AlbumType;
+import com.shutter.photorize.domain.album.entity.Color;
 import com.shutter.photorize.domain.album.repository.AlbumMemberListRepository;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
+import com.shutter.photorize.domain.album.repository.ColorRepository;
 import com.shutter.photorize.domain.member.dto.MemberProfileDto;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
@@ -41,24 +42,21 @@ public class AlbumService {
 	private final AlbumMemberListRepository albumMemberListRepository;
 	private final MemoryService memoryService;
 	private final MemoryRepository memoryRepository;
+	private final ColorRepository colorRepository;
 
 	@Transactional
-	public void createPublicAlbum(AlbumCreateRequest albumCreateRequest, MultipartFile albumImage, String email) {
-		Member creator = memberRepository.getOrThrow(email);
+	public void createPublicAlbum(AlbumCreateRequest albumCreateRequest, Long memberId) {
+		Member creator = memberRepository.getOrThrow(memberId);
+		Color color = colorRepository.getOrThrow(albumCreateRequest.getColorId());
 
-		// Todo : 이미지 S3업로드
-		String albumImageUrl = "";
-		if (!albumImage.isEmpty()) {
-		}
-
-		Album savedAlbum = albumCreateRequest.toAlbum(creator, albumCreateRequest.getName(), albumImageUrl);
+		Album savedAlbum = albumCreateRequest.toAlbum(creator, color, albumCreateRequest.getName());
 		albumRepository.save(savedAlbum);
 
 		AlbumMemberList albumMemberList = albumCreateRequest.toList(savedAlbum, creator, true);
 		albumMemberListRepository.save(albumMemberList);
 
-		for (Long memberId : albumCreateRequest.getMembers()) {
-			Member member = memberRepository.getOrThrow(memberId);
+		for (Long albumMemberId : albumCreateRequest.getMembers()) {
+			Member member = memberRepository.getOrThrow(albumMemberId);
 			albumMemberListRepository.save(albumCreateRequest.toList(savedAlbum, member, false));
 		}
 	}

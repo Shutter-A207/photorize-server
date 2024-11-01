@@ -5,10 +5,10 @@ import java.util.List;
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumMemberList;
 import com.shutter.photorize.domain.album.entity.AlbumType;
+import com.shutter.photorize.domain.album.entity.Color;
 import com.shutter.photorize.domain.member.entity.Member;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,20 +16,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AlbumCreateRequest {
 	private String name;
+	private Long colorId;
 	private List<Long> members;
 
-	@Builder
-	public AlbumCreateRequest(String name, List<Long> members) {
-		this.name = name;
-		this.members = members;
-	}
-
-	public Album toAlbum(Member member, String name, String imgUrl) {
+	public Album toAlbum(Member member, Color color, String name) {
 		return Album.builder()
 			.member(member)
+			.color(color)
 			.name(name)
 			.type(AlbumType.PUBLIC)
-			.img(imgUrl)
 			.build();
 	}
 

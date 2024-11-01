@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,10 @@ public class Album extends SoftDeletableEntity {
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "color_id", nullable = false)
+	private Color color;
+
 	@Column(nullable = false)
 	private String name;
 
@@ -38,15 +43,12 @@ public class Album extends SoftDeletableEntity {
 	@Enumerated(EnumType.STRING)
 	private AlbumType type;
 
-	@Column(nullable = false)
-	private String img;
-
 	@Builder
-	public Album(Member member, String name, AlbumType type, String img) {
+	public Album(Member member, Color color, String name, AlbumType type) {
 		this.member = member;
+		this.color = color;
 		this.name = name;
 		this.type = type;
-		this.img = img;
 	}
 
 }
