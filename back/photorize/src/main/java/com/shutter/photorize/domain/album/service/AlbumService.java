@@ -89,10 +89,12 @@ public class AlbumService {
 		return new SliceImpl<>(publicAlbumInfos, pageable, publicAlbums.hasNext());
 	}
 
-	public SliceResponse<AlbumDetailResponse> getAlbumDetail(Pageable pageable, Long albumId) {
+	public SliceResponse<AlbumDetailResponse> getAlbumDetail(Pageable pageable, Long albumId, Long memberId) {
 		Album album = albumRepository.getOrThrow(albumId);
 
 		List<AlbumMemberList> albumMembers = albumMemberListRepository.findMembersByAlbum(album);
+
+		isAllcatedAlbumMember(albumMembers, memberId);
 
 		List<MemberProfileDto> memberProfileDtoList = albumMembers.stream()
 			.map(albumMember -> MemberProfileDto.from(albumMember.getMember(), albumMember.isStatus()))
@@ -108,5 +110,14 @@ public class AlbumService {
 			pageable,
 			memories.hasNext()
 		));
+	}
+
+	private void isAllcatedAlbumMember(List<AlbumMemberList> albumMemberLists, Long memberId) {
+		boolean isMember = albumMemberLists.stream()
+			.anyMatch(albumMemberList -> albumMemberList.getMember().getId().equals(memberId));
+
+		if (!isMember) {
+			throw new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM);
+		}
 	}
 }

@@ -14,4 +14,6 @@ public interface AlbumMemberListRepository extends JpaRepository<AlbumMemberList
 		"WHERE aml.album = :album " +
 		"ORDER BY aml.status DESC, m.nickname ASC")
 	List<AlbumMemberList> findMembersByAlbum(Album album);
+
+	boolean existsByAlbumAndMemberId(Album album, Long memberId);
 }

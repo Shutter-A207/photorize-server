@@ -54,7 +54,7 @@ public class AlbumController {
 		@PathVariable Long albumId, @RequestParam(defaultValue = "0") int pageNumber, Long memberId) {
 
 		Pageable pageable = PageRequest.of(pageNumber, ALBUM_DETAIL_PAGE_SIZE);
-		SliceResponse<AlbumDetailResponse> response = albumService.getAlbumDetail(pageable, albumId);
+		SliceResponse<AlbumDetailResponse> response = albumService.getAlbumDetail(pageable, albumId, memberId);
 		return ApiResponse.ok(response);
 	}
 }
