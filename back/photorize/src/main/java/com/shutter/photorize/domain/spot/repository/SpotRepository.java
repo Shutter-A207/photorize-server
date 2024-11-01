@@ -19,6 +19,12 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 		@Param("botRightLat") Double botRightLat,
 		@Param("botRightLng") Double botRightLng);
 
+	@Query("SELECT COUNT(f) FROM File f WHERE f.memory.spot.id = :spotId AND f.memory.member.id = :memberId")
+	int countFilesBySpotIdAndMember(@Param("spotId") Long spotId, @Param("memberId") Long memberId);
+
+	@Query("SELECT COUNT(m) FROM Memory m WHERE m.spot.id = :spotId AND m.member.id = :memberId")
+	int countMemoriesBySpotIdAndMember(@Param("spotId") Long spotId, @Param("memberId") Long memberId);
+
 	@Query("SELECT f FROM File f JOIN f.memory d WHERE d.spot.id = :spotId")
 	List<Object> findFilesBySpotId(@Param("spotId") Long spotId);
 }

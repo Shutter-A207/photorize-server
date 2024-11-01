@@ -13,23 +13,24 @@ import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
 import com.shutter.photorize.domain.spot.service.SpotService;
 import com.shutter.photorize.global.response.ApiResponse;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/v1/spots")
+@RequiredArgsConstructor
 public class SpotController {
 
 	private final SpotService spotService;
-
-	public SpotController(SpotService spotService) {
-		this.spotService = spotService;
-	}
 
 	@GetMapping("/boundary")
 	public ResponseEntity<ApiResponse<List<SpotResponse>>> getSpotsWithinBoundary(
 		@RequestParam Double topLeftLat,
 		@RequestParam Double topLeftLng,
 		@RequestParam Double botRightLat,
-		@RequestParam Double botRightLng) {
-		List<SpotResponse> spots = spotService.getSpotsWithinBoundary(topLeftLat, topLeftLng, botRightLat, botRightLng);
+		@RequestParam Double botRightLng,
+		@RequestParam Long memberId) {
+		List<SpotResponse> spots = spotService.getSpotsWithinBoundary(topLeftLat, topLeftLng, botRightLat, botRightLng,
+			memberId);
 		return ApiResponse.ok(spots);
 	}
 
