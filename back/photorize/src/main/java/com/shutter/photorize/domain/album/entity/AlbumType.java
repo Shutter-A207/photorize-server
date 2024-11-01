@@ -20,7 +20,7 @@ public enum AlbumType {
 		try {
 			albumType = AlbumType.valueOf(type);
 		} catch (IllegalArgumentException e) {
-			throw new PhotorizeException(ErrorType.INVALID_ALBUM_TYPE);
+			throw new PhotorizeException(ErrorType.NO_ALBUM_TYPE_FOUND);
 		}
 
 		return albumType;
