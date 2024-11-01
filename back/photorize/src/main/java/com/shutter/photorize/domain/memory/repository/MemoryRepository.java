@@ -14,11 +14,11 @@ import com.shutter.photorize.domain.memory.entity.Memory;
 public interface MemoryRepository extends JpaRepository<Memory, Long> {
 
 	@Query("SELECT new com.shutter.photorize.domain.memory.dto.MemoryInfoDto(" +
-		"m.id, f.url, s.name, m.createdAt) " +
+		"m.id, f.url, s.name, m.date) " +
 		"FROM Memory m " +
 		"LEFT JOIN m.spot s " +
 		"LEFT JOIN File f ON f.memory = m " +
 		"WHERE m.album = :album " +
-		"ORDER BY m.createdAt DESC")
+		"ORDER BY m.date DESC")
 	Slice<MemoryInfoDto> findMemoryInfoDtosByAlbum(Album album, Pageable pageable);
 }
