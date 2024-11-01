@@ -44,7 +44,7 @@ public class MemoryService {
 
 		memoryRepository.save(memory);
 		fileService.saveFile(files, memory);
-		//TODO: 파일 생성 후 데이터베이스 저장 작업
+		//TODO: 알림 구현해야합니다.
 	}
 
 	public Album getAlbum(Member member, MemoryCreateRequest memoryCreateRequest) {
