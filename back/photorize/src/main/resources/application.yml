@@ -2,6 +2,6 @@ spring:
   config:
     import:
       - classpath:/yml/application-local.yml
-      # yml ??? ??
+      - classpath:/yml/application-server.yml
   profiles:
     active: local
