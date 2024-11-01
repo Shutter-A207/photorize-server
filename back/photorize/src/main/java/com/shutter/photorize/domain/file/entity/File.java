@@ -31,24 +31,24 @@ public class File extends UpdatableEntity {
 	@JoinColumn(name = "memory_id", nullable = false)
 	private Memory memory;
 
-	@Column(name = "type", columnDefinition = "varchar(20)")
+	@Column(columnDefinition = "varchar(20)")
 	@Enumerated(EnumType.STRING)
-	private FileType fileType;
+	private FileType type;
 
 	@Column(nullable = false, unique = true)
 	private String url;
 
 	@Builder
-	private File(Memory memory, FileType fileType, String url) {
+	private File(Memory memory, FileType type, String url) {
 		this.memory = memory;
-		this.fileType = fileType;
+		this.type = type;
 		this.url = url;
 	}
 
-	public static File of(Memory memory, FileType fileType, String url) {
+	public static File of(Memory memory, FileType type, String url) {
 		return File.builder()
 			.memory(memory)
-			.fileType(fileType)
+			.type(type)
 			.url(url)
 			.build();
 	}
