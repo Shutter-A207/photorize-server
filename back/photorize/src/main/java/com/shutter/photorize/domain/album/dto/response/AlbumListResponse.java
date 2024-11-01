@@ -14,13 +14,13 @@ public class AlbumListResponse {
 	private Long albumId;
 	private String name;
 	private AlbumType type;
-	private String img;
+	private String colorCode;
 
 	@Builder
 	public AlbumListResponse(Album album) {
 		this.albumId = album.getId();
 		this.name = album.getName();
 		this.type = album.getType();
-		this.img = album.getImg();
+		this.colorCode = album.getColor().getColorCode();
 	}
 }
