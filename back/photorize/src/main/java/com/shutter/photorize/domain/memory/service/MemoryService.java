@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
+import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.memory.dto.request.MemoryCreateRequest;
@@ -18,7 +19,6 @@ import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
-import com.shutter.photorize.global.util.S3Utils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +30,7 @@ public class MemoryService {
 	private final MemberRepository memberRepository;
 	private final AlbumRepository albumRepository;
 	private final SpotRepository spotRepository;
-	private final S3Utils s3Utils;
+	private final FileService fileService;
 
 	@Transactional
 	public void createMemory(Long memberId, MemoryCreateRequest memoryCreateRequest, List<MultipartFile> files) {
@@ -39,34 +39,18 @@ public class MemoryService {
 		//FIXME: 추후에 Spot 에러 타입 정의 되면 수정해야합니다.
 		Spot spot = spotRepository.findById(memoryCreateRequest.getSpot())
 			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_RESOURCE_FOUND));
+		Album album = getAlbum(member, memoryCreateRequest);
+		Memory memory = memoryCreateRequest.toMemory(member, album, spot);
 
-		if (memoryCreateRequest.getType() == AlbumType.PRIVATE) {
-			createPrivateMemory(member, memoryCreateRequest, spot);
-		} else if (memoryCreateRequest.getType() == AlbumType.PUBLIC) {
-			createPublicMemory(member, memoryCreateRequest, spot);
-		}
-
+		memoryRepository.save(memory);
+		fileService.saveFile(files, memory);
 		//TODO: 파일 생성 후 데이터베이스 저장 작업
 	}
 
-	private void createPrivateMemory(Member member, MemoryCreateRequest memoryCreateRequest, Spot spot) {
-
-		Album album = albumRepository.findByMemberAndType(member, memoryCreateRequest.getType())
-			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_ALBUM_FOUND));
-		Memory memory = memoryCreateRequest.toMemory(member, album, spot);
-		memoryRepository.save(memory);
-
-		//TODO: 알림 전송, 사용자별 앨범 추가 등의 작업을 여기에서 처리
+	public Album getAlbum(Member member, MemoryCreateRequest memoryCreateRequest) {
+		return memoryCreateRequest.getType() == AlbumType.PRIVATE
+			? albumRepository.findByMemberAndType(member, AlbumType.PRIVATE)
+			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_ALBUM_FOUND))
+			: albumRepository.getOrThrow(memoryCreateRequest.getAlbums().get(0));
 	}
-
-	private void createPublicMemory(Member member, MemoryCreateRequest memoryCreateRequest, Spot spot) {
-
-		Album album = albumRepository.findById(memoryCreateRequest.getAlbums().get(0))
-			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_ALBUM_FOUND));
-		Memory memory = memoryCreateRequest.toMemory(member, album, spot);
-		memoryRepository.save(memory);
-
-		//TODO: 알림 전송, 사용자별 앨범 추가 등의 작업을 여기에서 처리
-	}
-
 }
