@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shutter.photorize.domain.file.entity.FileType;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 
@@ -30,16 +31,17 @@ public class S3Utils {
 	@Value("${spring.cloud.aws.base-url}")
 	private String s3Url;
 
-	public String uploadFile(MultipartFile file) {
-		String fileName = generateFileName(file);
+	public String uploadFile(MultipartFile file, FileType type) {
+		String fileName = generateFileName(file, type);
 
 		uploadToS3(file, fileName);
 
 		return String.format(s3Url, bucket, region, fileName);
 	}
 
-	private String generateFileName(MultipartFile file) {
-		return UUID.randomUUID() + "_" + file.getOriginalFilename();
+	private String generateFileName(MultipartFile file, FileType type) {
+		String folder = type.name().toLowerCase();
+		return folder + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 	}
 
 	private void uploadToS3(MultipartFile file, String fileName) {
