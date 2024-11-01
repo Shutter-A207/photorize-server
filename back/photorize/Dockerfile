@@ -12,9 +12,6 @@ COPY ./gradlew /app/gradlew
 COPY ./gradle /app/gradle
 COPY ./build.gradle settings.gradle /app/
 
-## 서버 프로필 활성화
-ENV SPRING_PROFILES_ACTIVE=server
-
 # Run the Gradle build (this will produce the JAR file in build/libs)
 #RUN ./gradlew build
 RUN ./gradlew clean build -x test
@@ -29,8 +26,5 @@ WORKDIR /app
 #COPY --from=build /app/build/libs/*.jar app.jar
 COPY --from=build /app/build/libs/photorize-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose the application port
-EXPOSE 9090
-
 # Run the application with the server profile activated
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=server"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
