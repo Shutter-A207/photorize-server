@@ -24,7 +24,8 @@ public class SpotController {
 	}
 
 	@GetMapping("/boundary")
-	public ResponseEntity<ApiResponse<List<SpotResponse>>> getSpotsWithinBoundary(@RequestParam Double topLeftLat,
+	public ResponseEntity<ApiResponse<List<SpotResponse>>> getSpotsWithinBoundary(
+		@RequestParam Double topLeftLat,
 		@RequestParam Double topLeftLng,
 		@RequestParam Double botRightLat,
 		@RequestParam Double botRightLng) {

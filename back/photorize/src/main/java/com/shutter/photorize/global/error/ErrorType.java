@@ -19,6 +19,9 @@ public enum ErrorType {
 	NO_ALBUM_FOUND(HttpStatus.NOT_FOUND, "앨범을 찾을 수 없습니다."),
 
 	NO_ALLOCATED_ALBUM(HttpStatus.FORBIDDEN, "해당 앨범 멤버가 아닙니다."),
+
+	SPOT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 지점을 찾을 수 없습니다."),
+	FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 파일을 찾을 수 없습니다."),
 	; //커스텀 에러 작성
 
 	private final HttpStatus status;

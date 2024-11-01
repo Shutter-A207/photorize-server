@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SpotResponse {
 	private Long spotId;
+	private String spotCodeName;
 	private String spotName;
 	private Double latitude;
 	private Double longitude;
-
 }

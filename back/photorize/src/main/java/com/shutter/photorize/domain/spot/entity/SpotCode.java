@@ -20,4 +20,10 @@ public class SpotCode {
 
 	@Column(nullable = false)
 	private String name;
+
+	public static SpotCode create(String name) {
+		SpotCode spotCode = new SpotCode();
+		spotCode.name = name;
+		return spotCode;
+	}
 }

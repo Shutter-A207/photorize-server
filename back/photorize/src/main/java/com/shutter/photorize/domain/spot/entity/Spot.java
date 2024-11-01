@@ -34,4 +34,12 @@ public class Spot {
 	@Column(nullable = false)
 	private String name;
 
+	public static Spot create(SpotCode spotCode, Double latitude, Double longitude, String name) {
+		Spot spot = new Spot();
+		spot.spotCode = spotCode;
+		spot.latitude = latitude;
+		spot.longitude = longitude;
+		spot.name = name;
+		return spot;
+	}
 }
