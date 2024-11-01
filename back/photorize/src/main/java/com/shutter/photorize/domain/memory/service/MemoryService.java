@@ -37,7 +37,7 @@ public class MemoryService {
 
 		Member member = memberRepository.getOrThrow(memberId);
 		//FIXME: 추후에 Spot 에러 타입 정의 되면 수정해야합니다.
-		Spot spot = spotRepository.findById(memoryCreateRequest.getSpot())
+		Spot spot = spotRepository.findById(memoryCreateRequest.getSpotId())
 			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_RESOURCE_FOUND));
 		Album album = getAlbum(member, memoryCreateRequest);
 		Memory memory = memoryCreateRequest.toMemory(member, album, spot);
@@ -51,6 +51,6 @@ public class MemoryService {
 		return memoryCreateRequest.getType() == AlbumType.PRIVATE
 			? albumRepository.findByMemberAndType(member, AlbumType.PRIVATE)
 			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_ALBUM_FOUND))
-			: albumRepository.getOrThrow(memoryCreateRequest.getAlbums().get(0));
+			: albumRepository.getOrThrow(memoryCreateRequest.getAlbumIds().get(0));
 	}
 }

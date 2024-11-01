@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemoryCreateRequest {
 	private LocalDate date;
-	private Long spot; //spot 엔티티
+	private Long spotId;
 	private String content;
-	private List<Long> albums; //앨범 엔티티
+	private List<Long> albumIds;
 	private AlbumType type;
 
 	public Memory toMemory(Member member, Album album, Spot spot) {
