@@ -28,7 +28,10 @@ public enum ErrorType {
 
 	ALREADY_LIKED(HttpStatus.BAD_REQUEST, "이미 좋아요를 눌렀습니다."),
 	ALREADY_DISLIKED(HttpStatus.BAD_REQUEST, "좋아요가 취소된 상태입니다."),
-	NO_POSE_FOUND(HttpStatus.NOT_FOUND, "포즈를 찾을 수 없습니다."); //커스텀 에러 작성
+	NO_POSE_FOUND(HttpStatus.NOT_FOUND, "포즈를 찾을 수 없습니다."),
+
+    MEMORY_NOT_FOUND(HttpStatus.NOT_FOUND, "추억을 찾을 수 없습니다."),
+    ; // 커스텀 에러 작성
 
 	private final HttpStatus status;
 	private final String message;
