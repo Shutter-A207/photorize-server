@@ -2,6 +2,7 @@ package com.shutter.photorize.domain.album.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -55,10 +56,13 @@ public class AlbumService {
 		AlbumMemberList albumMemberList = albumCreateRequest.toList(savedAlbum, creator, true);
 		albumMemberListRepository.save(albumMemberList);
 
-		for (Long albumMemberId : albumCreateRequest.getMembers()) {
-			Member member = memberRepository.getOrThrow(albumMemberId);
-			albumMemberListRepository.save(albumCreateRequest.toList(savedAlbum, member, false));
-		}
+		List<AlbumMemberList> albumMembers = albumCreateRequest.getMembers().stream()
+			.map(memberRepository::getOrThrow)
+			.map(member -> albumCreateRequest.toList(savedAlbum, member, false))
+			.collect(Collectors.toList());
+
+		albumMemberListRepository.saveAll(albumMembers);
+
 	}
 
 	public Slice<AlbumListResponse> getAllalbums(Pageable pageable, Long memberId) {
