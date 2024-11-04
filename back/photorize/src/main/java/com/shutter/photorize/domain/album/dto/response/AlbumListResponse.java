@@ -14,6 +14,7 @@ public class AlbumListResponse {
 	private Long albumId;
 	private String name;
 	private AlbumType type;
+	private Long colorId;
 	private String colorCode;
 
 	@Builder
@@ -21,6 +22,7 @@ public class AlbumListResponse {
 		this.albumId = album.getId();
 		this.name = album.getName();
 		this.type = album.getType();
+		this.colorId = album.getColor().getId();
 		this.colorCode = album.getColor().getColorCode();
 	}
 }
