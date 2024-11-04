@@ -1,18 +1,13 @@
 package com.shutter.photorize.domain.memory.controller;
 
-import static com.shutter.photorize.global.constant.Number.*;
-
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,10 +43,8 @@ public class MemoryController {
 	}
 
 	@GetMapping("/{memoryId}")
-	public ResponseEntity<ApiResponse<MemoryDetailResponse>> getDetailMemory(@PathVariable Long memoryId,
-		@RequestParam(defaultValue = "0") int pageNumber) {
-		Pageable pageable = PageRequest.of(pageNumber, COMMENT_PAGE_SIZE);
-		return ApiResponse.ok(memoryService.getMemoryDetail(memoryId, pageable));
+	public ResponseEntity<ApiResponse<MemoryDetailResponse>> getDetailMemory(@PathVariable Long memoryId) {
+		return ApiResponse.ok(memoryService.getMemoryDetail(memoryId));
 	}
 
 }
