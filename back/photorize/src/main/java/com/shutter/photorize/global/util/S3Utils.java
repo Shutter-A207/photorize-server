@@ -1,6 +1,8 @@
 package com.shutter.photorize.global.util;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +48,7 @@ public class S3Utils {
 	}
 
 	private void deleteFromS3(String fileName) {
+		System.out.println(fileName);
 		s3Client.deleteObject(DeleteObjectRequest.builder()
 			.bucket(bucket)
 			.key(fileName)
@@ -73,7 +76,13 @@ public class S3Utils {
 	}
 
 	private String extractFileName(String fileUrl) {
-		return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+		try {
+			URI uri = new URI(fileUrl);
+			String path = uri.getPath();
+			return path.startsWith("/") ? path.substring(1) : path;
+		} catch (URISyntaxException e) {
+			throw new PhotorizeException(ErrorType.INVALID_S3_URL);
+		}
 	}
 
 }
