@@ -21,9 +21,11 @@ public class SpotCode {
 	@Column(nullable = false)
 	private String name;
 
+	private SpotCode(String name) {
+		this.name = name;
+	}
+
 	public static SpotCode create(String name) {
-		SpotCode spotCode = new SpotCode();
-		spotCode.name = name;
-		return spotCode;
+		return new SpotCode(name);
 	}
 }
