@@ -14,6 +14,7 @@ import com.shutter.photorize.global.exception.PhotorizeException;
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
@@ -39,9 +40,16 @@ public class S3Utils {
 		return String.format(s3Url, bucket, region, fileName);
 	}
 
-	private String generateFileName(MultipartFile file, FileType type) {
-		String folder = type.name().toLowerCase();
-		return folder + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+	public void deleteFile(String fileUrl) {
+		String fileName = extractFileName(fileUrl);
+		deleteFromS3(fileName);
+	}
+
+	private void deleteFromS3(String fileName) {
+		s3Client.deleteObject(DeleteObjectRequest.builder()
+			.bucket(bucket)
+			.key(fileName)
+			.build());
 	}
 
 	private void uploadToS3(MultipartFile file, String fileName) {
@@ -58,4 +66,14 @@ public class S3Utils {
 			throw new PhotorizeException(ErrorType.FILE_UPLOAD_ERROR);
 		}
 	}
+
+	private String generateFileName(MultipartFile file, FileType type) {
+		String folder = type.name().toLowerCase();
+		return folder + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+	}
+
+	private String extractFileName(String fileUrl) {
+		return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+	}
+
 }

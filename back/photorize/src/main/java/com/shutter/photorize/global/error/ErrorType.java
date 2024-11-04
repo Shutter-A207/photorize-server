@@ -14,6 +14,7 @@ public enum ErrorType {
 
 	FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 중 오류가 발생했습니다."),
 	FILE_UNSUPPORTED_EXTENSION(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자입니다."),
+	INVALID_S3_URL(HttpStatus.BAD_REQUEST, "잘못된 S3 URL입니다."),
 
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
 
@@ -30,8 +31,8 @@ public enum ErrorType {
 	ALREADY_DISLIKED(HttpStatus.BAD_REQUEST, "좋아요가 취소된 상태입니다."),
 	NO_POSE_FOUND(HttpStatus.NOT_FOUND, "포즈를 찾을 수 없습니다."),
 
-    MEMORY_NOT_FOUND(HttpStatus.NOT_FOUND, "추억을 찾을 수 없습니다."),
-    ; // 커스텀 에러 작성
+	MEMORY_NOT_FOUND(HttpStatus.NOT_FOUND, "추억을 찾을 수 없습니다."),
+	; // 커스텀 에러 작성
 
 	private final HttpStatus status;
 	private final String message;
