@@ -35,6 +35,17 @@ public class FileService {
 		return convertFilesToResponses(fileRepository.findFilesByMemory(memory));
 	}
 
+	public void updateFile(List<MultipartFile> files, Memory memory) {
+		List<File> existingFiles = fileRepository.findFilesByMemory(memory);
+		existingFiles.forEach(file -> {
+			// TODO: soft delete 할 것인지 상의 해야합니다.
+			s3Utils.deleteFile(file.getUrl());
+			fileRepository.delete(file);
+		});
+
+		saveFile(files, memory);
+	}
+
 	private String getFileExtension(MultipartFile file) {
 		return StringUtils.getFilenameExtension(file.getOriginalFilename());
 	}
