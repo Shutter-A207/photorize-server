@@ -41,4 +41,8 @@ public class AlbumMemberList extends BaseEntity {
 		this.member = member;
 		this.status = status;
 	}
+
+	public void updateStatus(boolean status) {
+		this.status = status;
+	}
 }

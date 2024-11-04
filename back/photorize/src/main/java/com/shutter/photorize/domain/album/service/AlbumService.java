@@ -105,10 +105,11 @@ public class AlbumService {
 
 	public SliceResponse<AlbumDetailResponse> getAlbumDetail(Pageable pageable, Long albumId, Long memberId) {
 		Album album = albumRepository.getOrThrow(albumId);
+		Member member = memberRepository.getOrThrow(memberId);
 
 		List<AlbumMemberList> albumMembers = albumMemberListRepository.findMembersByAlbum(album);
 
-		isAllcatedAlbumMember(albumMembers, memberId);
+		validateAlbumAccess(album, member);
 
 		List<MemberProfileDto> memberProfileDtoList = albumMembers.stream()
 			.map(albumMember -> MemberProfileDto.from(albumMember.getMember(), albumMember.isStatus()))
@@ -126,13 +127,21 @@ public class AlbumService {
 		));
 	}
 
-	private void isAllcatedAlbumMember(List<AlbumMemberList> albumMemberLists, Long memberId) {
-		boolean isMember = albumMemberLists.stream()
-			.anyMatch(albumMemberList -> albumMemberList.getMember().getId().equals(memberId));
+	@Transactional
+	public void unfollowAlbum(Long albumId, Long memberId) {
+		Member member = memberRepository.getOrThrow(memberId);
+		Album album = albumRepository.getOrThrow(albumId);
 
-		if (!isMember) {
-			throw new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM);
+		validateAlbumAccess(album, member);
+
+		AlbumMemberList albumMemberList = albumMemberListRepository.getOrThrow(album, member);
+
+		albumMemberList.updateStatus(false);
+
+		if (checkMemberStatus(album)) {
+			album.softDelete();
 		}
+
 	}
 
 	private void validateAlbumAccess(Album album, Member member) {
@@ -144,5 +153,14 @@ public class AlbumService {
 		if (!hasAccess) {
 			throw new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM);
 		}
+	}
+
+	private boolean checkMemberStatus(Album album) {
+		List<AlbumMemberList> albumMembers = albumMemberListRepository.findMembersByAlbum(album);
+
+		boolean allMembersFalse = albumMembers.stream()
+			.allMatch(member -> !member.isStatus());
+
+		return allMembersFalse;
 	}
 }
