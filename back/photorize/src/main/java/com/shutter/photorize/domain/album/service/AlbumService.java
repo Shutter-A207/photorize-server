@@ -70,9 +70,8 @@ public class AlbumService {
 	public void modifyAlbum(AlbumModifyRequest albumModifyRequest, Long albumId, Long memberId) {
 		Member member = memberRepository.getOrThrow(memberId);
 		Album album = albumRepository.getOrThrow(albumId);
-		if (!albumMemberListRepository.existsByAlbumAndMember(album, member)) {
-			throw new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM);
-		}
+
+		validateAlbumAccess(album, member);
 
 		if (albumModifyRequest.getName() != null) {
 			album.updateName(albumModifyRequest.getName());
@@ -139,6 +138,17 @@ public class AlbumService {
 			.anyMatch(albumMemberList -> albumMemberList.getMember().getId().equals(memberId));
 
 		if (!isMember) {
+			throw new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM);
+		}
+	}
+
+	private void validateAlbumAccess(Album album, Member member) {
+		boolean hasAccess = switch (album.getType()) {
+			case PUBLIC -> albumMemberListRepository.existsByAlbumAndMember(album, member);
+			case PRIVATE -> album.getMember().getId().equals(member.getId());
+		};
+
+		if (!hasAccess) {
 			throw new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM);
 		}
 	}
