@@ -55,4 +55,16 @@ public class Memory extends SoftDeletableEntity {
 		this.date = date;
 		this.content = content;
 	}
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
+
+	public void updateSpot(Spot spot) {
+		this.spot = spot;
+	}
+
+	public void updateDate(LocalDateTime date) {
+		this.date = date;
+	}
 }
