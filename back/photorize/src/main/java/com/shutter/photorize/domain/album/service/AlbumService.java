@@ -70,18 +70,11 @@ public class AlbumService {
 	public void modifyAlbum(AlbumModifyRequest albumModifyRequest, Long albumId, Long memberId) {
 		Member member = memberRepository.getOrThrow(memberId);
 		Album album = albumRepository.getOrThrow(albumId);
+		Color color = colorRepository.getOrThrow(albumModifyRequest.getColorId());
 
 		validateAlbumAccess(album, member);
-
-		if (albumModifyRequest.getName() != null) {
-			album.updateName(albumModifyRequest.getName());
-		}
-		if (albumModifyRequest.getColorId() != null) {
-			Color color = colorRepository.getOrThrow(albumModifyRequest.getColorId());
-			album.updateColor(color);
-		}
-
-		albumRepository.save(album);
+		album.updateName(albumModifyRequest.getName());
+		album.updateColor(color);
 	}
 
 	public Slice<AlbumListResponse> getAllalbums(Pageable pageable, Long memberId) {
