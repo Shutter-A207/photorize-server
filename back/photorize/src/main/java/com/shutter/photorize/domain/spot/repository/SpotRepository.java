@@ -7,24 +7,35 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.spot.entity.Spot;
+import com.shutter.photorize.global.error.ErrorType;
+import com.shutter.photorize.global.exception.PhotorizeException;
 
 @Repository
 public interface SpotRepository extends JpaRepository<Spot, Long> {
 
+	default Spot getOrThrow(Long id) {
+		return findById(id).orElseThrow(() -> new PhotorizeException(ErrorType.SPOT_NOT_FOUND));
+	}
+
 	@Query("SELECT s FROM Spot s WHERE s.latitude "
-		+ "BETWEEN :botRightLat AND :topLeftLat AND s.longitude BETWEEN :topLeftLng AND :botRightLng")
+		+ "BETWEEN :botRightLat "
+		+ "AND :topLeftLat "
+		+ "AND s.longitude "
+		+ "BETWEEN :topLeftLng "
+		+ "AND :botRightLng")
 	List<Spot> findSpotsWithinBoundary(@Param("topLeftLat") Double topLeftLat,
 		@Param("topLeftLng") Double topLeftLng,
 		@Param("botRightLat") Double botRightLat,
 		@Param("botRightLng") Double botRightLng);
 
-	@Query("SELECT COUNT(f) FROM File f WHERE f.memory.spot.id = :spotId AND f.memory.member.id = :memberId")
-	int countFilesBySpotIdAndMember(@Param("spotId") Long spotId, @Param("memberId") Long memberId);
+	@Query("SELECT COUNT(f) FROM File f WHERE f.memory.spot = :spot AND f.memory.member = :member")
+	int countFilesBySpotAndMember(@Param("spot") Spot spot, @Param("member") Member member);
 
-	@Query("SELECT COUNT(m) FROM Memory m WHERE m.spot.id = :spotId AND m.member.id = :memberId")
-	int countMemoriesBySpotIdAndMember(@Param("spotId") Long spotId, @Param("memberId") Long memberId);
+	@Query("SELECT COUNT(m) FROM Memory m WHERE m.spot = :spot AND m.member = :member")
+	int countMemoriesBySpotAndMember(@Param("spot") Spot spot, @Param("member") Member member);
 
-	@Query("SELECT f FROM File f JOIN f.memory d WHERE d.spot.id = :spotId")
-	List<Object> findFilesBySpotId(@Param("spotId") Long spotId);
+	@Query("SELECT f FROM File f JOIN f.memory m WHERE m.spot = :spot")
+	List<Object> findFilesBySpot(@Param("spot") Spot spot);
 }

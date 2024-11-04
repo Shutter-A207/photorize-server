@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
+import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.service.SpotService;
 import com.shutter.photorize.global.response.ApiResponse;
 
@@ -28,15 +30,15 @@ public class SpotController {
 		@RequestParam Double topLeftLng,
 		@RequestParam Double botRightLat,
 		@RequestParam Double botRightLng,
-		@RequestParam Long memberId) {
+		@RequestParam Member member) {
 		List<SpotResponse> spots = spotService.getSpotsWithinBoundary(topLeftLat, topLeftLng, botRightLat, botRightLng,
-			memberId);
+			member);
 		return ApiResponse.ok(spots);
 	}
 
-	@GetMapping("/{spotId}/files")
-	public ResponseEntity<ApiResponse<List<Object>>> getFilesBySpot(@PathVariable Long spotId) {
-		List<Object> files = spotService.getFilesBySpot(spotId);
+	@GetMapping("/{spot}/files")
+	public ResponseEntity<ApiResponse<List<Object>>> getFilesBySpot(@PathVariable Spot spot) {  // spotId 대신 Spot 객체 사용
+		List<Object> files = spotService.getFilesBySpot(spot);
 		return ApiResponse.ok(files);
 	}
 }

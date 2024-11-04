@@ -6,10 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
-import com.shutter.photorize.global.error.ErrorType;
-import com.shutter.photorize.global.exception.PhotorizeException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +20,7 @@ public class SpotService {
 
 	@Transactional(readOnly = true)
 	public List<SpotResponse> getSpotsWithinBoundary(Double topLeftLat, Double topLeftLng, Double botRightLat,
-		Double botRightLng, Long memberId) {
+		Double botRightLng, Member member) {
 		return spotRepository.findSpotsWithinBoundary(topLeftLat, topLeftLng, botRightLat, botRightLng)
 			.stream()
 			.map(spot -> new SpotResponse(
@@ -30,16 +29,17 @@ public class SpotService {
 				spot.getName(),
 				spot.getLatitude(),
 				spot.getLongitude(),
-				spotRepository.countFilesBySpotIdAndMember(spot.getId(), memberId),
-				spotRepository.countMemoriesBySpotIdAndMember(spot.getId(), memberId)
+				spotRepository.countFilesBySpotAndMember(spot, member),
+				spotRepository.countMemoriesBySpotAndMember(spot, member)
 			))
 			.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
 	public List<Object> getFilesBySpot(Long spotId) {
-		spotRepository.findById(spotId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.SPOT_NOT_FOUND));
-		return spotRepository.findFilesBySpotId(spotId);
+		// Optional을 활용하여 존재하지 않을 경우 빈 리스트 반환
+		return spotRepository.findById(spotId)
+			.map(spot -> spotRepository.findFilesBySpot(spot))
+			.orElse(List.of());
 	}
 }
