@@ -1,5 +1,7 @@
 package com.shutter.photorize.domain.spot.entity;
 
+import com.shutter.photorize.global.entity.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Spot {
+public class Spot extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,12 +36,14 @@ public class Spot {
 	@Column(nullable = false)
 	private String name;
 
+	private Spot(SpotCode spotCode, Double latitude, Double longitude, String name) {
+		this.spotCode = spotCode;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.name = name;
+	}
+
 	public static Spot create(SpotCode spotCode, Double latitude, Double longitude, String name) {
-		Spot spot = new Spot();
-		spot.spotCode = spotCode;
-		spot.latitude = latitude;
-		spot.longitude = longitude;
-		spot.name = name;
-		return spot;
+		return new Spot(spotCode, latitude, longitude, name);
 	}
 }

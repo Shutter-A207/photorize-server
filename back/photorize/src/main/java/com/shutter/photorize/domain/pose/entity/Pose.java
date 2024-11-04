@@ -30,9 +30,13 @@ public class Pose extends BaseEntity {
 	@Column(nullable = false, unique = true)
 	private String img;
 
-	@Builder
-	public Pose(PoseHeadcount headcount, String img) {
+	private Pose(PoseHeadcount headcount, String img) {
 		this.headcount = headcount;
 		this.img = img;
+	}
+
+	@Builder
+	public static Pose create(PoseHeadcount headcount, String img) {
+		return new Pose(headcount, img);
 	}
 }
