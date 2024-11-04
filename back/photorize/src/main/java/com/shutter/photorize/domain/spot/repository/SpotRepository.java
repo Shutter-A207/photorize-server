@@ -25,7 +25,8 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 		+ "AND s.longitude "
 		+ "BETWEEN :topLeftLng "
 		+ "AND :botRightLng")
-	List<Spot> findSpotsWithinBoundary(@Param("topLeftLat") Double topLeftLat,
+	List<Spot> findSpotsWithinBoundary(
+		@Param("topLeftLat") Double topLeftLat,
 		@Param("topLeftLng") Double topLeftLng,
 		@Param("botRightLat") Double botRightLat,
 		@Param("botRightLng") Double botRightLng);

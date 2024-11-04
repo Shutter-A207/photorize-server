@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
+import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -36,10 +37,9 @@ public class SpotService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Object> getFilesBySpot(Long spotId) {
-		// Optional을 활용하여 존재하지 않을 경우 빈 리스트 반환
-		return spotRepository.findById(spotId)
-			.map(spot -> spotRepository.findFilesBySpot(spot))
-			.orElse(List.of());
+	public List<Object> getFilesBySpot(Spot spot) {
+		return spotRepository.findById(spot.getId())
+			.map(spotRepository::findFilesBySpot)
+			.orElse(List.of());  // Spot이 없을 경우 빈 리스트 반환
 	}
 }

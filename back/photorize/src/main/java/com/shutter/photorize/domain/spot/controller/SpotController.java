@@ -30,14 +30,14 @@ public class SpotController {
 		@RequestParam Double topLeftLng,
 		@RequestParam Double botRightLat,
 		@RequestParam Double botRightLng,
-		@RequestParam Member member) {
+		@RequestParam Member member) {  // Member 객체 사용
 		List<SpotResponse> spots = spotService.getSpotsWithinBoundary(topLeftLat, topLeftLng, botRightLat, botRightLng,
 			member);
 		return ApiResponse.ok(spots);
 	}
 
 	@GetMapping("/{spot}/files")
-	public ResponseEntity<ApiResponse<List<Object>>> getFilesBySpot(@PathVariable Spot spot) {  // spotId 대신 Spot 객체 사용
+	public ResponseEntity<ApiResponse<List<Object>>> getFilesBySpot(@PathVariable Spot spot) {  // Spot 객체 사용
 		List<Object> files = spotService.getFilesBySpot(spot);
 		return ApiResponse.ok(files);
 	}
