@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.memory.dto.request.MemoryCreateRequest;
+import com.shutter.photorize.domain.memory.dto.request.MemoryUpdateRequest;
 import com.shutter.photorize.domain.memory.dto.response.MemoryDetailResponse;
 import com.shutter.photorize.domain.memory.service.MemoryService;
 import com.shutter.photorize.global.response.ApiResponse;
@@ -43,7 +44,7 @@ public class MemoryController {
 			.filter(file -> file != null && !file.isEmpty())
 			.toList();
 
-		//FIXME: 추후 하드코딩 수정해야합니다.
+		// FIXME: 추후 하드코딩 수정해야합니다.
 		memoryService.createMemory(1L, memoryCreateRequest, files);
 
 		return ApiResponse.created();
@@ -60,5 +61,20 @@ public class MemoryController {
 		@RequestParam(defaultValue = "0") int pageNumber) {
 		Pageable pageable = PageRequest.of(pageNumber, COMMENT_PAGE_SIZE);
 		return ApiResponse.ok(memoryService.getMemoryDetail(memoryId, pageable));
+	}
+
+	@PostMapping("/{memoryId}")
+	public ResponseEntity<ApiResponse<Void>> updateMemory(
+		@PathVariable Long memoryId,
+		@RequestPart("memory") MemoryUpdateRequest memoryUpdateRequest,
+		@RequestPart(value = "photo", required = false) MultipartFile photo,
+		@RequestPart(value = "video", required = false) MultipartFile video) {
+
+		List<MultipartFile> files = Stream.of(photo, video)
+			.filter(file -> file != null && !file.isEmpty())
+			.toList();
+
+		memoryService.updateMemory(memoryId, memoryUpdateRequest, files);
+		return ApiResponse.created();
 	}
 }

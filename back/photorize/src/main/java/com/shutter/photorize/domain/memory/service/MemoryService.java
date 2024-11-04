@@ -16,6 +16,7 @@ import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.memory.dto.request.MemoryCreateRequest;
+import com.shutter.photorize.domain.memory.dto.request.MemoryUpdateRequest;
 import com.shutter.photorize.domain.memory.dto.response.MemoryDetailResponse;
 import com.shutter.photorize.domain.memory.entity.Memory;
 import com.shutter.photorize.domain.memory.repository.MemoryRepository;
@@ -67,6 +68,18 @@ public class MemoryService {
 
 		return commentService.findCommentsWithMemberByMemory(
 			memory, pageable);
+	}
+
+	@Transactional
+	public void updateMemory(Long memoryId, MemoryUpdateRequest memoryUpdateRequest, List<MultipartFile> files) {
+		Memory memory = memoryRepository.getOrThrow(memoryId);
+		Spot spot = spotRepository.getOrThrow(memoryUpdateRequest.getSpotId());
+
+		memory.updateContent(memoryUpdateRequest.getContent());
+		memory.updateSpot(spot);
+		memory.updateDate(memoryUpdateRequest.getDate().atStartOfDay());
+
+		fileService.updateFile(files, memory);
 	}
 
 	public Album getAlbum(Member member, MemoryCreateRequest memoryCreateRequest) {
