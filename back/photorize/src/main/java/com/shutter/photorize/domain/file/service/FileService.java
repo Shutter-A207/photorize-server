@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shutter.photorize.domain.file.dto.response.FileResponse;
 import com.shutter.photorize.domain.file.entity.File;
 import com.shutter.photorize.domain.file.entity.FileType;
 import com.shutter.photorize.domain.file.repository.FileRepository;
@@ -30,7 +31,17 @@ public class FileService {
 		});
 	}
 
+	public List<FileResponse> getFilesByMemory(Memory memory) {
+		return convertFilesToResponses(fileRepository.findFilesByMemory(memory));
+	}
+
 	private String getFileExtension(MultipartFile file) {
 		return StringUtils.getFilenameExtension(file.getOriginalFilename());
+	}
+
+	private List<FileResponse> convertFilesToResponses(List<File> files) {
+		return files.stream()
+			.map(FileResponse::from)
+			.toList();
 	}
 }
