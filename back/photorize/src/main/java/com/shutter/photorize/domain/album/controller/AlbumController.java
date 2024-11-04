@@ -19,7 +19,9 @@ import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
 import com.shutter.photorize.domain.album.dto.request.AlbumModifyRequest;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
+import com.shutter.photorize.domain.album.dto.response.ColorListResponse;
 import com.shutter.photorize.domain.album.service.AlbumService;
+import com.shutter.photorize.domain.album.service.ColorService;
 import com.shutter.photorize.global.response.ApiResponse;
 import com.shutter.photorize.global.response.SliceResponse;
 
@@ -31,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class AlbumController {
 
 	private final AlbumService albumService;
+	private final ColorService colorService;
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> createAlbum(
@@ -73,5 +76,12 @@ public class AlbumController {
 		Long memberId) {
 		albumService.unfollowAlbum(albumId, 1L);
 		return ApiResponse.created();
+	}
+
+	@GetMapping("/colors")
+	public ResponseEntity<ApiResponse<ColorListResponse>> getColors(
+		Long memberId) {
+		ColorListResponse colorListResponse = colorService.getColorList();
+		return ApiResponse.ok(colorListResponse);
 	}
 }
