@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
+import com.shutter.photorize.domain.album.dto.request.AlbumModifyRequest;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
 import com.shutter.photorize.domain.album.service.AlbumService;
@@ -34,9 +34,8 @@ public class AlbumController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> createAlbum(
-		@RequestPart AlbumCreateRequest albumCreateRequest,
-		@RequestPart(required = false) MultipartFile albumImage) {
-		albumService.createPublicAlbum(albumCreateRequest, albumImage, "member1@example.com");
+		@RequestPart AlbumCreateRequest albumCreateRequest) {
+		albumService.createPublicAlbum(albumCreateRequest, 1L);
 		return ApiResponse.created();
 	}
 
@@ -58,11 +57,14 @@ public class AlbumController {
 		SliceResponse<AlbumDetailResponse> response = albumService.getAlbumDetail(pageable, albumId, 1L);
 		return ApiResponse.ok(response);
 	}
+
 	@PostMapping("/{albumId}")
 	public ResponseEntity<ApiResponse<Void>> modifyAlbum(
 		@RequestBody AlbumModifyRequest albumModifyRequest,
+		@PathVariable Long albumId,
 		Long memberId) {
-
+		albumService.modifyAlbum(albumModifyRequest, albumId, 1L);
+		return ApiResponse.created();
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
+import com.shutter.photorize.domain.album.dto.request.AlbumModifyRequest;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
 import com.shutter.photorize.domain.album.entity.Album;
@@ -63,6 +64,25 @@ public class AlbumService {
 
 		albumMemberListRepository.saveAll(albumMembers);
 
+	}
+
+	@Transactional
+	public void modifyAlbum(AlbumModifyRequest albumModifyRequest, Long albumId, Long memberId) {
+		Member member = memberRepository.getOrThrow(memberId);
+		Album album = albumRepository.getOrThrow(albumId);
+		if (!albumMemberListRepository.existsByAlbumAndMember(album, member)) {
+			throw new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM);
+		}
+
+		if (albumModifyRequest.getName() != null) {
+			album.updateName(albumModifyRequest.getName());
+		}
+		if (albumModifyRequest.getColorId() != null) {
+			Color color = colorRepository.getOrThrow(albumModifyRequest.getColorId());
+			album.updateColor(color);
+		}
+
+		albumRepository.save(album);
 	}
 
 	public Slice<AlbumListResponse> getAllalbums(Pageable pageable, Long memberId) {

@@ -50,4 +50,12 @@ public class Album extends SoftDeletableEntity {
 		this.type = type;
 	}
 
+	public void updateName(String name) {
+		this.name = name;
+	}
+
+	public void updateColor(Color color) {
+		this.color = color;
+	}
+
 }

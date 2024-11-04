@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumMemberList;
+import com.shutter.photorize.domain.member.entity.Member;
 
 public interface AlbumMemberListRepository extends JpaRepository<AlbumMemberList, Long> {
 	@Query("SELECT aml FROM AlbumMemberList aml " +
@@ -15,5 +16,5 @@ public interface AlbumMemberListRepository extends JpaRepository<AlbumMemberList
 		"ORDER BY aml.status DESC, m.nickname ASC")
 	List<AlbumMemberList> findMembersByAlbum(Album album);
 
-	boolean existsByAlbumAndMemberId(Album album, Long memberId);
+	boolean existsByAlbumAndMember(Album album, Member member);
 }
