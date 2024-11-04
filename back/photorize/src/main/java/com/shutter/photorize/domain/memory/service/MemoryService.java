@@ -2,6 +2,7 @@ package com.shutter.photorize.domain.memory.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
+import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.comment.service.CommentService;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.entity.Member;
@@ -21,6 +23,7 @@ import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
+import com.shutter.photorize.global.response.SliceResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,6 +59,15 @@ public class MemoryService {
 		Memory memory = memoryRepository.getMemoryWithMemberAndSpotById(memoryId);
 
 		return MemoryDetailResponse.of(memory, fileService.getFilesByMemory(memory));
+	}
+
+	@Transactional(readOnly = true)
+	public SliceResponse<CommentResponse> getMemoryDetail(Long memoryId, Pageable pageable) {
+
+		Memory memory = memoryRepository.getOrThrow(memoryId);
+
+		return commentService.findCommentsWithMemberByMemory(
+			memory, pageable);
 	}
 
 	public Album getAlbum(Member member, MemoryCreateRequest memoryCreateRequest) {

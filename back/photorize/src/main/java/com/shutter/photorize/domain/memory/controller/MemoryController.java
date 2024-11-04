@@ -1,21 +1,28 @@
 package com.shutter.photorize.domain.memory.controller;
 
+import static com.shutter.photorize.global.constant.Number.*;
+
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.memory.dto.request.MemoryCreateRequest;
 import com.shutter.photorize.domain.memory.dto.response.MemoryDetailResponse;
 import com.shutter.photorize.domain.memory.service.MemoryService;
 import com.shutter.photorize.global.response.ApiResponse;
+import com.shutter.photorize.global.response.SliceResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,4 +54,11 @@ public class MemoryController {
 		return ApiResponse.ok(memoryService.getMemoryDetail(memoryId));
 	}
 
+	@GetMapping("/{memoryId}/comments")
+	public ResponseEntity<ApiResponse<SliceResponse<CommentResponse>>> getCommentsByMemoryId(
+		@PathVariable Long memoryId,
+		@RequestParam(defaultValue = "0") int pageNumber) {
+		Pageable pageable = PageRequest.of(pageNumber, COMMENT_PAGE_SIZE);
+		return ApiResponse.ok(memoryService.getMemoryDetail(memoryId, pageable));
+	}
 }
