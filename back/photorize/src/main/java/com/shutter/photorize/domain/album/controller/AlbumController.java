@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
@@ -34,7 +33,7 @@ public class AlbumController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> createAlbum(
-		@RequestPart AlbumCreateRequest albumCreateRequest) {
+		@RequestBody AlbumCreateRequest albumCreateRequest) {
 		albumService.createPublicAlbum(albumCreateRequest, 1L);
 		return ApiResponse.created();
 	}
