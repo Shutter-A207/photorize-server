@@ -15,15 +15,14 @@ import com.shutter.photorize.domain.pose.dto.response.PoseResponse;
 import com.shutter.photorize.domain.pose.service.PoseService;
 import com.shutter.photorize.global.response.ApiResponse;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/v1/poses")
+@RequiredArgsConstructor
 public class PoseController {
 
 	private final PoseService poseService;
-
-	public PoseController(PoseService poseService) {
-		this.poseService = poseService;
-	}
 
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<PoseResponse>>> getAllPoses(@RequestParam Long memberId) {

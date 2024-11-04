@@ -11,6 +11,4 @@ public class PoseResponse {
 	private String img;
 	private int likeCount;
 	private boolean isLiked;
-
 }
-

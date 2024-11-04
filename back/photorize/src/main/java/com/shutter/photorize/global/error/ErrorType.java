@@ -25,7 +25,10 @@ public enum ErrorType {
 
 	SPOT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 지점을 찾을 수 없습니다."),
 	FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 파일을 찾을 수 없습니다."),
-	; //커스텀 에러 작성
+
+	ALREADY_LIKED(HttpStatus.BAD_REQUEST, "이미 좋아요를 눌렀습니다."),
+	ALREADY_DISLIKED(HttpStatus.BAD_REQUEST, "좋아요가 취소된 상태입니다."),
+	NO_POSE_FOUND(HttpStatus.NOT_FOUND, "포즈를 찾을 수 없습니다."); //커스텀 에러 작성
 
 	private final HttpStatus status;
 	private final String message;
