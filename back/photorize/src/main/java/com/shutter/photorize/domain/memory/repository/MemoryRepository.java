@@ -33,6 +33,7 @@ public interface MemoryRepository extends JpaRepository<Memory, Long> {
 		"LEFT JOIN m.spot s " +
 		"LEFT JOIN File f ON f.memory = m " +
 		"WHERE m.album = :album " +
+		"AND f.type = 'PHOTO' " +
 		"ORDER BY m.date DESC")
 	Slice<MemoryInfoDto> findMemoryInfoDtosByAlbum(Album album, Pageable pageable);
 
