@@ -37,8 +37,8 @@ public class MemoryController {
 	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> createMemory(
 		@RequestPart("memory") MemoryCreateRequest memoryCreateRequest,
-		@RequestPart("photo") MultipartFile photo,
-		@RequestPart("video") MultipartFile video) {
+		@RequestPart(value = "photo", required = false) MultipartFile photo,
+		@RequestPart(value = "video", required = false) MultipartFile video) {
 
 		List<MultipartFile> files = Stream.of(photo, video)
 			.filter(file -> file != null && !file.isEmpty())
