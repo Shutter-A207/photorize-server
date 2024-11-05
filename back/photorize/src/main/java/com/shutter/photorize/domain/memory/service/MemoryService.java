@@ -43,7 +43,6 @@ public class MemoryService {
 	public void createMemory(Long memberId, MemoryCreateRequest memoryCreateRequest, List<MultipartFile> files) {
 
 		Member member = memberRepository.getOrThrow(memberId);
-		// FIXME: 추후에 Spot 에러 타입 정의 되면 수정해야합니다.
 		Spot spot = spotRepository.getOrThrow(memoryCreateRequest.getSpotId());
 		Album album = getAlbum(member, memoryCreateRequest);
 		Memory memory = memoryCreateRequest.toMemory(member, album, spot);
