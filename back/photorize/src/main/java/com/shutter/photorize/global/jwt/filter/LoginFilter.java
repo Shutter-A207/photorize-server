@@ -10,19 +10,23 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.shutter.photorize.domain.user.model.entity.CustomUserDetails;
+import com.shutter.photorize.global.jwt.model.CustomUserDetails;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtil jwtUtil;
+
+	public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+		this.authenticationManager = authenticationManager;
+		this.jwtUtil = jwtUtil;
+		setFilterProcessesUrl("/api/v1/auth/login");
+	}
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws
@@ -59,7 +63,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		String accessToken = jwtUtil.createAccessToken(username);
 		String refreshToken = jwtUtil.createRefreshToken(username);
 
-		response.addHeader("Authorization", "Bearer " + token);
+		System.out.println(accessToken);
+
+		response.addHeader("Authorization", "Bearer " + accessToken);
 	}
 
 	// 로그인 실패시 실행하는 메서드

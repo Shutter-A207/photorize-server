@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.shutter.photorize.domain.user.service.CustomUserDetailsService;
+import com.shutter.photorize.global.jwt.service.CustomUserDetailService;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -26,12 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtFilter extends OncePerRequestFilter {
 
 	private final JwtUtil jwtUtil;
-	private final CustomUserDetailsService userDetailsService;
+	private final CustomUserDetailService userDetailService;
 
-	public JwtFilter(JwtUtil jwtUtil, CustomUserDetailsService userDetailsService) {
+	public JwtFilter(JwtUtil jwtUtil, CustomUserDetailService userDetailService) {
 
 		this.jwtUtil = jwtUtil;
-		this.userDetailsService = userDetailsService;
+		this.userDetailService = userDetailService;
 	}
 
 	// 유효한 토큰이면 -> 사용자 정보 조회 -> 조회된 사용자 정보로 인증 객체 생성 -> SecurityContext에 인증 정보 설정
@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			if (StringUtils.hasText(token) && jwtUtil.validation(token)) {
 				String email = jwtUtil.getEmail(token);
 
-				UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+				UserDetails userDetails = userDetailService.loadUserByUsername(email);
 
 				if (userDetails != null) {
 					// UserDetails, Password 정보를 기반으로 접근 권한을 가지고 있는 Token 생성

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
-import com.shutter.photorize.domain.user.model.entity.CustomUserDetails;
+import com.shutter.photorize.global.jwt.model.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
