@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,5 +28,16 @@ public class Member extends UpdatableEntity {
 	private String nickname;
 
 	@Column(nullable = false)
+	private String password;
+
+	@Column(nullable = false)
 	private String img;
+
+	@Builder
+	private Member(String email, String nickname, String password) {
+		this.email = email;
+		this.nickname = nickname;
+		this.password = password;
+	}
+
 }
