@@ -41,20 +41,18 @@ public class MemoryService {
 
 	@Transactional
 	public void createMemory(Long memberId, MemoryCreateRequest memoryCreateRequest, List<MultipartFile> files) {
-
 		Member member = memberRepository.getOrThrow(memberId);
 		Spot spot = spotRepository.getOrThrow(memoryCreateRequest.getSpotId());
 		Album album = getAlbum(member, memoryCreateRequest);
 		Memory memory = memoryCreateRequest.toMemory(member, album, spot);
 
 		memoryRepository.save(memory);
-		fileService.saveFile(files, memory);
+		fileService.saveFiles(files, memory);
 		// TODO: 알림 구현해야합니다.
 	}
 
 	@Transactional(readOnly = true)
 	public MemoryDetailResponse getMemoryDetail(Long memoryId) {
-
 		Memory memory = memoryRepository.getMemoryWithMemberAndSpotById(memoryId);
 
 		return MemoryDetailResponse.of(memory, fileService.getFilesByMemory(memory));
@@ -62,7 +60,6 @@ public class MemoryService {
 
 	@Transactional(readOnly = true)
 	public SliceResponse<CommentResponse> getCommentsByMemoryId(Long memoryId, Pageable pageable) {
-
 		Memory memory = memoryRepository.getOrThrow(memoryId);
 
 		return commentService.findCommentsWithMemberByMemory(
@@ -80,6 +77,13 @@ public class MemoryService {
 		memory.updateDate(memoryUpdateRequest.getDate().atStartOfDay());
 
 		fileService.updateFile(files, memory);
+	}
+
+	@Transactional
+	public void deleteMemory(Long memoryId) {
+		Memory memory = memoryRepository.getOrThrow(memoryId);
+		memory.softDelete();
+		fileService.deleteFiles(memory);
 	}
 
 	public Album getAlbum(Member member, MemoryCreateRequest memoryCreateRequest) {
