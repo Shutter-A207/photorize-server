@@ -2,6 +2,8 @@ package com.shutter.photorize.domain.memory.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.spot.entity.Spot;
@@ -23,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted_at is NULL")
 public class Memory extends SoftDeletableEntity {
 
 	@Id
