@@ -22,13 +22,16 @@ public class FileService {
 	private final FileRepository fileRepository;
 	private final S3Utils s3Utils;
 
-	public void saveFile(List<MultipartFile> files, Memory memory) {
-		files.forEach(file -> {
-			String extension = getFileExtension(file);
-			FileType type = FileType.fromExtension(extension);
-			String url = s3Utils.uploadFile(file, type);
-			fileRepository.save(File.of(memory, type, url));
-		});
+	public void saveFile(MultipartFile file, Memory memory) {
+		String extension = getFileExtension(file);
+		FileType type = FileType.fromExtension(extension);
+		String url = s3Utils.uploadFile(file, type);
+
+		fileRepository.save(File.of(memory, type, url));
+	}
+
+	public void saveFiles(List<MultipartFile> files, Memory memory) {
+		files.forEach(file -> saveFile(file, memory));
 	}
 
 	public List<FileResponse> getFilesByMemory(Memory memory) {
@@ -36,17 +39,28 @@ public class FileService {
 	}
 
 	public void updateFile(List<MultipartFile> files, Memory memory) {
-		deleteFile(memory);
-		saveFile(files, memory);
+		if (hasNewFiles(files)) {
+			files.forEach(file -> {
+				String extension = getFileExtension(file);
+				FileType type = FileType.fromExtension(extension);
+				deleteFileByType(memory, type);
+				saveFile(file, memory);
+			});
+		}
 	}
 
-	public void deleteFile(Memory memory) {
+	public void deleteFiles(Memory memory) {
 		List<File> existingFiles = fileRepository.findFilesByMemory(memory);
 		existingFiles.forEach(file -> {
 			// TODO: soft delete 할 것인지 상의 해야합니다.
 			s3Utils.deleteFile(file.getUrl());
 			fileRepository.delete(file);
 		});
+	}
+
+	public void deleteFileByType(Memory memory, FileType type) {
+		File file = fileRepository.getFilesByMemoryAndTypeOrThrow(memory, type);
+		fileRepository.delete(file);
 	}
 
 	private String getFileExtension(MultipartFile file) {
@@ -57,5 +71,9 @@ public class FileService {
 		return files.stream()
 			.map(FileResponse::from)
 			.toList();
+	}
+
+	private boolean hasNewFiles(List<MultipartFile> files) {
+		return !files.isEmpty();
 	}
 }
