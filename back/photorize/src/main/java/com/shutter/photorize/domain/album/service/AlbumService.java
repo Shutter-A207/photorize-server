@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
 import com.shutter.photorize.domain.album.dto.request.AlbumModifyRequest;
+import com.shutter.photorize.domain.album.dto.response.AlbumCreateResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
 import com.shutter.photorize.domain.album.entity.Album;
@@ -47,7 +48,7 @@ public class AlbumService {
 	private final ColorRepository colorRepository;
 
 	@Transactional
-	public void createPublicAlbum(AlbumCreateRequest albumCreateRequest, Long memberId) {
+	public AlbumCreateResponse createPublicAlbum(AlbumCreateRequest albumCreateRequest, Long memberId) {
 		Member creator = memberRepository.getOrThrow(memberId);
 		Color color = colorRepository.getOrThrow(albumCreateRequest.getColorId());
 
@@ -63,6 +64,8 @@ public class AlbumService {
 			.collect(Collectors.toList());
 
 		albumMemberListRepository.saveAll(albumMembers);
+
+		return AlbumCreateResponse.of(savedAlbum);
 
 	}
 

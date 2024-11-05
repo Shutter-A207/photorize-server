@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
 import com.shutter.photorize.domain.album.dto.request.AlbumModifyRequest;
+import com.shutter.photorize.domain.album.dto.response.AlbumCreateResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
 import com.shutter.photorize.domain.album.dto.response.ColorListResponse;
@@ -36,10 +37,10 @@ public class AlbumController {
 	private final ColorService colorService;
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<Void>> createAlbum(
+	public ResponseEntity<ApiResponse<AlbumCreateResponse>> createAlbum(
 		@RequestBody AlbumCreateRequest albumCreateRequest) {
-		albumService.createPublicAlbum(albumCreateRequest, 1L);
-		return ApiResponse.created();
+		AlbumCreateResponse albumCreateResponse = albumService.createPublicAlbum(albumCreateRequest, 1L);
+		return ApiResponse.ok(albumCreateResponse);
 	}
 
 	@GetMapping
