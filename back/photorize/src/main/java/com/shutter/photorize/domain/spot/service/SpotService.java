@@ -44,9 +44,11 @@ public class SpotService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Object> getFilesBySpot(Long spotId) {
+	public List<Object> getFilesBySpot(Long spotId, Long memberId) {
 		Spot spot = spotRepository.findById(spotId)
 			.orElseThrow(() -> new PhotorizeException(ErrorType.SPOT_NOT_FOUND));  // Spot이 없으면 예외 발생
-		return spotRepository.findFilesBySpot(spot);
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));  // Member가 없으면 예외 발생
+		return spotRepository.findFilesBySpot(spot, member); // 특정 사용자의 파일만 조회
 	}
 }
