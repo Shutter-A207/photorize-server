@@ -73,6 +73,7 @@ public class MemoryService {
 	@Transactional
 	public void updateMemory(Long memoryId, MemoryUpdateRequest memoryUpdateRequest, List<MultipartFile> files) {
 		Memory memory = memoryRepository.getOrThrow(memoryId);
+		//TODO : 작성자만 수정 할 수 있도록 추가해야합니다.
 		Spot spot = spotRepository.getOrThrow(memoryUpdateRequest.getSpotId());
 
 		memory.updateContent(memoryUpdateRequest.getContent());
