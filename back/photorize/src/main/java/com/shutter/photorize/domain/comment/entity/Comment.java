@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,4 +36,15 @@ public class Comment extends UpdatableEntity {
 
 	@Column(nullable = false)
 	private String content;
+
+	@Builder
+	private Comment(String content, Memory memory, Member member) {
+		this.content = content;
+		this.memory = memory;
+		this.member = member;
+	}
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
 }
