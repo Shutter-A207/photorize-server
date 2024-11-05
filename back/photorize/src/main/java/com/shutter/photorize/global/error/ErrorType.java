@@ -32,6 +32,9 @@ public enum ErrorType {
 	NO_POSE_FOUND(HttpStatus.NOT_FOUND, "포즈를 찾을 수 없습니다."),
 
 	MEMORY_NOT_FOUND(HttpStatus.NOT_FOUND, "추억을 찾을 수 없습니다."),
+
+	COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
+	COMMENT_FORBIDDEN(HttpStatus.FORBIDDEN, "댓글 작성자와 일치하지 않습니다."),
 	; // 커스텀 에러 작성
 
 	private final HttpStatus status;
