@@ -60,7 +60,7 @@ public class MemoryController {
 		@PathVariable Long memoryId,
 		@RequestParam(defaultValue = "0") int pageNumber) {
 		Pageable pageable = PageRequest.of(pageNumber, COMMENT_PAGE_SIZE);
-		return ApiResponse.ok(memoryService.getMemoryDetail(memoryId, pageable));
+		return ApiResponse.ok(memoryService.getCommentsByMemoryId(memoryId, pageable));
 	}
 
 	@PostMapping("/{memoryId}")

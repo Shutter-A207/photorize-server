@@ -62,7 +62,7 @@ public class MemoryService {
 	}
 
 	@Transactional(readOnly = true)
-	public SliceResponse<CommentResponse> getMemoryDetail(Long memoryId, Pageable pageable) {
+	public SliceResponse<CommentResponse> getCommentsByMemoryId(Long memoryId, Pageable pageable) {
 
 		Memory memory = memoryRepository.getOrThrow(memoryId);
 
