@@ -1,35 +1,27 @@
 package com.shutter.photorize.global.jwt.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.shutter.photorize.domain.member.entity.Member;
-
 public class CustomUserDetails implements UserDetails {
-	private final Member member;
+	private final ContextMember member;
 
-	public CustomUserDetails(Member member) {
+	public CustomUserDetails(ContextMember contextMember) {
 
-		this.member = member;
+		this.member = contextMember;
+	}
+
+	public ContextMember getMember() {
+		return member;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<GrantedAuthority> collection = new ArrayList<>();
-
-		collection.add(new GrantedAuthority() {
-
-			@Override
-			public String getAuthority() {
-
-				return null;
-			}
-		});
-
-		return collection;
+		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 	}
 
 	@Override

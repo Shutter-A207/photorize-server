@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
+import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.jwt.model.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
 		Member member = memberRepository.getOrThrow(username);
 
-		return new CustomUserDetails(member);
+		ContextMember contextMember = new ContextMember(member.getId(), member.getNickname(), member.getEmail(),
+			member.getPassword());
+
+		return new CustomUserDetails(contextMember);
 	}
 }
