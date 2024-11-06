@@ -3,7 +3,6 @@ server:
 
 spring:
   config:
-    import: application-secret.yml
     activate:
       on-profile: local
 
@@ -31,6 +30,13 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+  jwt:
+    secret: ${JWT_SECRET}
+    expire:
+      time:
+        access: ${JWT_ACCESS_TIME}
+        refresh: ${JWT_REFRESH_TIME}
+
 
 logging:
   level:
