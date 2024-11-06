@@ -35,6 +35,7 @@ public enum ErrorType {
 
 	// memory
 	MEMORY_NOT_FOUND(HttpStatus.NOT_FOUND, "추억을 찾을 수 없습니다."),
+	MEMORY_FORBIDDEN(HttpStatus.NOT_FOUND, "추억 권한이 없습니다."),
 
 	// file
 	FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 파일을 찾을 수 없습니다."),
