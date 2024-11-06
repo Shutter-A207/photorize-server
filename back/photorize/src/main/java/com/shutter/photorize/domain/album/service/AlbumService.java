@@ -28,6 +28,7 @@ import com.shutter.photorize.domain.member.dto.MemberProfileDto;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.memory.dto.MemoryInfoDto;
+import com.shutter.photorize.domain.memory.dto.request.MemoryCreateRequest;
 import com.shutter.photorize.domain.memory.repository.MemoryRepository;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
@@ -155,6 +156,13 @@ public class AlbumService {
 			album.softDelete();
 		}
 
+	}
+
+	public Album getAlbum(Member member, MemoryCreateRequest memoryCreateRequest) {
+		return memoryCreateRequest.getType() == AlbumType.PRIVATE
+			? albumRepository.findByMemberAndType(member, AlbumType.PRIVATE)
+			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_ALBUM_FOUND))
+			: albumRepository.getOrThrow(memoryCreateRequest.getAlbumIds().get(0));
 	}
 
 	public void validateAlbumAccess(Album album, Member member) {
