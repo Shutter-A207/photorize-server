@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
 import com.shutter.photorize.domain.spot.service.SpotService;
+import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.response.ApiResponse;
+import com.shutter.photorize.global.security.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,15 +30,16 @@ public class SpotController {
 		@RequestParam Double topLeftLng,
 		@RequestParam Double botRightLat,
 		@RequestParam Double botRightLng,
-		@RequestParam Long memberId) {
+		@AuthUser ContextMember contextMember) {
 
 		List<SpotResponse> spots = spotService.getSpotsWithinBoundary(topLeftLat, topLeftLng, botRightLat, botRightLng,
-			memberId);
+			contextMember.getId());
 		return ApiResponse.ok(spots);
 	}
 
 	@GetMapping("/{spotId}/files")
-	public ResponseEntity<ApiResponse<List<Object>>> getFilesBySpot(@PathVariable Long spotId) {
+	public ResponseEntity<ApiResponse<List<Object>>> getFilesBySpot(@PathVariable Long spotId,
+		@AuthUser ContextMember contextMember) {
 		List<Object> files = spotService.getFilesBySpot(spotId);
 		return ApiResponse.ok(files);
 	}

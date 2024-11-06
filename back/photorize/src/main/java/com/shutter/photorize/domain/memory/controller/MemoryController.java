@@ -23,8 +23,10 @@ import com.shutter.photorize.domain.memory.dto.request.MemoryCreateRequest;
 import com.shutter.photorize.domain.memory.dto.request.MemoryUpdateRequest;
 import com.shutter.photorize.domain.memory.dto.response.MemoryDetailResponse;
 import com.shutter.photorize.domain.memory.service.MemoryService;
+import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.response.ApiResponse;
 import com.shutter.photorize.global.response.SliceResponse;
+import com.shutter.photorize.global.security.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,27 +41,29 @@ public class MemoryController {
 	public ResponseEntity<ApiResponse<Void>> createMemory(
 		@RequestPart("memory") MemoryCreateRequest memoryCreateRequest,
 		@RequestPart(value = "photo", required = false) MultipartFile photo,
-		@RequestPart(value = "video", required = false) MultipartFile video) {
+		@RequestPart(value = "video", required = false) MultipartFile video,
+		@AuthUser ContextMember contextMember) {
 
 		List<MultipartFile> files = Stream.of(photo, video)
 			.filter(file -> file != null && !file.isEmpty())
 			.toList();
 
-		// FIXME: 추후 하드코딩 수정해야합니다.
-		memoryService.createMemory(1L, memoryCreateRequest, files);
+		memoryService.createMemory(contextMember.getId(), memoryCreateRequest, files);
 
 		return ApiResponse.created();
 	}
 
 	@GetMapping("/{memoryId}")
-	public ResponseEntity<ApiResponse<MemoryDetailResponse>> getDetailMemory(@PathVariable Long memoryId) {
+	public ResponseEntity<ApiResponse<MemoryDetailResponse>> getDetailMemory(@PathVariable Long memoryId,
+		@AuthUser ContextMember contextMember) {
 		return ApiResponse.ok(memoryService.getMemoryDetail(memoryId));
 	}
 
 	@GetMapping("/{memoryId}/comments")
 	public ResponseEntity<ApiResponse<SliceResponse<CommentResponse>>> getCommentsByMemoryId(
 		@PathVariable Long memoryId,
-		@RequestParam(defaultValue = "0") int pageNumber) {
+		@RequestParam(defaultValue = "0") int pageNumber,
+		@AuthUser ContextMember contextMember) {
 		Pageable pageable = PageRequest.of(pageNumber, COMMENT_PAGE_SIZE);
 		return ApiResponse.ok(memoryService.getCommentsByMemoryId(memoryId, pageable));
 	}
@@ -69,7 +73,8 @@ public class MemoryController {
 		@PathVariable Long memoryId,
 		@RequestPart("memory") MemoryUpdateRequest memoryUpdateRequest,
 		@RequestPart(value = "photo", required = false) MultipartFile photo,
-		@RequestPart(value = "video", required = false) MultipartFile video) {
+		@RequestPart(value = "video", required = false) MultipartFile video,
+		@AuthUser ContextMember contextMember) {
 
 		List<MultipartFile> files = Stream.of(photo, video)
 			.filter(file -> file != null && !file.isEmpty())
@@ -80,7 +85,8 @@ public class MemoryController {
 	}
 
 	@DeleteMapping("/{memoryId}")
-	public ResponseEntity<ApiResponse<Void>> deleteMemory(@PathVariable Long memoryId) {
+	public ResponseEntity<ApiResponse<Void>> deleteMemory(@PathVariable Long memoryId,
+		@AuthUser ContextMember contextMember) {
 		memoryService.deleteMemory(memoryId);
 		return ApiResponse.ok(null);
 	}
