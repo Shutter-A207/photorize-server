@@ -42,16 +42,24 @@ public class JwtFilter extends OncePerRequestFilter {
 		try {
 			String token = resolveToken(request);
 
+			log.info("JWT token: {}", token);
+
 			// JWT 유효성 검증
 			if (StringUtils.hasText(token) && jwtUtil.validation(token)) {
 				String email = jwtUtil.getEmail(token);
 
+				log.info("email: {}", email);
+
 				UserDetails userDetails = userDetailService.loadUserByUsername(email);
+
+				log.info("userDetails: {}", userDetails);
 
 				if (userDetails != null) {
 					// UserDetails, Password 정보를 기반으로 접근 권한을 가지고 있는 Token 생성
 					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-						userDetails, null);
+						userDetails, null, userDetails.getAuthorities());
+
+					log.info("authenticationToken: {}", authenticationToken);
 
 					// Security Context 해당 접근 권한 정보 설정
 					SecurityContextHolder.getContext().setAuthentication(authenticationToken);

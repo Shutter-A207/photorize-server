@@ -48,7 +48,7 @@ public class SecurityConfig {
 
 		//http basic 인증 방식 disable
 		http
-			.cors(cors -> cors.configurationSource(corsConfig::corsConfigurationSource))
+			.cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
 			//csrf disable
 			//세션방식에서는 세션이 항상 고정되기때문에 CSRF 공격을 필수적으로 방어해야함.
 			// JWT는 세션을 stateless 상태로 관리하기 때문에 CSRF에 대한 공격을 방어하지않아도되어서 disable로 둔다.
