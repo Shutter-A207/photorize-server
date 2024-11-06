@@ -49,6 +49,24 @@ public class SpotService {
 			.orElseThrow(() -> new PhotorizeException(ErrorType.SPOT_NOT_FOUND));  // Spot이 없으면 예외 발생
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));  // Member가 없으면 예외 발생
-		return spotRepository.findFilesBySpot(spot, member); // 특정 사용자의 파일만 조회
+		return spotRepository.findFilesBySpot(spot, member);
+	}
+
+	@Transactional(readOnly = true)
+	public List<SpotResponse> getAllSpots(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
+
+		return spotRepository.findAll().stream()
+			.map(spot -> new SpotResponse(
+				spot.getId(),
+				spot.getSpotCode().getName(),
+				spot.getName(),
+				spot.getLatitude(),
+				spot.getLongitude(),
+				spotRepository.countFilesBySpotAndMember(spot, member),
+				spotRepository.countMemoriesBySpotAndMember(spot, member)
+			))
+			.collect(Collectors.toList());
 	}
 }

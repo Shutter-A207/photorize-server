@@ -40,7 +40,14 @@ public class SpotController {
 	@GetMapping("/{spotId}/files")
 	public ResponseEntity<ApiResponse<List<Object>>> getFilesBySpot(@PathVariable Long spotId,
 		@AuthUser ContextMember contextMember) {
-		List<Object> files = spotService.getFilesBySpot(spotId);
+		List<Object> files = spotService.getFilesBySpot(spotId, contextMember.getId());
 		return ApiResponse.ok(files);
 	}
+
+	@GetMapping("/all")
+	public ResponseEntity<ApiResponse<List<SpotResponse>>> getAllSpots(@AuthUser ContextMember contextMember) {
+		List<SpotResponse> spots = spotService.getAllSpots(contextMember.getId());
+		return ApiResponse.ok(spots);
+	}
+
 }
