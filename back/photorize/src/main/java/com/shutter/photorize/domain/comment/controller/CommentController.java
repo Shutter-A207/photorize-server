@@ -27,7 +27,7 @@ public class CommentController {
 	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> createComment(@RequestBody CommentCreateRequest commentCreateRequest,
 		@AuthUser ContextMember contextMember) {
-		commentService.createComment(commentCreateRequest, contextMember.getId());
+		commentService.createComment(contextMember.getId(), commentCreateRequest);
 		return ApiResponse.created();
 	}
 
@@ -35,14 +35,14 @@ public class CommentController {
 	public ResponseEntity<ApiResponse<Void>> updateComment(@PathVariable Long commentId,
 		@RequestBody CommentUpdateRequest commentUpdateRequest,
 		@AuthUser ContextMember contextMember) {
-		commentService.updateComment(commentId, commentUpdateRequest, contextMember.getId());
+		commentService.updateComment(contextMember.getId(), commentId, commentUpdateRequest);
 		return ApiResponse.ok(null);
 	}
 
 	@DeleteMapping("/{commentId}")
 	public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable Long commentId,
 		@AuthUser ContextMember contextMember) {
-		commentService.deleteComment(commentId, contextMember.getId());
+		commentService.deleteComment(contextMember.getId(), commentId);
 		return ApiResponse.ok(null);
 	}
 }

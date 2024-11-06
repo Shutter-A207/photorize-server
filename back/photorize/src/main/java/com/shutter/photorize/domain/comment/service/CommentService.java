@@ -35,7 +35,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void createComment(CommentCreateRequest commentCreateRequest, Long memberId) {
+	public void createComment(Long memberId, CommentCreateRequest commentCreateRequest) {
 		Member member = memberRepository.getOrThrow(memberId);
 		Memory memory = memoryRepository.getOrThrow(commentCreateRequest.getMemoryId());
 
@@ -43,24 +43,24 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void updateComment(Long commentId, CommentUpdateRequest commentUpdateRequest, Long memberId) {
+	public void updateComment(Long memberId, Long commentId, CommentUpdateRequest commentUpdateRequest) {
 		Comment comment = commentRepository.getOrThrow(commentId);
 
-		validateAuthor(comment, memberId);
+		validateAuthor(memberId, comment);
 
 		comment.updateContent(commentUpdateRequest.getContent());
 	}
 
 	@Transactional
-	public void deleteComment(Long commentId, Long memberId) {
+	public void deleteComment(Long memberId, Long commentId) {
 		Comment comment = commentRepository.getOrThrow(commentId);
 
-		validateAuthor(comment, memberId);
+		validateAuthor(memberId, comment);
 
 		commentRepository.delete(comment);
 	}
 
-	private void validateAuthor(Comment comment, Long memberId) {
+	private void validateAuthor(Long memberId, Comment comment) {
 		if (!comment.getMember().getId().equals(memberId)) {
 			throw new PhotorizeException(ErrorType.COMMENT_FORBIDDEN);
 		}
