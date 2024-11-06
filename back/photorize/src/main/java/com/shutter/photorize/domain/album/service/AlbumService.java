@@ -157,7 +157,7 @@ public class AlbumService {
 
 	}
 
-	private void validateAlbumAccess(Album album, Member member) {
+	public void validateAlbumAccess(Album album, Member member) {
 		boolean hasAccess = switch (album.getType()) {
 			case PUBLIC -> albumMemberListRepository.existsByAlbumAndMember(album, member);
 			case PRIVATE -> album.getMember().getId().equals(member.getId());
