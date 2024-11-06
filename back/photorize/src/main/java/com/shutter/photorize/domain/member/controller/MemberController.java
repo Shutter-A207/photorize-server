@@ -11,15 +11,14 @@ import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.response.ApiResponse;
 import com.shutter.photorize.global.security.AuthUser;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/v1/members")
+@RequiredArgsConstructor
 public class MemberController {
 
 	private final MemberService memberService;
-
-	public MemberController(MemberService memberService) {
-		this.memberService = memberService;
-	}
 
 	@GetMapping
 	public ResponseEntity<ApiResponse<LoginMemberProfile>> getMember(

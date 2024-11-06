@@ -23,7 +23,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
 		Member member = memberRepository.getOrThrow(username);
 
-		ContextMember contextMember = new ContextMember(member.getId(), member.getNickname(), member.getEmail(),
+		ContextMember contextMember = ContextMember.of(member.getId(), member.getNickname(), member.getEmail(),
 			member.getPassword());
 
 		return new CustomUserDetails(contextMember);

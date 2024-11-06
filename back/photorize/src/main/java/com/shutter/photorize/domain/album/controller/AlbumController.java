@@ -1,6 +1,6 @@
 package com.shutter.photorize.domain.album.controller;
 
-import static com.shutter.photorize.global.constant.Number.*;
+import static com.shutter.photorize.global.constant.CommonConstants.*;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

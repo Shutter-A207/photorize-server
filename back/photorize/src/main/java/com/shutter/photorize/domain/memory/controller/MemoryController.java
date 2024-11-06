@@ -1,6 +1,6 @@
 package com.shutter.photorize.domain.memory.controller;
 
-import static com.shutter.photorize.global.constant.Number.*;
+import static com.shutter.photorize.global.constant.CommonConstants.*;
 
 import java.util.List;
 import java.util.stream.Stream;

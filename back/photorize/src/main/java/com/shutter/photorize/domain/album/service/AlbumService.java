@@ -1,5 +1,7 @@
 package com.shutter.photorize.domain.album.service;
 
+import static com.shutter.photorize.global.constant.CommonConstants.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,9 +72,9 @@ public class AlbumService {
 	@Transactional
 	public void createPrivateAlbum(Long memberId) {
 		Member creator = memberRepository.getOrThrow(memberId);
-		Color color = colorRepository.getOrThrow(1L);
+		Color color = colorRepository.getOrThrow(DEFAULT_ALBUM_COLOR);
 
-		String privateAlbumName = String.format("%s의 앨범", creator.getNickname());
+		String privateAlbumName = String.format(PRIVATE_ALBUM_NAME_FORMAT, creator.getNickname());
 		Album savedAlbum = Album.of(creator, color, privateAlbumName, AlbumType.PRIVATE);
 		albumRepository.save(savedAlbum);
 	}
