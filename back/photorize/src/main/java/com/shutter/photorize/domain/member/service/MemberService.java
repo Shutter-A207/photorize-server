@@ -1,11 +1,14 @@
 package com.shutter.photorize.domain.member.service;
 
+import java.util.List;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.file.service.FileService;
-import com.shutter.photorize.domain.member.dto.LoginMemberProfile;
+import com.shutter.photorize.domain.member.dto.LoginMemberProfileDto;
+import com.shutter.photorize.domain.member.dto.MemberListDto;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
@@ -44,8 +47,22 @@ public class MemberService {
 
 	}
 
-	public LoginMemberProfile getLoginMemberProfile(Long memberId) {
-		return LoginMemberProfile.of(memberRepository.getOrThrow(memberId));
+	public LoginMemberProfileDto getLoginMemberProfile(Long memberId) {
+		return LoginMemberProfileDto.of(memberRepository.getOrThrow(memberId));
+	}
+
+	public List<MemberListDto> getAllMembers(Long memberId) {
+		Member member = memberRepository.getOrThrow(memberId);
+
+		List<Object[]> results = memberRepository.findAllMembers(member);
+
+		return results.stream()
+			.map(result -> MemberListDto.from(
+				((Long)result[0]),
+				((String)result[1]),
+				((Long)result[2])
+			))
+			.toList();
 	}
 
 }

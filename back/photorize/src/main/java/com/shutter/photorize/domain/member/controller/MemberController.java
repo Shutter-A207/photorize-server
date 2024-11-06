@@ -1,11 +1,14 @@
 package com.shutter.photorize.domain.member.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shutter.photorize.domain.member.dto.LoginMemberProfile;
+import com.shutter.photorize.domain.member.dto.LoginMemberProfileDto;
+import com.shutter.photorize.domain.member.dto.MemberListDto;
 import com.shutter.photorize.domain.member.service.MemberService;
 import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.response.ApiResponse;
@@ -21,10 +24,18 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@GetMapping
-	public ResponseEntity<ApiResponse<LoginMemberProfile>> getMember(
+	public ResponseEntity<ApiResponse<LoginMemberProfileDto>> getMember(
 		@AuthUser ContextMember contextMember) {
-		LoginMemberProfile loginMemberProfile = memberService.getLoginMemberProfile(contextMember.getId());
+		LoginMemberProfileDto loginMemberProfileDto = memberService.getLoginMemberProfile(contextMember.getId());
 
-		return ApiResponse.ok(loginMemberProfile);
+		return ApiResponse.ok(loginMemberProfileDto);
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<ApiResponse<List<MemberListDto>>> getAllMembers(
+		@AuthUser ContextMember contextMember) {
+		List<MemberListDto> memberListDtos = memberService.getAllMembers(contextMember.getId());
+
+		return ApiResponse.ok(memberListDtos);
 	}
 }
