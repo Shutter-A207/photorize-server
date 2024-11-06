@@ -4,12 +4,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shutter.photorize.domain.file.service.FileService;
+import com.shutter.photorize.domain.member.dto.LoginMemberProfile;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
-import com.shutter.photorize.global.jwt.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
-	private final JwtUtil jwtUtil;
+	private final FileService fileService;
 
 	@Transactional
 	public Long createMember(JoinRequest joinRequest) {
@@ -34,28 +35,17 @@ public class MemberService {
 		}
 
 		String password = passwordEncoder.encode(joinRequest.getPassword());
+		String defaultImg = fileService.getDefaultProfile();
 
-		Member member = joinRequest.toMember(password);
+		Member member = joinRequest.toMember(password, defaultImg);
 		memberRepository.save(member);
 
 		return member.getId();
 
 	}
 
-	// public JwtDto login(SigninRequest signinRequest) {
-	// 	Member member = memberRepository.getOrThrow(signinRequest.getEmail());
-	//
-	// 	matchPassword(signinRequest.getPassword(), member.getPassword());
-	//
-	// 	String accessToken = jwtUtil.createAccessToken(member.getEmail());
-	// 	String refreshToken = jwtUtil.createRefreshToken(member.getEmail());
-	//
-	// 	return JwtDto.of(accessToken, refreshToken);
-	// }
-
-	private void matchPassword(String plain, String encryptedPassword) {
-		if (!passwordEncoder.matches(plain, encryptedPassword)) {
-			throw new PhotorizeException(ErrorType.MISMATCH_PASSWORD);
-		}
+	public LoginMemberProfile getLoginMemberProfile(Long memberId) {
+		return LoginMemberProfile.of(memberRepository.getOrThrow(memberId));
 	}
+
 }
