@@ -13,10 +13,6 @@ public enum ErrorType {
 	DEFAULT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 예상치 못한 오류가 발생했습니다."),
 	NO_RESOURCE_FOUND(HttpStatus.NOT_FOUND, "요청한 리소스를 찾을 수 없습니다."),
 
-	FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 중 오류가 발생했습니다."),
-	FILE_UNSUPPORTED_EXTENSION(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자입니다."),
-	INVALID_S3_URL(HttpStatus.BAD_REQUEST, "잘못된 S3 URL입니다."),
-
 	// member
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
 	MISMATCH_PASSWORD(HttpStatus.BAD_REQUEST, "패스워드가 일치하기 않습니다."),
@@ -31,7 +27,6 @@ public enum ErrorType {
 
 	// spot
 	SPOT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 지점을 찾을 수 없습니다."),
-	FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 파일을 찾을 수 없습니다."),
 
 	// pose
 	ALREADY_LIKED(HttpStatus.BAD_REQUEST, "이미 좋아요를 눌렀습니다."),
@@ -45,9 +40,9 @@ public enum ErrorType {
 	FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 파일을 찾을 수 없습니다."),
 	FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 중 오류가 발생했습니다."),
 	FILE_UNSUPPORTED_EXTENSION(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자입니다."),
-	; // 커스텀 에러 작성
-	MEMORY_NOT_FOUND(HttpStatus.NOT_FOUND, "추억을 찾을 수 없습니다."),
+	INVALID_S3_URL(HttpStatus.BAD_REQUEST, "잘못된 S3 URL입니다."),
 
+	// comment
 	COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
 	COMMENT_FORBIDDEN(HttpStatus.FORBIDDEN, "댓글 작성자와 일치하지 않습니다."),
 	; // 커스텀 에러 작성
