@@ -34,10 +34,11 @@ public class Member extends UpdatableEntity {
 	private String img;
 
 	@Builder
-	private Member(String email, String nickname, String password) {
+	private Member(String email, String nickname, String password, String img) {
 		this.email = email;
 		this.nickname = nickname;
 		this.password = password;
+		this.img = img;
 	}
 
 }

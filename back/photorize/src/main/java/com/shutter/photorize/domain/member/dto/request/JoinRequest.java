@@ -21,11 +21,12 @@ public class JoinRequest {
 		}
 	}
 
-	public Member toMember(String password) {
+	public Member toMember(String password, String img) {
 		return Member.builder()
 			.email(this.email)
 			.nickname(this.nickname)
 			.password(password)
+			.img(img)
 			.build();
 	}
 }

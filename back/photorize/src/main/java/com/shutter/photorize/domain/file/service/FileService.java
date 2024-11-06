@@ -63,6 +63,10 @@ public class FileService {
 		fileRepository.delete(file);
 	}
 
+	public String getDefaultProfile() {
+		return "https://photorize-upload.s3.ap-northeast-2.amazonaws.com/member/default.jpg";
+	}
+
 	private String getFileExtension(MultipartFile file) {
 		return StringUtils.getFilenameExtension(file.getOriginalFilename());
 	}
@@ -76,4 +80,5 @@ public class FileService {
 	private boolean hasNewFiles(List<MultipartFile> files) {
 		return !files.isEmpty();
 	}
+
 }
