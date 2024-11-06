@@ -21,6 +21,8 @@ import com.shutter.photorize.domain.memory.entity.Memory;
 import com.shutter.photorize.domain.memory.repository.MemoryRepository;
 import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
+import com.shutter.photorize.global.error.ErrorType;
+import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.global.response.SliceResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -49,24 +51,32 @@ public class MemoryService {
 	}
 
 	@Transactional(readOnly = true)
-	public MemoryDetailResponse getMemoryDetail(Long memoryId) {
+	public MemoryDetailResponse getMemoryDetail(Long memberId, Long memoryId) {
+		Member member = memberRepository.getOrThrow(memberId);
 		Memory memory = memoryRepository.getMemoryWithMemberAndSpotById(memoryId);
+		albumService.validateAlbumAccess(memory.getAlbum(), member);
 
 		return MemoryDetailResponse.of(memory, fileService.getFilesByMemory(memory));
 	}
 
 	@Transactional(readOnly = true)
-	public SliceResponse<CommentResponse> getCommentsByMemoryId(Long memoryId, Pageable pageable) {
+	public SliceResponse<CommentResponse> getCommentsByMemoryId(Long memberId, Long memoryId, Pageable pageable) {
+		Member member = memberRepository.getOrThrow(memberId);
 		Memory memory = memoryRepository.getOrThrow(memoryId);
+		albumService.validateAlbumAccess(memory.getAlbum(), member);
 
 		return commentService.findCommentsWithMemberByMemory(
 			memory, pageable);
 	}
 
 	@Transactional
-	public void updateMemory(Long memoryId, MemoryUpdateRequest memoryUpdateRequest, List<MultipartFile> files) {
+	public void updateMemory(Long memberId, Long memoryId, MemoryUpdateRequest memoryUpdateRequest,
+		List<MultipartFile> files) {
 		Memory memory = memoryRepository.getOrThrow(memoryId);
-		//TODO : 작성자만 수정 할 수 있도록 추가해야합니다.
+		Member member = memberRepository.getOrThrow(memberId);
+
+		validateWriter(memory, member);
+
 		Spot spot = spotRepository.getOrThrow(memoryUpdateRequest.getSpotId());
 
 		memory.updateContent(memoryUpdateRequest.getContent());
@@ -77,9 +87,19 @@ public class MemoryService {
 	}
 
 	@Transactional
-	public void deleteMemory(Long memoryId) {
+	public void deleteMemory(Long memberId, Long memoryId) {
 		Memory memory = memoryRepository.getOrThrow(memoryId);
+		Member member = memberRepository.getOrThrow(memberId);
+
+		validateWriter(memory, member);
+
 		memory.softDelete();
 		fileService.deleteFiles(memory);
+	}
+
+	private void validateWriter(Memory memory, Member member) {
+		if (!memory.getMember().equals(member)) {
+			throw new PhotorizeException(ErrorType.MEMORY_FORBIDDEN);
+		}
 	}
 }

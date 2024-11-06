@@ -56,7 +56,7 @@ public class MemoryController {
 	@GetMapping("/{memoryId}")
 	public ResponseEntity<ApiResponse<MemoryDetailResponse>> getDetailMemory(@PathVariable Long memoryId,
 		@AuthUser ContextMember contextMember) {
-		return ApiResponse.ok(memoryService.getMemoryDetail(memoryId));
+		return ApiResponse.ok(memoryService.getMemoryDetail(contextMember.getId(), memoryId));
 	}
 
 	@GetMapping("/{memoryId}/comments")
@@ -65,7 +65,7 @@ public class MemoryController {
 		@RequestParam(defaultValue = "0") int pageNumber,
 		@AuthUser ContextMember contextMember) {
 		Pageable pageable = PageRequest.of(pageNumber, COMMENT_PAGE_SIZE);
-		return ApiResponse.ok(memoryService.getCommentsByMemoryId(memoryId, pageable));
+		return ApiResponse.ok(memoryService.getCommentsByMemoryId(contextMember.getId(), memoryId, pageable));
 	}
 
 	@PostMapping("/{memoryId}")
@@ -80,14 +80,14 @@ public class MemoryController {
 			.filter(file -> file != null && !file.isEmpty())
 			.toList();
 
-		memoryService.updateMemory(memoryId, memoryUpdateRequest, files);
+		memoryService.updateMemory(contextMember.getId(), memoryId, memoryUpdateRequest, files);
 		return ApiResponse.ok(null);
 	}
 
 	@DeleteMapping("/{memoryId}")
 	public ResponseEntity<ApiResponse<Void>> deleteMemory(@PathVariable Long memoryId,
 		@AuthUser ContextMember contextMember) {
-		memoryService.deleteMemory(memoryId);
+		memoryService.deleteMemory(contextMember.getId(), memoryId);
 		return ApiResponse.ok(null);
 	}
 }
