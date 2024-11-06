@@ -24,7 +24,7 @@ import com.shutter.photorize.domain.album.entity.Color;
 import com.shutter.photorize.domain.album.repository.AlbumMemberListRepository;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
 import com.shutter.photorize.domain.album.repository.ColorRepository;
-import com.shutter.photorize.domain.member.dto.MemberProfileDto;
+import com.shutter.photorize.domain.member.dto.AlbumMemberProfileDto;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.memory.dto.MemoryInfoDto;
@@ -125,13 +125,13 @@ public class AlbumService {
 
 		validateAlbumAccess(album, member);
 
-		List<MemberProfileDto> memberProfileDtoList = albumMembers.stream()
-			.map(albumMember -> MemberProfileDto.from(albumMember.getMember(), albumMember.isStatus()))
+		List<AlbumMemberProfileDto> albumMemberProfileDtoList = albumMembers.stream()
+			.map(albumMember -> AlbumMemberProfileDto.from(albumMember.getMember(), albumMember.isStatus()))
 			.toList();
 
 		Slice<MemoryInfoDto> memories = memoryRepository.findMemoryInfoDtosByAlbum(album, pageable);
 
-		AlbumDetailResponse albumDetail = AlbumDetailResponse.of(album.getName(), memberProfileDtoList,
+		AlbumDetailResponse albumDetail = AlbumDetailResponse.of(album.getName(), albumMemberProfileDtoList,
 			memories.getContent());
 
 		return SliceResponse.of(new SliceImpl<>(

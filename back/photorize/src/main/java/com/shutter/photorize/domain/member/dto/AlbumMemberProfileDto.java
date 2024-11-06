@@ -9,19 +9,26 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LoginMemberProfile {
+public class AlbumMemberProfileDto {
 	private Long memberId;
 	private String nickname;
 	private String img;
+	private boolean status;
 
 	@Builder
-	private LoginMemberProfile(Long memberId, String nickname, String img) {
+	private AlbumMemberProfileDto(Long memberId, String nickname, String img, boolean status) {
 		this.memberId = memberId;
 		this.nickname = nickname;
 		this.img = img;
+		this.status = status;
 	}
 
-	public static LoginMemberProfile of(Member member) {
-		return new LoginMemberProfile(member.getId(), member.getNickname(), member.getImg());
+	public static AlbumMemberProfileDto from(Member member, boolean stauts) {
+		return AlbumMemberProfileDto.builder()
+			.memberId(member.getId())
+			.nickname(member.getNickname())
+			.img(member.getImg())
+			.status(stauts)
+			.build();
 	}
 }
