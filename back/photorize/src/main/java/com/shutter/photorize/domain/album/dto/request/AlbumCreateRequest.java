@@ -19,12 +19,12 @@ public class AlbumCreateRequest {
 	private Long colorId;
 	private List<Long> members;
 
-	public Album toAlbum(Member member, Color color, String name) {
+	public Album toAlbum(Member member, Color color, String name, AlbumType type) {
 		return Album.builder()
 			.member(member)
 			.color(color)
 			.name(name)
-			.type(AlbumType.PUBLIC)
+			.type(type)
 			.build();
 	}
 

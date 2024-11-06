@@ -43,11 +43,15 @@ public class Album extends SoftDeletableEntity {
 	private AlbumType type;
 
 	@Builder
-	public Album(Member member, Color color, String name, AlbumType type) {
+	private Album(Member member, Color color, String name, AlbumType type) {
 		this.member = member;
 		this.color = color;
 		this.name = name;
 		this.type = type;
+	}
+
+	public static Album of(Member member, Color color, String name, AlbumType type) {
+		return new Album(member, color, name, type);
 	}
 
 	public void updateName(String name) {

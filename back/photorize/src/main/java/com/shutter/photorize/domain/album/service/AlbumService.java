@@ -27,7 +27,6 @@ import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.memory.dto.MemoryInfoDto;
 import com.shutter.photorize.domain.memory.repository.MemoryRepository;
-import com.shutter.photorize.domain.memory.service.MemoryService;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.global.response.SliceResponse;
@@ -43,7 +42,6 @@ public class AlbumService {
 	private final MemberRepository memberRepository;
 	private final AlbumRepository albumRepository;
 	private final AlbumMemberListRepository albumMemberListRepository;
-	private final MemoryService memoryService;
 	private final MemoryRepository memoryRepository;
 	private final ColorRepository colorRepository;
 
@@ -52,7 +50,7 @@ public class AlbumService {
 		Member creator = memberRepository.getOrThrow(memberId);
 		Color color = colorRepository.getOrThrow(albumCreateRequest.getColorId());
 
-		Album savedAlbum = albumCreateRequest.toAlbum(creator, color, albumCreateRequest.getName());
+		Album savedAlbum = albumCreateRequest.toAlbum(creator, color, albumCreateRequest.getName(), AlbumType.PUBLIC);
 		albumRepository.save(savedAlbum);
 
 		AlbumMemberList albumMemberList = albumCreateRequest.toList(savedAlbum, creator, true);
@@ -67,6 +65,16 @@ public class AlbumService {
 
 		return AlbumCreateResponse.of(savedAlbum);
 
+	}
+
+	@Transactional
+	public void createPrivateAlbum(Long memberId) {
+		Member creator = memberRepository.getOrThrow(memberId);
+		Color color = colorRepository.getOrThrow(1L);
+
+		String privateAlbumName = String.format("%s의 앨범", creator.getNickname());
+		Album savedAlbum = Album.of(creator, color, privateAlbumName, AlbumType.PRIVATE);
+		albumRepository.save(savedAlbum);
 	}
 
 	@Transactional
