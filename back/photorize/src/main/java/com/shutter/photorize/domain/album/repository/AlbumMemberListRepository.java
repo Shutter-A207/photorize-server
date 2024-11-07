@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumMemberList;
@@ -27,5 +28,15 @@ public interface AlbumMemberListRepository extends JpaRepository<AlbumMemberList
 	}
 
 	Optional<AlbumMemberList> findByAlbumAndMember(Album album, Member member);
+
+	@Query("""
+		SELECT DISTINCT aml
+		FROM AlbumMemberList aml
+		         JOIN Member m ON aml.member.id = m.id
+		WHERE aml.album IN :albums
+		  AND m != :member
+		""")
+	List<AlbumMemberList> findAlbumMembersByAlbumsAndMemberNot(@Param("albums") List<Album> albums,
+		@Param("member") Member member);
 
 }

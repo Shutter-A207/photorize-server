@@ -2,6 +2,8 @@ package com.shutter.photorize.domain.album.controller;
 
 import static com.shutter.photorize.global.constant.CommonConstants.*;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,6 +22,7 @@ import com.shutter.photorize.domain.album.dto.request.AlbumModifyRequest;
 import com.shutter.photorize.domain.album.dto.response.AlbumCreateResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
+import com.shutter.photorize.domain.album.dto.response.AlbumSearchResponse;
 import com.shutter.photorize.domain.album.dto.response.ColorListResponse;
 import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.album.service.ColorService;
@@ -91,5 +94,15 @@ public class AlbumController {
 		@AuthUser ContextMember contextmember) {
 		ColorListResponse colorListResponse = colorService.getColorList();
 		return ApiResponse.ok(colorListResponse);
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<ApiResponse<List<AlbumSearchResponse>>> searchAlbum(
+		@RequestParam("keyword") String keyword,
+		@AuthUser ContextMember contextmember) {
+		List<AlbumSearchResponse> albumSearchResponses = albumService.searchAlbum(keyword, contextmember.getId());
+
+		return ApiResponse.ok(albumSearchResponses);
+
 	}
 }

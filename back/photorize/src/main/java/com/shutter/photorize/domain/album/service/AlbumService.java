@@ -4,6 +4,7 @@ import static com.shutter.photorize.global.constant.CommonConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import com.shutter.photorize.domain.album.dto.request.AlbumModifyRequest;
 import com.shutter.photorize.domain.album.dto.response.AlbumCreateResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumDetailResponse;
 import com.shutter.photorize.domain.album.dto.response.AlbumListResponse;
+import com.shutter.photorize.domain.album.dto.response.AlbumSearchResponse;
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumMemberList;
 import com.shutter.photorize.domain.album.entity.AlbumType;
@@ -174,6 +176,31 @@ public class AlbumService {
 		if (!hasAccess) {
 			throw new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM);
 		}
+	}
+
+	public List<AlbumSearchResponse> searchAlbum(String keyword, Long memberId) {
+		Member member = memberRepository.getOrThrow(memberId);
+
+		List<Album> albums = albumRepository.findShareAlbums(keyword, member.getId());
+
+		List<AlbumMemberList> albumMemberLists = albumMemberListRepository.findAlbumMembersByAlbumsAndMemberNot(albums,
+			member);
+
+		Map<Long, List<String>> albumMemberMap = albumMemberLists.stream()
+			.collect(Collectors.groupingBy(
+				aml -> aml.getAlbum().getId(),
+				Collectors.mapping(
+					aml -> aml.getMember().getNickname(),
+					Collectors.toList()
+				)
+			));
+
+		return albums.stream()
+			.map(album -> AlbumSearchResponse.of(
+				album,
+				albumMemberMap.getOrDefault(album.getId(), new ArrayList<>())
+			))
+			.toList();
 	}
 
 	private boolean checkMemberStatus(Album album) {

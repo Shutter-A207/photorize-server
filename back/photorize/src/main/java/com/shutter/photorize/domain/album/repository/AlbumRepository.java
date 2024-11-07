@@ -1,5 +1,6 @@
 package com.shutter.photorize.domain.album.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
@@ -36,4 +37,30 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 	Slice<Album> findByAlbumMemberListMemberAndTypeOrderByEarliestMemory(@Param("member") Member member,
 		@Param("type") AlbumType type,
 		Pageable pageable);
+
+	@Query("""
+		SELECT a
+		FROM Album a
+		WHERE a.type = 'PUBLIC'
+		   AND EXISTS (
+		   SELECT 1
+		   FROM AlbumMemberList aml
+		   WHERE aml.album.id = a.id
+		          AND aml.member.id = :memberId
+		          AND aml.status = true
+		   )
+		AND(
+		   a.name LIKE CONCAT('%', :keyword, '%')
+		    OR EXISTS (
+		       SELECT 1
+		          FROM AlbumMemberList aml2
+		            JOIN Member m On m.id = aml2.member.id
+		          WHERE aml2.album.id = a.id
+		                 AND m.id != :memberId
+		                 AND m.nickname LIKE CONCAT('%', :keyword, '%')
+		    )
+		)
+		""")
+	List<Album> findShareAlbums(@Param("keyword") String keyword, @Param("memberId") Long memberId);
+
 }
