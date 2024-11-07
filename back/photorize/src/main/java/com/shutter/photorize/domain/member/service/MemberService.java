@@ -6,6 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shutter.photorize.domain.album.entity.Album;
+import com.shutter.photorize.domain.album.entity.AlbumType;
+import com.shutter.photorize.domain.album.repository.AlbumRepository;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.LoginMemberProfileDto;
 import com.shutter.photorize.domain.member.dto.MemberListDto;
@@ -23,6 +26,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final FileService fileService;
+	private final AlbumRepository albumRepository;
 
 	@Transactional
 	public Long createMember(JoinRequest joinRequest) {
@@ -51,16 +55,17 @@ public class MemberService {
 		return LoginMemberProfileDto.of(memberRepository.getOrThrow(memberId));
 	}
 
-	public List<MemberListDto> getAllMembers(Long memberId) {
+	public List<MemberListDto> getMembers(String keyword, Long memberId) {
 		Member member = memberRepository.getOrThrow(memberId);
 
-		List<Object[]> results = memberRepository.findAllMembers(member);
+		List<Member> results = memberRepository.findByNicknameContainingAndIdNot(keyword, member.getId());
 
 		return results.stream()
 			.map(result -> MemberListDto.from(
-				((Long)result[0]),
-				((String)result[1]),
-				((Long)result[2])
+				result.getId(), result.getNickname(),
+				albumRepository.findByMemberAndType(result, AlbumType.PRIVATE)
+					.map(Album::getId)
+					.orElse(null)
 			))
 			.toList();
 	}

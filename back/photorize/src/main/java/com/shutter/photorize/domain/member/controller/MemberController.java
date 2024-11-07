@@ -33,9 +33,10 @@ public class MemberController {
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<ApiResponse<List<MemberListDto>>> getAllMembers(
+	public ResponseEntity<ApiResponse<List<MemberListDto>>> searchMember(
+		@RequestParam String keyword,
 		@AuthUser ContextMember contextMember) {
-		List<MemberListDto> memberListDtos = memberService.getAllMembers(contextMember.getId());
+		List<MemberListDto> memberListDtos = memberService.getMembers(keyword, contextMember.getId());
 
 		return ApiResponse.ok(memberListDtos);
 	}
