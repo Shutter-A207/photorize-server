@@ -65,4 +65,8 @@ public class MemberService {
 			.toList();
 	}
 
+	public Boolean validateNickname(String nickname) {
+		return !memberRepository.existsByNickname(nickname);
+	}
+
 }

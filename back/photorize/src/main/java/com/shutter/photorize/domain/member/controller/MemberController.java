@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shutter.photorize.domain.member.dto.LoginMemberProfileDto;
@@ -37,5 +38,13 @@ public class MemberController {
 		List<MemberListDto> memberListDtos = memberService.getAllMembers(contextMember.getId());
 
 		return ApiResponse.ok(memberListDtos);
+	}
+
+	@GetMapping("/checkNickname")
+	public ResponseEntity<ApiResponse<Boolean>> checkNickname(
+		@RequestParam String nickname) {
+		Boolean isPossible = memberService.validateNickname(nickname);
+
+		return ApiResponse.ok(isPossible);
 	}
 }

@@ -61,7 +61,8 @@ public class SecurityConfig {
 				authorize
 					.requestMatchers(
 						"/api/v1/auth/**",
-						"api/v1/health"
+						"api/v1/health",
+						"/api/v1/members/checkNickname"
 					)
 					.permitAll()
 					.anyRequest().authenticated()
