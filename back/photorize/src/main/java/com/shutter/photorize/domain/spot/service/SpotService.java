@@ -54,7 +54,7 @@ public class SpotService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
 
-		List<File> files = spotRepository.findFilesByMemorySpotAndMember(spot, member);
+		List<File> files = spotRepository.findPhotoFilesByMemorySpotAndMember(spot, member);
 
 		return files.stream()
 			.map(file -> SpotFileResponse.of(file))
