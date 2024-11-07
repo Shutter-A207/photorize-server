@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.shutter.photorize.domain.file.entity.File;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.global.error.ErrorType;
@@ -36,8 +37,8 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 
 	@Query("SELECT COUNT(m) FROM Memory m WHERE m.spot = :spot AND m.member = :member")
 	int countMemoriesBySpotAndMember(@Param("spot") Spot spot, @Param("member") Member member);
-
+	
 	@Query("SELECT f FROM File f JOIN f.memory m WHERE m.spot = :spot AND m.member = :member")
-	List<Object> findFilesBySpot(@Param("spot") Spot spot, @Param("member") Member member);
-
+	List<File> findFilesByMemorySpotAndMember(@Param("spot") Spot spot, @Param("member") Member member);
 }
+

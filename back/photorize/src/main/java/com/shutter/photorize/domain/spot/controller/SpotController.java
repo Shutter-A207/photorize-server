@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shutter.photorize.domain.spot.dto.response.SpotFileResponse;
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
 import com.shutter.photorize.domain.spot.service.SpotService;
 import com.shutter.photorize.global.jwt.model.ContextMember;
@@ -38,9 +39,10 @@ public class SpotController {
 	}
 
 	@GetMapping("/{spotId}/files")
-	public ResponseEntity<ApiResponse<List<Object>>> getFilesBySpot(@PathVariable Long spotId,
-		@AuthUser ContextMember contextMember) {
-		List<Object> files = spotService.getFilesBySpot(spotId, contextMember.getId());
+	public ResponseEntity<ApiResponse<List<SpotFileResponse>>> getFilesBySpot(
+		@PathVariable Long spotId, @AuthUser ContextMember contextMember) {
+
+		List<SpotFileResponse> files = spotService.getFilesBySpot(spotId, contextMember.getId());
 		return ApiResponse.ok(files);
 	}
 

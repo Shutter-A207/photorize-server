@@ -6,8 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shutter.photorize.domain.file.entity.File;
+import com.shutter.photorize.domain.file.repository.FileRepository;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
+import com.shutter.photorize.domain.spot.dto.response.SpotFileResponse;
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
 import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
@@ -22,10 +25,11 @@ public class SpotService {
 
 	private final SpotRepository spotRepository;
 	private final MemberRepository memberRepository;
+	private final FileRepository fileRepository;
 
 	@Transactional(readOnly = true)
-	public List<SpotResponse> getSpotsWithinBoundary(Double topLeftLat, Double topLeftLng, Double botRightLat,
-		Double botRightLng, Long memberId) {
+	public List<SpotResponse> getSpotsWithinBoundary(Double topLeftLat, Double topLeftLng,
+		Double botRightLat, Double botRightLng, Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
 
@@ -44,12 +48,18 @@ public class SpotService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Object> getFilesBySpot(Long spotId, Long memberId) {
+	public List<SpotFileResponse> getFilesBySpot(Long spotId, Long memberId) {
 		Spot spot = spotRepository.findById(spotId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.SPOT_NOT_FOUND));  // Spot이 없으면 예외 발생
+			.orElseThrow(() -> new PhotorizeException(ErrorType.SPOT_NOT_FOUND));
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));  // Member가 없으면 예외 발생
-		return spotRepository.findFilesBySpot(spot, member);
+			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
+
+		List<File> files = spotRepository.findFilesByMemorySpotAndMember(spot, member);
+
+		return files.stream()
+			.map(file -> SpotFileResponse.of(file))
+			.collect(Collectors.toList());
+
 	}
 
 	@Transactional(readOnly = true)
