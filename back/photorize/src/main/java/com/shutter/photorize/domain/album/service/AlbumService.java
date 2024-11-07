@@ -123,9 +123,10 @@ public class AlbumService {
 		Album album = albumRepository.getOrThrow(albumId);
 		Member member = memberRepository.getOrThrow(memberId);
 
-		List<AlbumMemberList> albumMembers = albumMemberListRepository.findMembersByAlbum(album);
-
+		List<AlbumMemberList> albumMembers = albumMemberListRepository.findByAlbumAndMemberNotOrderByStatusDescMemberNicknameAsc(album, member);
 		validateAlbumAccess(album, member);
+
+		albumMembers.add(0, new AlbumMemberList(album, member, true));
 
 		List<AlbumMemberProfileDto> albumMemberProfileDtoList = albumMembers.stream()
 			.map(albumMember -> AlbumMemberProfileDto.from(albumMember.getMember(), albumMember.isStatus()))

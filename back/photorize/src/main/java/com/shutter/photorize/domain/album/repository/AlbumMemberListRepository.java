@@ -39,4 +39,6 @@ public interface AlbumMemberListRepository extends JpaRepository<AlbumMemberList
 	List<AlbumMemberList> findAlbumMembersByAlbumsAndMemberNot(@Param("albums") List<Album> albums,
 		@Param("member") Member member);
 
+	List<AlbumMemberList> findByAlbumAndMemberNotOrderByStatusDescMemberNicknameAsc(Album album, Member member);
+
 }
