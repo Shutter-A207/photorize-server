@@ -14,8 +14,6 @@ import com.shutter.photorize.domain.spot.dto.response.SpotFileResponse;
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
 import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
-import com.shutter.photorize.global.error.ErrorType;
-import com.shutter.photorize.global.exception.PhotorizeException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,8 +28,7 @@ public class SpotService {
 	@Transactional(readOnly = true)
 	public List<SpotResponse> getSpotsWithinBoundary(Double topLeftLat, Double topLeftLng,
 		Double botRightLat, Double botRightLng, Long memberId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
+		Member member = memberRepository.getOrThrow(memberId);
 
 		return spotRepository.findSpotsWithinBoundary(topLeftLat, topLeftLng, botRightLat, botRightLng)
 			.stream()
@@ -49,10 +46,8 @@ public class SpotService {
 
 	@Transactional(readOnly = true)
 	public List<SpotFileResponse> getFilesBySpot(Long spotId, Long memberId) {
-		Spot spot = spotRepository.findById(spotId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.SPOT_NOT_FOUND));
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
+		Spot spot = spotRepository.getOrThrow(spotId);
+		Member member = memberRepository.getOrThrow(memberId);
 
 		List<File> files = spotRepository.findPhotoFilesByMemorySpotAndMember(spot, member);
 
@@ -64,8 +59,7 @@ public class SpotService {
 
 	@Transactional(readOnly = true)
 	public List<SpotResponse> getAllSpots(Long memberId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
+		Member member = memberRepository.getOrThrow(memberId);
 
 		return spotRepository.findAll().stream()
 			.map(spot -> new SpotResponse(

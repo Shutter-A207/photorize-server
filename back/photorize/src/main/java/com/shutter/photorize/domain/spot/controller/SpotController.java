@@ -38,7 +38,7 @@ public class SpotController {
 		return ApiResponse.ok(spots);
 	}
 
-	@GetMapping("/{spotId}/files")
+	@GetMapping("/{spotId}/memories")
 	public ResponseEntity<ApiResponse<List<SpotFileResponse>>> getFilesBySpot(
 		@PathVariable Long spotId, @AuthUser ContextMember contextMember) {
 
