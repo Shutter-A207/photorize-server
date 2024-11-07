@@ -40,5 +40,7 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 
 	@Query("SELECT f FROM File f JOIN f.memory m WHERE m.spot = :spot AND m.member = :member AND f.type = 'PHOTO'")
 	List<File> findPhotoFilesByMemorySpotAndMember(@Param("spot") Spot spot, @Param("member") Member member);
+
+	List<Spot> findByNameContaining(String keyword);
 }
 

@@ -12,6 +12,7 @@ import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.spot.dto.response.SpotFileResponse;
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
+import com.shutter.photorize.domain.spot.dto.response.SpotSearchResponse;
 import com.shutter.photorize.domain.spot.dto.response.SpotWithFilesResponse;
 import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
@@ -78,6 +79,13 @@ public class SpotService {
 				spotRepository.countFilesBySpotAndMember(spot, member),
 				spotRepository.countMemoriesBySpotAndMember(spot, member)
 			))
+			.collect(Collectors.toList());
+	}
+
+	public List<SpotSearchResponse> searchSpotsByKeyword(String keyword) {
+		List<Spot> spots = spotRepository.findByNameContaining(keyword);
+		return spots.stream()
+			.map(spot -> SpotSearchResponse.of(spot.getId(), spot.getName()))
 			.collect(Collectors.toList());
 	}
 }

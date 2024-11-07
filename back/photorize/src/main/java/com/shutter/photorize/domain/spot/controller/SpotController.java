@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
+import com.shutter.photorize.domain.spot.dto.response.SpotSearchResponse;
 import com.shutter.photorize.domain.spot.dto.response.SpotWithFilesResponse;
 import com.shutter.photorize.domain.spot.service.SpotService;
 import com.shutter.photorize.global.jwt.model.ContextMember;
@@ -50,6 +51,12 @@ public class SpotController {
 	public ResponseEntity<ApiResponse<List<SpotResponse>>> getAllSpots(@AuthUser ContextMember contextMember) {
 		List<SpotResponse> spots = spotService.getAllSpots(contextMember.getId());
 		return ApiResponse.ok(spots);
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<List<SpotSearchResponse>> searchSpots(@RequestParam String keyword) {
+		List<SpotSearchResponse> spots = spotService.searchSpotsByKeyword(keyword);
+		return ResponseEntity.ok(spots);
 	}
 
 }
