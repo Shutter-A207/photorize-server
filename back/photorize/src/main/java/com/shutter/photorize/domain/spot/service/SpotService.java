@@ -12,6 +12,7 @@ import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.spot.dto.response.SpotFileResponse;
 import com.shutter.photorize.domain.spot.dto.response.SpotResponse;
+import com.shutter.photorize.domain.spot.dto.response.SpotWithFilesResponse;
 import com.shutter.photorize.domain.spot.entity.Spot;
 import com.shutter.photorize.domain.spot.repository.SpotRepository;
 
@@ -45,16 +46,22 @@ public class SpotService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<SpotFileResponse> getFilesBySpot(Long spotId, Long memberId) {
+	public SpotWithFilesResponse getFilesBySpot(Long spotId, Long memberId) {
 		Spot spot = spotRepository.getOrThrow(spotId);
 		Member member = memberRepository.getOrThrow(memberId);
 
 		List<File> files = spotRepository.findPhotoFilesByMemorySpotAndMember(spot, member);
-
-		return files.stream()
-			.map(file -> SpotFileResponse.of(file))
+		List<SpotFileResponse> fileResponses = files.stream()
+			.map(SpotFileResponse::of)
 			.collect(Collectors.toList());
 
+		return SpotWithFilesResponse.of(
+			spot.getId(),
+			spot.getName(),
+			spot.getLatitude(),
+			spot.getLongitude(),
+			fileResponses
+		);
 	}
 
 	@Transactional(readOnly = true)

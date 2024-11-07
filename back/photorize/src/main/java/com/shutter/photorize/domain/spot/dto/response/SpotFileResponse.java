@@ -13,16 +13,16 @@ public class SpotFileResponse {
 	private Long fileId;
 	private Long memoryId;
 	private String fileUrl;
-	private String spotName;
+	private String albumName;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime date;
 
-	private SpotFileResponse(Long fileId, Long memoryId, String fileUrl, String spotName, LocalDateTime date) {
+	private SpotFileResponse(Long fileId, Long memoryId, String fileUrl, String albumName, LocalDateTime date) {
 		this.fileId = fileId;
 		this.memoryId = memoryId;
 		this.fileUrl = fileUrl;
-		this.spotName = spotName;
+		this.albumName = albumName;
 		this.date = date;
 	}
 
@@ -31,7 +31,7 @@ public class SpotFileResponse {
 			file.getId(),
 			file.getMemory().getId(),
 			file.getUrl(),
-			file.getMemory().getSpot().getName(),
+			file.getMemory().getAlbum().getName(),
 			file.getMemory().getCreatedAt()
 		);
 	}
