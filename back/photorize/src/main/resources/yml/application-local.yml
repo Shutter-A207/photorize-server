@@ -25,7 +25,7 @@ spring:
         static: ap-northeast-2
       s3:
         bucket: ${S3_BUCKET_NAME}
-      base-url: https://%s.s3.%s.amazonaws.com/%s
+      base-url: ${S3_BASE_URL}
   servlet:
     multipart:
       max-file-size: 500MB
@@ -36,6 +36,8 @@ spring:
       time:
         access: ${JWT_ACCESS_TIME}
         refresh: ${JWT_REFRESH_TIME}
+  fcm:
+    certification-path: ${FCM_CERTIFICATION_FILE_PATH}
   data:
     redis:
       host: localhost

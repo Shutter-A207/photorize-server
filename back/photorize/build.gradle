@@ -1,26 +1,26 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.2.10'
-    id 'io.spring.dependency-management' version '1.1.6'
+	id 'java'
+	id 'org.springframework.boot' version '3.2.10'
+	id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'com.shutter'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
 }
 
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 ext {
@@ -56,6 +56,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security:${securityVersion}"
     testImplementation "org.springframework.security:spring-security-test:${securityTestVersion}"
 
+    // firebase
+    implementation 'com.google.firebase:firebase-admin:9.4.1'
+
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
@@ -66,5 +69,5 @@ dependencies {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
