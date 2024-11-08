@@ -5,18 +5,22 @@ import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
+import com.shutter.photorize.domain.file.entity.FileType;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.LoginMemberProfileDto;
 import com.shutter.photorize.domain.member.dto.MemberListDto;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
+import com.shutter.photorize.domain.member.dto.request.UpdateNicknameRequest;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
+import com.shutter.photorize.global.util.S3Utils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +31,7 @@ public class MemberService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final FileService fileService;
 	private final AlbumRepository albumRepository;
+	private final S3Utils s3Utils;
 
 	@Transactional
 	public Long createMember(JoinRequest joinRequest) {
@@ -68,6 +73,33 @@ public class MemberService {
 					.orElse(null)
 			))
 			.toList();
+	}
+
+	@Transactional
+	public LoginMemberProfileDto updateImg(Long memberId, MultipartFile file) {
+		Member member = memberRepository.getOrThrow(memberId);
+		String url = s3Utils.uploadFile(file, FileType.PHOTO);
+
+		member.updateProfile(url);
+
+		LoginMemberProfileDto profileDto = LoginMemberProfileDto.of(member);
+
+		return profileDto;
+	}
+
+	@Transactional
+	public LoginMemberProfileDto updateNickname(Long memberId, UpdateNicknameRequest updateNicknameRequest) {
+		Member member = memberRepository.getOrThrow(memberId);
+
+		if (!validateNickname(updateNicknameRequest.getNickname())) {
+			throw new PhotorizeException(ErrorType.DUPLICATE_NICKNAME);
+		}
+
+		member.updateNickname(updateNicknameRequest.getNickname());
+
+		LoginMemberProfileDto profileDto = LoginMemberProfileDto.of(member);
+
+		return profileDto;
 	}
 
 	public Boolean validateNickname(String nickname) {

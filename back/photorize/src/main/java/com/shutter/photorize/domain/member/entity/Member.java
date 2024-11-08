@@ -41,4 +41,12 @@ public class Member extends UpdatableEntity {
 		this.img = img;
 	}
 
+	public void updateProfile(String img) {
+		this.img = img;
+	}
+
+	public void updateNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
 }
