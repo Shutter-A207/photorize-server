@@ -1,6 +1,7 @@
 package com.shutter.photorize.domain.album.service;
 
 import static com.shutter.photorize.global.constant.CommonConstants.*;
+import static com.shutter.photorize.global.constant.StringFormat.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +124,8 @@ public class AlbumService {
 		Album album = albumRepository.getOrThrow(albumId);
 		Member member = memberRepository.getOrThrow(memberId);
 
-		List<AlbumMemberList> albumMembers = albumMemberListRepository.findByAlbumAndMemberNotOrderByStatusDescMemberNicknameAsc(album, member);
+		List<AlbumMemberList> albumMembers = albumMemberListRepository.findByAlbumAndMemberNotOrderByStatusDescMemberNicknameAsc(
+			album, member);
 		validateAlbumAccess(album, member);
 
 		albumMembers.add(0, new AlbumMemberList(album, member, true));
