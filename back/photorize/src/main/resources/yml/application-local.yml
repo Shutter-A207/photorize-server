@@ -36,6 +36,10 @@ spring:
       time:
         access: ${JWT_ACCESS_TIME}
         refresh: ${JWT_REFRESH_TIME}
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 
 logging:

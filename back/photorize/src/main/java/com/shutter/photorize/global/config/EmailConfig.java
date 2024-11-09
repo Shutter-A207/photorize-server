@@ -17,7 +17,7 @@ public class EmailConfig {
 	private static final String MAIL_SMTP_STARTTLS_ENABLE = "mail.smtp.starttls.enable";
 
 	// SMTP 서버
-	@Value("${spring.mail.host")
+	@Value("${spring.mail.host}")
 	private String host;
 
 	// 계정

@@ -2,14 +2,13 @@ package com.shutter.photorize.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shutter.photorize.domain.album.service.AlbumService;
+import com.shutter.photorize.domain.member.dto.request.CodeCreateRequest;
 import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.service.AuthService;
@@ -36,11 +35,11 @@ public class AuthController {
 		return ApiResponse.created();
 	}
 
-	@GetMapping("/email/code/{email}")
-	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(@PathVariable String email,
-		@RequestParam String type) {
+	@GetMapping("/email/code")
+	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(@RequestBody CodeCreateRequest codeCreateRequest) {
 
-		authService.createEmailAuthCode(email, AuthCodeType.of(type));
+		authService.createEmailAuthCode(codeCreateRequest.getEmail(),
+			AuthCodeType.of(String.valueOf(codeCreateRequest.getAuthType())));
 		return ApiResponse.created();
 	}
 
@@ -48,6 +47,6 @@ public class AuthController {
 	public ResponseEntity<ApiResponse<Boolean>> validEmailAuthCode(@RequestBody EmailAuthRequest emailAuthRequest) {
 		authService.validAuthCode(emailAuthRequest, AuthCodeType.of(String.valueOf(emailAuthRequest.getAuthType())));
 
-		return ApiResponse.created();
+		return ApiResponse.ok(null);
 	}
 }

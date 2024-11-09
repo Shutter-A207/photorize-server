@@ -8,7 +8,9 @@ import com.shutter.photorize.infra.mail.model.EmailForm;
 import com.shutter.photorize.infra.mail.service.MailService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -18,6 +20,8 @@ public class AuthService {
 
 	public boolean createEmailAuthCode(String email, AuthCodeType authCodeType) {
 		String code = authCodeService.createAuthCode(email, authCodeType);
+
+		// log.info("Auth code={}", code);
 
 		EmailForm emailForm = authCodeService.getAuthEmailForm(email, code, authCodeType);
 
