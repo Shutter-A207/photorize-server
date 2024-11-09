@@ -14,10 +14,12 @@ import com.shutter.photorize.domain.file.entity.FileType;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.LoginMemberProfileDto;
 import com.shutter.photorize.domain.member.dto.MemberListDto;
+import com.shutter.photorize.domain.member.dto.request.ChangePasswordRequest;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.dto.request.UpdateNicknameRequest;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
+import com.shutter.photorize.domain.member.strategy.AuthCodeType;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.global.util.S3Utils;
@@ -32,6 +34,7 @@ public class MemberService {
 	private final FileService fileService;
 	private final AlbumRepository albumRepository;
 	private final S3Utils s3Utils;
+	private final AuthCodeService authCodeService;
 
 	@Transactional
 	public Long createMember(JoinRequest joinRequest) {
@@ -104,6 +107,17 @@ public class MemberService {
 
 	public Boolean validateNickname(String nickname) {
 		return !memberRepository.existsByNickname(nickname);
+	}
+
+	@Transactional
+	public boolean modifyPassword(ChangePasswordRequest changePasswordRequest) {
+		authCodeService.checkAvailable(changePasswordRequest.getEmail(), AuthCodeType.PASSWORD_CHANGE);
+
+		changePasswordRequest.valid();
+
+		Member member = memberRepository.getOrThrow(changePasswordRequest.getEmail());
+		member.updatePassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
+		return true;
 	}
 
 }

@@ -1,13 +1,13 @@
 package com.shutter.photorize.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shutter.photorize.domain.album.service.AlbumService;
+import com.shutter.photorize.domain.member.dto.request.ChangePasswordRequest;
 import com.shutter.photorize.domain.member.dto.request.CodeCreateRequest;
 import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
@@ -35,18 +35,26 @@ public class AuthController {
 		return ApiResponse.created();
 	}
 
-	@GetMapping("/email/code")
+	@PostMapping("/email/code")
 	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(@RequestBody CodeCreateRequest codeCreateRequest) {
 
-		authService.createEmailAuthCode(codeCreateRequest.getEmail(),
+		boolean result = authService.createEmailAuthCode(codeCreateRequest.getEmail(),
 			AuthCodeType.of(String.valueOf(codeCreateRequest.getAuthType())));
-		return ApiResponse.created();
+		return ApiResponse.ok(result);
 	}
 
-	@PostMapping("/email/code")
+	@PostMapping("/email/verifyCode")
 	public ResponseEntity<ApiResponse<Boolean>> validEmailAuthCode(@RequestBody EmailAuthRequest emailAuthRequest) {
-		authService.validAuthCode(emailAuthRequest, AuthCodeType.of(String.valueOf(emailAuthRequest.getAuthType())));
+		boolean result = authService.validAuthCode(emailAuthRequest,
+			AuthCodeType.of(String.valueOf(emailAuthRequest.getAuthType())));
+		return ApiResponse.ok(result);
+	}
 
-		return ApiResponse.ok(null);
+	@PostMapping("/password")
+	public ResponseEntity<ApiResponse<Boolean>> changePassword(
+		@RequestBody ChangePasswordRequest changePasswordRequest) {
+		boolean result = memberService.modifyPassword(changePasswordRequest);
+
+		return ApiResponse.ok(result);
 	}
 }

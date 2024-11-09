@@ -49,4 +49,8 @@ public class Member extends UpdatableEntity {
 		this.nickname = nickname;
 	}
 
+	public void updatePassword(String password) {
+		this.password = password;
+	}
+
 }

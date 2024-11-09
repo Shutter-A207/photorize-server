@@ -7,7 +7,9 @@ import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.infra.redis.service.RedisAuthCodeAdapter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class PasswordAuthStrategy implements AuthCodeStrategy {
 
@@ -26,6 +28,9 @@ public class PasswordAuthStrategy implements AuthCodeStrategy {
 	public boolean validAuthCode(String email, String code) {
 		String getCode = redisAuthCodeAdapter.getValue(generateSaveKey(email))
 			.orElseThrow(() -> new PhotorizeException(ErrorType.EXPIRED_EMAIL_CODE));
+
+		log.info("validAuthCode:{}", getCode);
+
 		return getCode.equals(code);
 	}
 
