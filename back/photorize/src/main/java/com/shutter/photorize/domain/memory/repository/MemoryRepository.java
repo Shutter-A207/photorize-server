@@ -1,5 +1,6 @@
 package com.shutter.photorize.domain.memory.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.shutter.photorize.domain.album.entity.Album;
+import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.memory.dto.MemoryInfoDto;
 import com.shutter.photorize.domain.memory.entity.Memory;
 import com.shutter.photorize.global.error.ErrorType;
@@ -42,4 +44,14 @@ public interface MemoryRepository extends JpaRepository<Memory, Long> {
 		"LEFT JOIN FETCH m.spot " +
 		"WHERE m.id = :memoryId")
 	Optional<Memory> findMemoryWithMemberAndSpotById(@Param("memoryId") Long memoryId);
+
+	@Query("SELECT m FROM Memory  m " +
+		"LEFT JOIN m.album a " +
+		"LEFT JOIN AlbumMemberList aml ON aml.album = a " +
+		"AND (" +
+		"(a.member = :member AND a.type = 'PRIVATE')" +
+		"OR (aml.member = :member AND aml.status = true)" +
+		") " +
+		"ORDER BY RAND() LIMIT 8")
+	List<Memory> findMemoryRandom(@Param("member") Member member);
 }

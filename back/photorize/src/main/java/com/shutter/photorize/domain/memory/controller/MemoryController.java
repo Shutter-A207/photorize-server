@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.memory.dto.request.MemoryCreateRequest;
 import com.shutter.photorize.domain.memory.dto.request.MemoryUpdateRequest;
+import com.shutter.photorize.domain.memory.dto.response.MainMemoryResponse;
 import com.shutter.photorize.domain.memory.dto.response.MemoryDetailResponse;
 import com.shutter.photorize.domain.memory.service.MemoryService;
 import com.shutter.photorize.global.jwt.model.ContextMember;
@@ -89,5 +90,13 @@ public class MemoryController {
 		@AuthUser ContextMember contextMember) {
 		memoryService.deleteMemory(contextMember.getId(), memoryId);
 		return ApiResponse.ok(null);
+	}
+
+	@GetMapping("/mainpage")
+	public ResponseEntity<ApiResponse<List<MainMemoryResponse>>> getMainPage(
+		@AuthUser ContextMember contextmember) {
+		List<MainMemoryResponse> mainMemoryResponses = memoryService.getMainMemory(contextmember.getId());
+
+		return ApiResponse.ok(mainMemoryResponses);
 	}
 }

@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.shutter.photorize.domain.alarm.service.InviteAlarmService;
 import com.shutter.photorize.domain.album.entity.Album;
-import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.comment.service.CommentService;
@@ -40,6 +38,7 @@ public class MemoryService {
 	private final CommentService commentService;
 	private final AlbumService albumService;
 	private final InviteAlarmService inviteAlarmService;
+	private final FileRepository fileRepository;
 
 	@Transactional
 	public void createMemory(Long memberId, MemoryCreateRequest memoryCreateRequest, List<MultipartFile> files) {
@@ -106,5 +105,24 @@ public class MemoryService {
 		if (!memory.getMember().equals(member)) {
 			throw new PhotorizeException(ErrorType.MEMORY_FORBIDDEN);
 		}
+	}
+
+	public List<MainMemoryResponse> getMainMemory(Long memberId) {
+		Member member = memberRepository.getOrThrow(memberId);
+
+		List<Memory> memories = memoryRepository.findMemoryRandom(member);
+
+		List<MainMemoryResponse> memoryResponses = memories.stream()
+			.map(memory -> {
+				String url = fileRepository.findFilesByMemoryAndType(memory, FileType.PHOTO)
+					.map(File::getUrl)
+					.orElse(null);
+
+				return MainMemoryResponse.of(memory, url);
+			})
+			.toList();
+
+		return memoryResponses;
+
 	}
 }
