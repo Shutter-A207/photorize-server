@@ -1,7 +1,7 @@
 package com.shutter.photorize.global.config;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ public class CustomFactoryConfig {
 
 	@Bean
 	public Map<EmailFormType, EmailFormFactory> emailFormFactoryMap(AuthCodeEmailFormFactory authCodeEmailFormFactory) {
-		HashMap<EmailFormType, EmailFormFactory> emailFormFactoryMap = new HashMap<>();
+		Map<EmailFormType, EmailFormFactory> emailFormFactoryMap = new ConcurrentHashMap<>();
 		emailFormFactoryMap.put(EmailFormType.SIGNUP_AUTH, authCodeEmailFormFactory);
 		emailFormFactoryMap.put(EmailFormType.PASSWORD_CHANGE_AUTH, authCodeEmailFormFactory);
 		return emailFormFactoryMap;
@@ -33,7 +33,7 @@ public class CustomFactoryConfig {
 		PasswordAuthStrategy passwordAuthStrategy,
 		SignInAuthStrategy singInAuthStrategy
 	) {
-		Map<AuthCodeType, AuthCodeStrategy> authCodeStrategyMap = new HashMap<>();
+		Map<AuthCodeType, AuthCodeStrategy> authCodeStrategyMap = new ConcurrentHashMap<>();
 		authCodeStrategyMap.put(AuthCodeType.SIGNUP, singInAuthStrategy);
 		authCodeStrategyMap.put(AuthCodeType.PASSWORD_CHANGE, passwordAuthStrategy);
 		return authCodeStrategyMap;
