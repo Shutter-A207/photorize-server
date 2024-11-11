@@ -1,0 +1,16 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yangshutter@gmail.com
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.debug: true
+      mail.smtp.connectiontimeout: 1000 #1초
+      mail.starttls.enable: true
+      mail.smtp.auth: true
+
+email:
+  time:
+    valid: 300000
+    available: 86400000
