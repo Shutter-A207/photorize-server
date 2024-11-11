@@ -70,4 +70,14 @@ public class Memory extends SoftDeletableEntity {
 	public void updateDate(LocalDateTime date) {
 		this.date = date;
 	}
+
+	public static Memory of(Member member, Album album, Memory memory) {
+		return Memory.builder()
+			.member(member)
+			.album(album)
+			.spot(memory.getSpot())
+			.date(memory.getDate())
+			.content(memory.getContent())
+			.build();
+	}
 }
