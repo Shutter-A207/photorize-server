@@ -55,6 +55,7 @@ public class InviteAlarm extends SoftDeletableEntity {
 	private InviteAlarm(Long id, Member member, Album album, Memory memory, boolean checked, AlarmType type) {
 		this.id = id;
 		this.member = member;
+		this.album = album;
 		this.memory = memory;
 		this.checked = checked;
 		this.type = type;
