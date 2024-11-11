@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shutter.photorize.domain.alarm.service.InviteAlarmService;
 import com.shutter.photorize.domain.album.entity.Album;
+import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.comment.service.CommentService;
@@ -37,6 +39,7 @@ public class MemoryService {
 	private final FileService fileService;
 	private final CommentService commentService;
 	private final AlbumService albumService;
+	private final InviteAlarmService inviteAlarmService;
 
 	@Transactional
 	public void createMemory(Long memberId, MemoryCreateRequest memoryCreateRequest, List<MultipartFile> files) {
@@ -47,7 +50,9 @@ public class MemoryService {
 
 		memoryRepository.save(memory);
 		fileService.saveFiles(files, memory);
-		// TODO: 알림 구현해야합니다.
+		if (album.getType() == AlbumType.PRIVATE) {
+			inviteAlarmService.sendPrivateAlarm(memoryCreateRequest.getAlbumIds(), memory);
+		}
 	}
 
 	@Transactional(readOnly = true)
