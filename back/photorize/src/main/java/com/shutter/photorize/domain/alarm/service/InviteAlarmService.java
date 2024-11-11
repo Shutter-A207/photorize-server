@@ -1,8 +1,9 @@
 package com.shutter.photorize.domain.alarm.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import com.shutter.photorize.domain.memory.entity.Memory;
 import com.shutter.photorize.domain.memory.repository.MemoryRepository;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
+import com.shutter.photorize.global.response.SliceResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,13 +40,12 @@ public class InviteAlarmService {
 	private final AlbumMemberListRepository albumMemberListRepository;
 	private final FCMService fcmService;
 
-	public List<InviteAlarmResponse> getInviteAlarms(Long memberId) {
+	public SliceResponse<InviteAlarmResponse> getInviteAlarms(Long memberId, Pageable pageable) {
 		Member member = memberRepository.getOrThrow(memberId);
-		List<InviteAlarm> inviteAlarms = inviteAlarmRepository.findByMember(member);
+		Slice<InviteAlarmResponse> inviteAlarms = inviteAlarmRepository.findByMember(member, pageable)
+			.map(this::toInviteAlarmResponse);
 
-		return inviteAlarms.stream()
-			.map(this::toInviteAlarmResponse)
-			.collect(Collectors.toList());
+		return SliceResponse.of(inviteAlarms);
 	}
 
 	@Transactional
