@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.comment.dto.request.CommentCreateRequest;
 import com.shutter.photorize.domain.comment.dto.request.CommentUpdateRequest;
+import com.shutter.photorize.domain.comment.dto.response.CommentCreateResponse;
 import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.comment.entity.Comment;
 import com.shutter.photorize.domain.comment.repository.CommentRepository;
@@ -35,11 +36,12 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void createComment(Long memberId, CommentCreateRequest commentCreateRequest) {
+	public CommentCreateResponse createComment(Long memberId, CommentCreateRequest commentCreateRequest) {
 		Member member = memberRepository.getOrThrow(memberId);
 		Memory memory = memoryRepository.getOrThrow(commentCreateRequest.getMemoryId());
 
-		commentRepository.save(commentCreateRequest.toComment(member, memory));
+		Comment comment = commentRepository.save(commentCreateRequest.toComment(member, memory));
+		return CommentCreateResponse.from(comment);
 	}
 
 	@Transactional

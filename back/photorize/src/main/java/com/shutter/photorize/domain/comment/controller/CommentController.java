@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shutter.photorize.domain.comment.dto.request.CommentCreateRequest;
 import com.shutter.photorize.domain.comment.dto.request.CommentUpdateRequest;
+import com.shutter.photorize.domain.comment.dto.response.CommentCreateResponse;
 import com.shutter.photorize.domain.comment.service.CommentService;
 import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.response.ApiResponse;
@@ -25,10 +26,10 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<Void>> createComment(@RequestBody CommentCreateRequest commentCreateRequest,
+	public ResponseEntity<ApiResponse<CommentCreateResponse>> createComment(
+		@RequestBody CommentCreateRequest commentCreateRequest,
 		@AuthUser ContextMember contextMember) {
-		commentService.createComment(contextMember.getId(), commentCreateRequest);
-		return ApiResponse.created();
+		return ApiResponse.created(commentService.createComment(contextMember.getId(), commentCreateRequest));
 	}
 
 	@PostMapping("/{commentId}")
