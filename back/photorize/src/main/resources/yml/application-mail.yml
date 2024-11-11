@@ -9,8 +9,3 @@ spring:
       mail.smtp.connectiontimeout: 1000 #1초
       mail.starttls.enable: true
       mail.smtp.auth: true
-
-email:
-  time:
-    valid: 300000
-    available: 86400000
