@@ -2,6 +2,7 @@ package com.shutter.photorize.domain.alarm.dto.response;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.shutter.photorize.domain.alarm.entity.AlarmType;
 import com.shutter.photorize.domain.alarm.entity.InviteAlarm;
 
@@ -11,6 +12,8 @@ import lombok.Getter;
 @Getter
 public class PrivateAlarmResponse extends InviteAlarmResponse {
 	private final String sender;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private final LocalDateTime date;
 
 	@Builder
