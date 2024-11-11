@@ -93,6 +93,7 @@ public class InviteAlarmService {
 			Album publicAlbum = inviteAlarm.getAlbum();
 			updateMemberStatusPublicAlbum(publicAlbum, member);
 		}
+		inviteAlarm.softDelete();
 	}
 
 	private void refuseInviteAlarm(Long alarmId) {
