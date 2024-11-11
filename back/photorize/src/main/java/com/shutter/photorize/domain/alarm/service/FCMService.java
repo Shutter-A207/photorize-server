@@ -22,6 +22,7 @@ public class FCMService {
 
 	private final FCMRepository fcmRepository;
 	private final MemberRepository memberRepository;
+	private final FirebaseMessaging firebaseMessaging;
 
 	public void saveToken(Long memberId, FCMTokenSaveRequest fcmTokenSaveRequest) {
 		Member member = memberRepository.getOrThrow(memberId);
@@ -39,7 +40,7 @@ public class FCMService {
 	private void sendAlarm(String token, AlarmType alarmType, Member member) {
 		Notification notification = makeNotification(alarmType, member);
 		try {
-			System.out.println(FirebaseMessaging.getInstance().send(makeMessage(notification, token)));
+			firebaseMessaging.send(makeMessage(notification, token));
 		} catch (FirebaseMessagingException e) {
 			throw new RuntimeException(e);
 		}
