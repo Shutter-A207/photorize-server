@@ -45,7 +45,7 @@ public class MemberController {
 		return ApiResponse.ok(memberListDtos);
 	}
 
-	@GetMapping("/checkNickname")
+	@PostMapping("/checkNickname")
 	public ResponseEntity<ApiResponse<Boolean>> checkNickname(
 		@RequestBody UpdateNicknameRequest updateNicknameRequest) {
 		Boolean isPossible = memberService.validateNickname(updateNicknameRequest.getNickname());
