@@ -42,6 +42,15 @@ public class ApiResponse<T> {
 				.build());
 	}
 
+	// CREATED 응답 생성 메서드
+	public static <T> ResponseEntity<ApiResponse<T>> created(T data) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(ApiResponse.<T>builder()
+				.status(HttpStatus.CREATED.value())
+				.data(data)
+				.build());
+	}
+
 	// 에러 응답 생성 메서드
 	public static ResponseEntity<ApiResponse<Void>> error(ErrorType errorType) {
 		return ResponseEntity.status(errorType.getStatus())
