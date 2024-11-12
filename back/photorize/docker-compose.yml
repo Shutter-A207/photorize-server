@@ -19,6 +19,16 @@ services:
       - 'mysql_data:/var/lib/mysql'
     networks:
       - photorize-backend
+
+  redis:
+    container_name: photorize-redis
+    image: redis:7.0.0
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - photorize-backend
+
 networks:
   photorize-backend:
     driver: bridge
