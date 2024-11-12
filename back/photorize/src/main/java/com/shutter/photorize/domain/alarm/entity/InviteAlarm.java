@@ -37,6 +37,10 @@ public class InviteAlarm extends SoftDeletableEntity {
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sender_id", nullable = false)
+	private Member sender;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "album_id")
 	private Album album;
 
@@ -52,26 +56,30 @@ public class InviteAlarm extends SoftDeletableEntity {
 	private AlarmType type;
 
 	@Builder
-	private InviteAlarm(Long id, Member member, Album album, Memory memory, boolean checked, AlarmType type) {
+	private InviteAlarm(Long id, Member member, Member sender, Album album, Memory memory, boolean checked,
+		AlarmType type) {
 		this.id = id;
 		this.member = member;
+		this.sender = sender;
 		this.album = album;
 		this.memory = memory;
 		this.checked = checked;
 		this.type = type;
 	}
 
-	public static InviteAlarm of(Member member, Memory memory) {
+	public static InviteAlarm of(Member member, Member sender, Memory memory) {
 		return InviteAlarm.builder()
 			.member(member)
+			.sender(sender)
 			.memory(memory)
 			.type(AlarmType.PRIVATE)
 			.build();
 	}
 
-	public static InviteAlarm of(Member member, Album album) {
+	public static InviteAlarm of(Member member, Member sender, Album album) {
 		return InviteAlarm.builder()
 			.member(member)
+			.sender(sender)
 			.album(album)
 			.type(AlarmType.PUBLIC)
 			.build();

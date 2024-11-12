@@ -49,21 +49,21 @@ public class InviteAlarmService {
 	}
 
 	@Transactional
-	public void sendPrivateAlarm(List<Long> albumIds, Memory memory) {
+	public void sendPrivateAlarm(List<Long> albumIds, Memory memory, Member sender) {
 		albumIds.forEach(albumId -> {
 			Album album = albumRepository.getOrThrow(albumId);
 			Member member = album.getMember();
-			InviteAlarm inviteAlarm = InviteAlarm.of(member, memory);
+			InviteAlarm inviteAlarm = InviteAlarm.of(member, sender, memory);
 			inviteAlarmRepository.save(inviteAlarm);
 			fcmService.sendPrivateAlarm(member, memory.getMember());
 		});
 	}
 
 	@Transactional
-	public void sendPublicAlarm(List<Long> memberIds, Album album) {
+	public void sendPublicAlarm(List<Long> memberIds, Album album, Member sender) {
 		memberIds.forEach(memberId -> {
 			Member member = memberRepository.getOrThrow(memberId);
-			InviteAlarm inviteAlarm = InviteAlarm.of(member, album);
+			InviteAlarm inviteAlarm = InviteAlarm.of(member, sender, album);
 			inviteAlarmRepository.save(inviteAlarm);
 			fcmService.sendPublicAlarm(member, album.getMember());
 		});

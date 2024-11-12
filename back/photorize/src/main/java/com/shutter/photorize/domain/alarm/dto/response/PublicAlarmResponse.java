@@ -12,9 +12,9 @@ public class PublicAlarmResponse extends InviteAlarmResponse {
 	private final String albumName;
 
 	@Builder
-	private PublicAlarmResponse(Long alarmId, AlarmType type, String inviter,
+	private PublicAlarmResponse(Long alarmId, AlarmType type, String url, String inviter,
 		String albumName) {
-		super(alarmId, type);
+		super(alarmId, type, url);
 		this.inviter = inviter;
 		this.albumName = albumName;
 	}
@@ -23,6 +23,7 @@ public class PublicAlarmResponse extends InviteAlarmResponse {
 		return PublicAlarmResponse.builder()
 			.alarmId(inviteAlarm.getId())
 			.type(inviteAlarm.getType())
+			.url(inviteAlarm.getSender().getImg())
 			.inviter(inviteAlarm.getAlbum().getMember().getNickname())
 			.albumName(inviteAlarm.getAlbum().getName())
 			.build();

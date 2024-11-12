@@ -10,4 +10,5 @@ import lombok.Getter;
 public class InviteAlarmResponse {
 	private Long alarmId;
 	private AlarmType type;
+	private String url;
 }

@@ -56,7 +56,7 @@ public class MemoryService {
 		memoryRepository.save(memory);
 		fileService.saveFiles(files, memory);
 		if (album.getType() == AlbumType.PRIVATE) {
-			inviteAlarmService.sendPrivateAlarm(memoryCreateRequest.getAlbumIds(), memory);
+			inviteAlarmService.sendPrivateAlarm(memoryCreateRequest.getAlbumIds(), memory, member);
 		}
 	}
 
