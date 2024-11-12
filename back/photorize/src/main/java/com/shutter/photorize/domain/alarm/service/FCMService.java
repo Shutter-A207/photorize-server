@@ -12,7 +12,6 @@ import com.shutter.photorize.domain.alarm.dto.request.FCMTokenSaveRequest;
 import com.shutter.photorize.domain.alarm.entity.AlarmType;
 import com.shutter.photorize.domain.alarm.entity.FCMToken;
 import com.shutter.photorize.domain.alarm.repository.FCMRepository;
-import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 
@@ -31,24 +30,24 @@ public class FCMService {
 		fcmRepository.save(fcmTokenSaveRequest.from(member));
 	}
 
-	public void sendPublicAlarm(Member member, Album album) {
+	public void sendPublicAlarm(Member member, Member createMember) {
 		List<FCMToken> fcmTokens = fcmRepository.findByMember(member);
 
 		fcmTokens.forEach(fcmToken ->
-			sendAlarm(fcmToken.getToken(), AlarmType.PUBLIC, album.getMember())
+			sendAlarm(fcmToken.getToken(), AlarmType.PUBLIC, createMember)
 		);
 	}
 
-	public void sendPrivateAlarm(Member member, Album album) {
+	public void sendPrivateAlarm(Member member, Member writerMember) {
 		List<FCMToken> fcmTokens = fcmRepository.findByMember(member);
 
 		fcmTokens.forEach(fcmToken ->
-			sendAlarm(fcmToken.getToken(), AlarmType.PRIVATE, album.getMember())
+			sendAlarm(fcmToken.getToken(), AlarmType.PRIVATE, writerMember)
 		);
 	}
 
-	private void sendAlarm(String token, AlarmType alarmType, Member member) {
-		Notification notification = makeNotification(alarmType, member);
+	private void sendAlarm(String token, AlarmType alarmType, Member writerMember) {
+		Notification notification = makeNotification(alarmType, writerMember);
 		try {
 			firebaseMessaging.send(makeMessage(notification, token));
 		} catch (FirebaseMessagingException e) {

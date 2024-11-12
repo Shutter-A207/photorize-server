@@ -55,7 +55,7 @@ public class InviteAlarmService {
 			Member member = album.getMember();
 			InviteAlarm inviteAlarm = InviteAlarm.of(member, memory);
 			inviteAlarmRepository.save(inviteAlarm);
-			fcmService.sendPrivateAlarm(member, album);
+			fcmService.sendPrivateAlarm(member, memory.getMember());
 		});
 	}
 
@@ -65,7 +65,7 @@ public class InviteAlarmService {
 			Member member = memberRepository.getOrThrow(memberId);
 			InviteAlarm inviteAlarm = InviteAlarm.of(member, album);
 			inviteAlarmRepository.save(inviteAlarm);
-			fcmService.sendPublicAlarm(member, album);
+			fcmService.sendPublicAlarm(member, album.getMember());
 		});
 	}
 
@@ -98,7 +98,7 @@ public class InviteAlarmService {
 
 	private void refuseInviteAlarm(Long alarmId) {
 		InviteAlarm inviteAlarm = inviteAlarmRepository.getByIdOrThrow(alarmId);
-		inviteAlarm.softDelete(); // isDeleted 메서드 대신 상태를 직접 설정
+		inviteAlarm.softDelete();
 	}
 
 	private Album getOrCreatePrivateAlbumForMember(Member member) {
