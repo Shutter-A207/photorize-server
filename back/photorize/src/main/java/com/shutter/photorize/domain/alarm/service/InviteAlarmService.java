@@ -28,9 +28,11 @@ import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.global.response.SliceResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class InviteAlarmService {
 
 	private final InviteAlarmRepository inviteAlarmRepository;
@@ -82,14 +84,16 @@ public class InviteAlarmService {
 	private void acceptInviteAlarm(Long memberId, Long alarmId) {
 		Member member = memberRepository.getOrThrow(memberId);
 		InviteAlarm inviteAlarm = inviteAlarmRepository.getByIdWithMemberAndAlbumAndMemoryOrThrow(alarmId);
-
+		log.info("조건문 타기전: {}", inviteAlarm.getType());
 		if (inviteAlarm.getType() == AlarmType.PRIVATE) {
+			log.info("PRIVATE일 경우: {}", inviteAlarm.getType());
 			Album memberPrivateAlbum = getOrCreatePrivateAlbumForMember(member);
 			Memory memory = inviteAlarm.getMemory();
 			Memory copiedMemory = Memory.of(member, memberPrivateAlbum, memory);
 			memoryRepository.save(copiedMemory);
 		} else if (inviteAlarm.getType() == AlarmType.PUBLIC) {
 			// 공유 앨범에 멤버 추가
+			log.info("PUBLIC일 경우: {}", inviteAlarm.getType());
 			Album publicAlbum = inviteAlarm.getAlbum();
 			updateMemberStatusPublicAlbum(publicAlbum, member);
 		}
