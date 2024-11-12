@@ -38,9 +38,9 @@ public class AuthController {
 	@PostMapping("/email/code")
 	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(@RequestBody CodeCreateRequest codeCreateRequest) {
 
-		boolean result = authService.createEmailAuthCode(codeCreateRequest.getEmail(),
+		authService.createEmailAuthCode(codeCreateRequest.getEmail(),
 			AuthCodeType.of(String.valueOf(codeCreateRequest.getAuthType())));
-		return ApiResponse.ok(result);
+		return ApiResponse.ok(true);
 	}
 
 	@PostMapping("/email/verifyCode")

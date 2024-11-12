@@ -1,5 +1,6 @@
 package com.shutter.photorize.domain.member.service;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
@@ -18,16 +19,16 @@ public class AuthService {
 	private final AuthCodeService authCodeService;
 	private final MailService mailService;
 
-	public boolean createEmailAuthCode(String email, AuthCodeType authCodeType) {
-		String code = authCodeService.createAuthCode(email, authCodeType);
-
-		// log.info("Auth code={}", code);
-
-		EmailForm emailForm = authCodeService.getAuthEmailForm(email, code, authCodeType);
-
-		mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(), emailForm.getContent(), emailForm.isHtml());
-
-		return true;
+	@Async
+	public void createEmailAuthCode(String email, AuthCodeType authCodeType) {
+		try {
+			String code = authCodeService.createAuthCode(email, authCodeType);
+			EmailForm emailForm = authCodeService.getAuthEmailForm(email, code, authCodeType);
+			mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(),
+				emailForm.getContent(), emailForm.isHtml());
+		} catch (Exception e) {
+			log.error("Failed to send authentication email to: {}", email, e);
+		}
 	}
 
 	public boolean validAuthCode(EmailAuthRequest emailAuthRequest, AuthCodeType authCodeType) {
