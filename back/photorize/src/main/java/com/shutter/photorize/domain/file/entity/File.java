@@ -35,7 +35,7 @@ public class File extends UpdatableEntity {
 	@Enumerated(EnumType.STRING)
 	private FileType type;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String url;
 
 	@Builder
