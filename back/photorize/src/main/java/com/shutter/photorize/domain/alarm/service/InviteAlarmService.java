@@ -19,6 +19,8 @@ import com.shutter.photorize.domain.album.entity.AlbumMemberList;
 import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.repository.AlbumMemberListRepository;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
+import com.shutter.photorize.domain.file.entity.File;
+import com.shutter.photorize.domain.file.repository.FileRepository;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.memory.entity.Memory;
@@ -40,6 +42,7 @@ public class InviteAlarmService {
 	private final AlbumRepository albumRepository;
 	private final MemoryRepository memoryRepository;
 	private final AlbumMemberListRepository albumMemberListRepository;
+	private final FileRepository fileRepository;
 	private final FCMService fcmService;
 
 	public SliceResponse<InviteAlarmResponse> getInviteAlarms(Long memberId, Pageable pageable) {
@@ -90,6 +93,7 @@ public class InviteAlarmService {
 			Album memberPrivateAlbum = getOrCreatePrivateAlbumForMember(member);
 			Memory memory = inviteAlarm.getMemory();
 			Memory copiedMemory = Memory.of(member, memberPrivateAlbum, memory);
+			copyAndSaveFilesForMemory(memory, copiedMemory);
 			memoryRepository.save(copiedMemory);
 		} else if (inviteAlarm.getType() == AlarmType.PUBLIC) {
 			// 공유 앨범에 멤버 추가
@@ -126,4 +130,12 @@ public class InviteAlarmService {
 		return null;
 	}
 
+	private void copyAndSaveFilesForMemory(Memory originalMemory, Memory copiedMemory) {
+		List<File> filesByMemory = fileRepository.findFilesByMemory(originalMemory);
+
+		for (File file : filesByMemory) {
+			File copiedFile = File.of(copiedMemory, file.getType(), file.getUrl());
+			fileRepository.save(copiedFile);
+		}
+	}
 }
