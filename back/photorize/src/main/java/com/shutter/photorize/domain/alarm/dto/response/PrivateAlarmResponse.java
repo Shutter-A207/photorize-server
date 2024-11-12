@@ -28,7 +28,7 @@ public class PrivateAlarmResponse extends InviteAlarmResponse {
 			.alarmId(inviteAlarm.getId())
 			.type(inviteAlarm.getType())
 			.url(inviteAlarm.getSender().getImg())
-			.sender(inviteAlarm.getMember().getNickname())
+			.sender(inviteAlarm.getSender().getNickname())
 			.date(inviteAlarm.getMemory().getDate())
 			.build();
 	}
