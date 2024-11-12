@@ -78,8 +78,7 @@ public class AlbumService {
 		Member creator = memberRepository.getOrThrow(memberId);
 		Color color = colorRepository.getOrThrow(DEFAULT_ALBUM_COLOR);
 
-		String privateAlbumName = String.format(PRIVATE_ALBUM_NAME_FORMAT, creator.getNickname());
-		Album savedAlbum = Album.of(creator, color, privateAlbumName, AlbumType.PRIVATE);
+		Album savedAlbum = Album.of(creator, color, PRIVATE_ALBUM_NAME_FORMAT, AlbumType.PRIVATE);
 		albumRepository.save(savedAlbum);
 	}
 
