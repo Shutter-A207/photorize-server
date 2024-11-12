@@ -51,11 +51,7 @@ public class FileService {
 
 	public void deleteFiles(Memory memory) {
 		List<File> existingFiles = fileRepository.findFilesByMemory(memory);
-		existingFiles.forEach(file -> {
-			// TODO: soft delete 할 것인지 상의 해야합니다.
-			s3Utils.deleteFile(file.getUrl());
-			fileRepository.delete(file);
-		});
+		fileRepository.deleteAll(existingFiles);
 	}
 
 	public void deleteFileByType(Memory memory, FileType type) {
