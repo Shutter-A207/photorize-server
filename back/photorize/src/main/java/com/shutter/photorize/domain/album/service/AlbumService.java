@@ -14,6 +14,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shutter.photorize.domain.alarm.service.InviteAlarmService;
 import com.shutter.photorize.domain.album.dto.request.AlbumCreateRequest;
 import com.shutter.photorize.domain.album.dto.request.AlbumModifyRequest;
 import com.shutter.photorize.domain.album.dto.response.AlbumCreateResponse;
@@ -50,6 +51,7 @@ public class AlbumService {
 	private final AlbumMemberListRepository albumMemberListRepository;
 	private final MemoryRepository memoryRepository;
 	private final ColorRepository colorRepository;
+	private final InviteAlarmService inviteAlarmService;
 
 	@Transactional
 	public AlbumCreateResponse createPublicAlbum(AlbumCreateRequest albumCreateRequest, Long memberId) {
@@ -68,6 +70,8 @@ public class AlbumService {
 			.collect(Collectors.toList());
 
 		albumMemberListRepository.saveAll(albumMembers);
+
+		inviteAlarmService.sendPublicAlarm(albumCreateRequest.getMembers(), savedAlbum, creator);
 
 		return AlbumCreateResponse.of(savedAlbum);
 
