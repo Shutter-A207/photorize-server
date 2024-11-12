@@ -93,8 +93,8 @@ public class InviteAlarmService {
 			Album memberPrivateAlbum = getOrCreatePrivateAlbumForMember(member);
 			Memory memory = inviteAlarm.getMemory();
 			Memory copiedMemory = Memory.of(member, memberPrivateAlbum, memory);
-			copyAndSaveFilesForMemory(memory, copiedMemory);
 			memoryRepository.save(copiedMemory);
+			copyAndSaveFilesForMemory(memory, copiedMemory);
 		} else if (inviteAlarm.getType() == AlarmType.PUBLIC) {
 			// 공유 앨범에 멤버 추가
 			log.info("PUBLIC일 경우: {}", inviteAlarm.getType());
