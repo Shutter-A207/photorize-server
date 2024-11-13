@@ -16,6 +16,7 @@ import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.response.ApiResponse;
 import com.shutter.photorize.global.security.AuthUser;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,14 +28,14 @@ public class CommentController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<CommentCreateResponse>> createComment(
-		@RequestBody CommentCreateRequest commentCreateRequest,
+		@RequestBody @Valid CommentCreateRequest commentCreateRequest,
 		@AuthUser ContextMember contextMember) {
 		return ApiResponse.created(commentService.createComment(contextMember.getId(), commentCreateRequest));
 	}
 
 	@PostMapping("/{commentId}")
 	public ResponseEntity<ApiResponse<Void>> updateComment(@PathVariable Long commentId,
-		@RequestBody CommentUpdateRequest commentUpdateRequest,
+		@RequestBody @Valid CommentUpdateRequest commentUpdateRequest,
 		@AuthUser ContextMember contextMember) {
 		commentService.updateComment(contextMember.getId(), commentId, commentUpdateRequest);
 		return ApiResponse.ok(null);
