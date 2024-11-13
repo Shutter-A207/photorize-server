@@ -35,4 +35,8 @@ public class FCMToken extends UpdatableEntity {
 		this.member = member;
 		this.token = token;
 	}
+
+	public void updateMember(Member member) {
+		this.member = member;
+	}
 }
