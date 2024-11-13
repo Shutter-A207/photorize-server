@@ -15,7 +15,7 @@ public enum ErrorType {
 
 	// member
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
-	MISMATCH_PASSWORD(HttpStatus.BAD_REQUEST, "패스워드가 일치하기 않습니다."),
+	MISMATCH_PASSWORD(HttpStatus.BAD_REQUEST, "패스워드가 일치하지 않습니다."),
 	DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "중복된 닉네임이 존재합니다."),
 	DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일이 존재합니다."),
 	EXPIRED_EMAIL_CODE(HttpStatus.BAD_REQUEST, "인증 코드의 유효시간이 경과했습니다. 다시 시도해주세요."),
