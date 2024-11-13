@@ -2,6 +2,7 @@ package com.shutter.photorize.domain.comment.dto.response;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.shutter.photorize.domain.comment.entity.Comment;
 
 import lombok.Builder;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class CommentCreateResponse {
 	private Long commentId;
 	private String content;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime date;
 
 	@Builder
