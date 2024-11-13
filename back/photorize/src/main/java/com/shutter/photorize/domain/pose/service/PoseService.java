@@ -1,7 +1,7 @@
 package com.shutter.photorize.domain.pose.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +26,8 @@ public class PoseService {
 	private final MemberRepository memberRepository;
 
 	@Transactional(readOnly = true)
-	public Page<PoseResponse> getAllPoses(Long memberId, Pageable pageable) {
-		return poseRepository.findAllWithLikes(memberId, pageable);
+	public Page<PoseResponse> getAllPoses(Long memberId, int page, int size) {
+		return poseRepository.findAllWithLikes(memberId, PageRequest.of(page, size));
 	}
 
 	@Transactional

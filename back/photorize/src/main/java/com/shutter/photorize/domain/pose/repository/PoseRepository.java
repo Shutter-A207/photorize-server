@@ -10,25 +10,25 @@ import org.springframework.stereotype.Repository;
 
 import com.shutter.photorize.domain.pose.dto.response.PoseResponse;
 import com.shutter.photorize.domain.pose.entity.Pose;
-import com.shutter.photorize.global.error.ErrorType;
-import com.shutter.photorize.global.exception.PhotorizeException;
 
 import jakarta.persistence.LockModeType;
 
 @Repository
 public interface PoseRepository extends JpaRepository<Pose, Long> {
 
-	@Query(value = """
-		SELECT p.id AS poseId, 
-		       p.headcount AS headcount, 
-		       p.img AS img, 
-		       (SELECT COUNT(*) FROM pose_like pl WHERE pl.pose_id = p.id) AS likeCount,
-		       EXISTS (
-		           SELECT 1 FROM pose_like pl WHERE pl.pose_id = p.id AND pl.member_id = :memberId
-		       ) AS isLiked
-		FROM pose p
-		ORDER BY likeCount DESC
-		""", nativeQuery = true)
+	@Query("""
+		    SELECT new com.shutter.photorize.domain.pose.dto.response.PoseResponse(
+		        p.id, 
+		        p.headcount, 
+		        p.img, 
+		        COUNT(pl), 
+		        CASE WHEN pl IS NOT NULL THEN true ELSE false END
+		    )
+		    FROM Pose p
+		    LEFT JOIN PoseLike pl ON p.id = pl.pose.id AND pl.member.id = :memberId
+		    GROUP BY p.id, p.headcount, p.img
+		    ORDER BY COUNT(pl) DESC
+		""")
 	Page<PoseResponse> findAllWithLikes(@Param("memberId") Long memberId, Pageable pageable);
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -37,6 +37,6 @@ public interface PoseRepository extends JpaRepository<Pose, Long> {
 
 	default Pose getOrThrow(Long id) {
 		return findById(id)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_POSE_FOUND));
+			.orElseThrow(() -> new RuntimeException("Pose not found"));
 	}
 }
