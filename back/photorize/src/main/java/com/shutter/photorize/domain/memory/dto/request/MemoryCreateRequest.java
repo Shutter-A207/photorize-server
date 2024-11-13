@@ -32,7 +32,6 @@ public class MemoryCreateRequest {
 	@Size(min = 1, max = 500)
 	private String content;
 
-	@NotEmpty
 	private List<Long> albumIds;
 
 	@NotNull
