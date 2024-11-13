@@ -43,7 +43,8 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws
+	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager,
+		JwtFilter jwtFilter) throws
 		Exception {
 
 		//http basic 인증 방식 disable
@@ -69,7 +70,7 @@ public class SecurityConfig {
 			)
 			.addFilter(new LoginFilter(authenticationManager, jwtUtil))
 			// JwtFilter 등록
-			.addFilterBefore(new JwtFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 			// 세션 설정
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.exceptionHandling(exceptionHandling ->
