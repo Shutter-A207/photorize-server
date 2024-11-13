@@ -13,8 +13,6 @@ import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.comment.service.CommentService;
-import com.shutter.photorize.domain.file.entity.File;
-import com.shutter.photorize.domain.file.entity.FileType;
 import com.shutter.photorize.domain.file.repository.FileRepository;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.entity.Member;
@@ -116,19 +114,16 @@ public class MemoryService {
 	public List<MainMemoryResponse> getMainMemory(Long memberId) {
 		Member member = memberRepository.getOrThrow(memberId);
 
-		List<Memory> memories = memoryRepository.findMemoryRandom(member);
+		List<Object[]> memories = memoryRepository.findMemoryRandom(member);
 
-		List<MainMemoryResponse> memoryResponses = memories.stream()
-			.map(memory -> {
-				String url = fileRepository.findFilesByMemoryAndType(memory, FileType.PHOTO)
-					.map(File::getUrl)
-					.orElse(null);
+		return memories.stream()
+			.map(result -> {
+				Memory memory = (Memory)result[0];
+				String url = (String)result[1];
 
 				return MainMemoryResponse.of(memory, url);
 			})
 			.toList();
-
-		return memoryResponses;
 
 	}
 }

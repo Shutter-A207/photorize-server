@@ -45,16 +45,20 @@ public interface MemoryRepository extends JpaRepository<Memory, Long> {
 		"WHERE m.id = :memoryId")
 	Optional<Memory> findMemoryWithMemberAndSpotById(@Param("memoryId") Long memoryId);
 
-	@Query("SELECT m FROM Memory m " +
-		"JOIN Album a ON m.album.id = a.id " +
-		"WHERE (a.member = :member AND a.type = 'PRIVATE') " +
-		"OR EXISTS (" +
-		"SELECT aml FROM AlbumMemberList aml " +
-		"WHERE aml.album.id = a.id " +
-		"AND aml.member = :member " +
-		"AND aml.status = true" +
-		") " +
-		"ORDER BY FUNCTION('RAND') " +
-		"LIMIT 8")
-	List<Memory> findMemoryRandom(@Param("member") Member member);
+	@Query("""
+		SELECT DISTINCT m, f.url
+		FROM Memory m
+		JOIN FETCH m.album a
+		LEFT JOIN File f ON f.memory = m AND f.type = 'PHOTO' 
+		WHERE (a.member = :member AND a.type = 'PRIVATE') 
+		OR EXISTS (
+		    SELECT aml FROM AlbumMemberList aml 
+		    WHERE aml.album.id = a.id 
+		    AND aml.member = :member 
+		    AND aml.status = true
+		) 
+		ORDER BY FUNCTION('RAND') 
+		LIMIT 8
+		""")
+	List<Object[]> findMemoryRandom(@Param("member") Member member);
 }
