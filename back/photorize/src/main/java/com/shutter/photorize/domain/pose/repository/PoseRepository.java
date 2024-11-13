@@ -1,7 +1,7 @@
 package com.shutter.photorize.domain.pose.repository;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -29,7 +29,7 @@ public interface PoseRepository extends JpaRepository<Pose, Long> {
 		    GROUP BY p.id, p.headcount, p.img
 		    ORDER BY COUNT(pl) DESC
 		""")
-	Page<PoseResponse> findAllWithLikes(@Param("memberId") Long memberId, Pageable pageable);
+	Slice<PoseResponse> findAllWithLikes(@Param("memberId") Long memberId, Pageable pageable);
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("SELECT p FROM Pose p WHERE p.id = :id")

@@ -1,6 +1,6 @@
 package com.shutter.photorize.domain.pose.controller;
 
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +26,12 @@ public class PoseController {
 	private final PoseService poseService;
 
 	@GetMapping
-	public ResponseEntity<ApiResponse<Page<PoseResponse>>> getAllPoses(
+	public ResponseEntity<ApiResponse<Slice<PoseResponse>>> getAllPoses(
 		@AuthUser ContextMember contextMember,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size) {
 
-		Page<PoseResponse> poses = poseService.getAllPoses(contextMember.getId(), page, size);
+		Slice<PoseResponse> poses = poseService.getAllPoses(contextMember.getId(), page, size);
 		return ApiResponse.ok(poses);
 	}
 
