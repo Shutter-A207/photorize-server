@@ -29,6 +29,8 @@ import com.shutter.photorize.global.response.ApiResponse;
 import com.shutter.photorize.global.response.SliceResponse;
 import com.shutter.photorize.global.security.AuthUser;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -40,8 +42,8 @@ public class MemoryController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> createMemory(
-		@RequestPart("memory") MemoryCreateRequest memoryCreateRequest,
-		@RequestPart(value = "photo", required = false) MultipartFile photo,
+		@RequestPart("memory") @Valid MemoryCreateRequest memoryCreateRequest,
+		@RequestPart(value = "photo", required = true) @NotNull MultipartFile photo,
 		@RequestPart(value = "video", required = false) MultipartFile video,
 		@AuthUser ContextMember contextMember) {
 
@@ -72,8 +74,8 @@ public class MemoryController {
 	@PostMapping("/{memoryId}")
 	public ResponseEntity<ApiResponse<Void>> updateMemory(
 		@PathVariable Long memoryId,
-		@RequestPart("memory") MemoryUpdateRequest memoryUpdateRequest,
-		@RequestPart(value = "photo", required = false) MultipartFile photo,
+		@RequestPart("memory") @Valid MemoryUpdateRequest memoryUpdateRequest,
+		@RequestPart(value = "photo", required = true) MultipartFile photo,
 		@RequestPart(value = "video", required = false) MultipartFile video,
 		@AuthUser ContextMember contextMember) {
 
