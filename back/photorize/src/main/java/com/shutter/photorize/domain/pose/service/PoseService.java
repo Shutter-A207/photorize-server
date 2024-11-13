@@ -1,8 +1,7 @@
 package com.shutter.photorize.domain.pose.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,47 +25,27 @@ public class PoseService {
 	private final PoseLikeRepository poseLikeRepository;
 	private final MemberRepository memberRepository;
 
-	private Member getMemberOrThrow(Long memberId) {
-		if (memberId == null) {
-			throw new PhotorizeException(ErrorType.USER_NOT_FOUND);
-		}
-		return memberRepository.findById(memberId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.USER_NOT_FOUND));
-	}
-
-	private Pose getPoseOrThrow(Long poseId) {
-		return poseRepository.findById(poseId)
-			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_POSE_FOUND));
-	}
-
 	@Transactional(readOnly = true)
-	public List<PoseResponse> getAllPoses(Long memberId) {
-		Member member = getMemberOrThrow(memberId);
-		return poseRepository.findAll().stream().map(pose -> {
-			boolean isLiked = poseLikeRepository.existsByMemberAndPose(member, pose);
-			int likeCount = poseLikeRepository.countByPose(pose);
-			return new PoseResponse(pose.getId(), pose.getHeadcount().name(), pose.getImg(),
-				likeCount, isLiked);
-		}).collect(Collectors.toList());
+	public Page<PoseResponse> getAllPoses(Long memberId, Pageable pageable) {
+		return poseRepository.findAllWithLikes(memberId, pageable);
 	}
 
 	@Transactional
 	public void likePose(Long poseId, Long memberId) {
-		Member member = getMemberOrThrow(memberId);
-		Pose pose = getPoseOrThrow(poseId);
+		Member member = memberRepository.getOrThrow(memberId);
+		Pose pose = poseRepository.getPoseWithLock(poseId);
 
 		if (poseLikeRepository.existsByMemberAndPose(member, pose)) {
-			throw new PhotorizeException(ErrorType.NO_POSE_FOUND);
+			throw new PhotorizeException(ErrorType.ALREADY_LIKED);
 		}
 
-		PoseLike poseLike = new PoseLike(member, pose);
-		poseLikeRepository.save(poseLike);
+		poseLikeRepository.save(new PoseLike(member, pose));
 	}
 
 	@Transactional
 	public void unlikePose(Long poseId, Long memberId) {
-		Member member = getMemberOrThrow(memberId);
-		Pose pose = getPoseOrThrow(poseId);
+		Member member = memberRepository.getOrThrow(memberId);
+		Pose pose = poseRepository.getPoseWithLock(poseId);
 
 		PoseLike poseLike = poseLikeRepository.findByMemberAndPose(member, pose)
 			.orElseThrow(() -> new PhotorizeException(ErrorType.NO_POSE_FOUND));
