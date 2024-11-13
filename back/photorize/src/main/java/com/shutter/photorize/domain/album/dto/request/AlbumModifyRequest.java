@@ -1,6 +1,7 @@
 package com.shutter.photorize.domain.album.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,6 +15,6 @@ public class AlbumModifyRequest {
 	@Size(min = 2, max = 12)
 	private String name;
 
-	@NotBlank
+	@NotNull
 	private Long colorId;
 }

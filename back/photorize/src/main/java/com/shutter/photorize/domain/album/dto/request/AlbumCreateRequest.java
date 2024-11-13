@@ -9,6 +9,7 @@ import com.shutter.photorize.domain.album.entity.Color;
 import com.shutter.photorize.domain.member.entity.Member;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,10 +23,11 @@ public class AlbumCreateRequest {
 	@Size(min = 2, max = 12)
 	private String name;
 
-	@NotBlank
+	@NotNull
 	private Long colorId;
 
-	@NotBlank
+	@NotNull
+	@Size(min = 1)
 	private List<Long> members;
 
 	public Album toAlbum(Member member, Color color, String name, AlbumType type) {

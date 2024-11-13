@@ -5,6 +5,7 @@ import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.memory.entity.Memory;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentCreateRequest {
 
-	@NotBlank
+	@NotNull
 	private Long memoryId;
 
 	@NotBlank
