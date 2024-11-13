@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class MailService {
 			mimeMessageHelper.setTo(to);
 			mimeMessageHelper.setSubject(subject);
 			mimeMessageHelper.setText(content, isHtml);
+			mimeMessageHelper.setFrom(new InternetAddress("yangshutter@gmail.com", "Photorize"));
 
 			javaMailSender.send(mimeMessage);
 
