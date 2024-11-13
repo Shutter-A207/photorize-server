@@ -31,6 +31,7 @@ import com.shutter.photorize.global.response.ApiResponse;
 import com.shutter.photorize.global.response.SliceResponse;
 import com.shutter.photorize.global.security.AuthUser;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -43,7 +44,7 @@ public class AlbumController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<AlbumCreateResponse>> createAlbum(
-		@RequestBody AlbumCreateRequest albumCreateRequest,
+		@RequestBody @Valid AlbumCreateRequest albumCreateRequest,
 		@AuthUser ContextMember contextmember) {
 
 		AlbumCreateResponse albumCreateResponse = albumService.createPublicAlbum(albumCreateRequest,
@@ -74,7 +75,7 @@ public class AlbumController {
 
 	@PostMapping("/{albumId}")
 	public ResponseEntity<ApiResponse<Void>> modifyAlbum(
-		@RequestBody AlbumModifyRequest albumModifyRequest,
+		@RequestBody @Valid AlbumModifyRequest albumModifyRequest,
 		@PathVariable Long albumId,
 		@AuthUser ContextMember contextmember) {
 		albumService.modifyAlbum(albumModifyRequest, albumId, contextmember.getId());
