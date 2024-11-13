@@ -17,17 +17,17 @@ import jakarta.persistence.LockModeType;
 public interface PoseRepository extends JpaRepository<Pose, Long> {
 
 	@Query("""
-		    SELECT new com.shutter.photorize.domain.pose.dto.response.PoseResponse(
-		        p.id, 
-		        p.headcount, 
-		        p.img, 
-		        COUNT(pl), 
-		        CASE WHEN pl IS NOT NULL THEN true ELSE false END
-		    )
-		    FROM Pose p
-		    LEFT JOIN PoseLike pl ON p.id = pl.pose.id AND pl.member.id = :memberId
-		    GROUP BY p.id, p.headcount, p.img
-		    ORDER BY COUNT(pl) DESC
+		SELECT new com.shutter.photorize.domain.pose.dto.response.PoseResponse(
+		    p.id, 
+		    p.headcount, 
+		    p.img, 
+		    COUNT(pl), 
+		    CASE WHEN pl IS NOT NULL THEN true ELSE false END
+		)
+		FROM Pose p
+		LEFT JOIN PoseLike pl ON p.id = pl.pose.id AND pl.member.id = :memberId
+		GROUP BY p.id, p.headcount, p.img
+		ORDER BY COUNT(pl) DESC
 		""")
 	Slice<PoseResponse> findAllWithLikes(@Param("memberId") Long memberId, Pageable pageable);
 
