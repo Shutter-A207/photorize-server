@@ -16,6 +16,7 @@ import com.shutter.photorize.domain.member.service.MemberService;
 import com.shutter.photorize.domain.member.strategy.AuthCodeType;
 import com.shutter.photorize.global.response.ApiResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,7 +29,7 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/join")
-	public ResponseEntity<ApiResponse<Boolean>> createMember(@RequestBody JoinRequest joinRequest) {
+	public ResponseEntity<ApiResponse<Boolean>> createMember(@RequestBody @Valid JoinRequest joinRequest) {
 		Long memberId = memberService.createMember(joinRequest);
 		albumService.createPrivateAlbum(memberId);
 
@@ -36,7 +37,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/email/code")
-	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(@RequestBody CodeCreateRequest codeCreateRequest) {
+	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(
+		@RequestBody @Valid CodeCreateRequest codeCreateRequest) {
 
 		authService.createEmailAuthCode(codeCreateRequest.getEmail(),
 			AuthCodeType.of(String.valueOf(codeCreateRequest.getAuthType())));
@@ -44,7 +46,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/email/verifyCode")
-	public ResponseEntity<ApiResponse<Boolean>> validEmailAuthCode(@RequestBody EmailAuthRequest emailAuthRequest) {
+	public ResponseEntity<ApiResponse<Boolean>> validEmailAuthCode(
+		@RequestBody @Valid EmailAuthRequest emailAuthRequest) {
 		boolean result = authService.validAuthCode(emailAuthRequest,
 			AuthCodeType.of(String.valueOf(emailAuthRequest.getAuthType())));
 		return ApiResponse.ok(result);
@@ -52,7 +55,7 @@ public class AuthController {
 
 	@PostMapping("/password")
 	public ResponseEntity<ApiResponse<Boolean>> changePassword(
-		@RequestBody ChangePasswordRequest changePasswordRequest) {
+		@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
 		boolean result = memberService.modifyPassword(changePasswordRequest);
 
 		return ApiResponse.ok(result);

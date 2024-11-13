@@ -19,6 +19,7 @@ import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.response.ApiResponse;
 import com.shutter.photorize.global.security.AuthUser;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -47,7 +48,7 @@ public class MemberController {
 
 	@PostMapping("/checkNickname")
 	public ResponseEntity<ApiResponse<Boolean>> checkNickname(
-		@RequestBody UpdateNicknameRequest updateNicknameRequest) {
+		@RequestBody @Valid UpdateNicknameRequest updateNicknameRequest) {
 		Boolean isPossible = memberService.validateNickname(updateNicknameRequest.getNickname());
 
 		return ApiResponse.ok(isPossible);
@@ -65,7 +66,7 @@ public class MemberController {
 	@PostMapping("/updateNickname")
 	public ResponseEntity<ApiResponse<LoginMemberProfileDto>> updateNickname(
 		@AuthUser ContextMember contextMember,
-		@RequestBody UpdateNicknameRequest updateNicknameRequest) {
+		@RequestBody @Valid UpdateNicknameRequest updateNicknameRequest) {
 		LoginMemberProfileDto loginMemberProfileDto = memberService.updateNickname(contextMember.getId(),
 			updateNicknameRequest);
 
