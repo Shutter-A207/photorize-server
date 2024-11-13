@@ -57,7 +57,7 @@ public class AlbumController {
 		@RequestParam(defaultValue = "0") int pageNumber,
 		@AuthUser ContextMember contextmember) {
 
-		Pageable pageable = PageRequest.of(pageNumber, ALBUM_BOARD_PAGE_SIZE);
+		Pageable pageable = PageRequest.of(pageNumber, ALBUM_PAGE_SIZE);
 		Slice<AlbumListResponse> response = albumService.getAllalbums(pageable, contextmember.getId());
 		return ApiResponse.ok(SliceResponse.of(response));
 	}
