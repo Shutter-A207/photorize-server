@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FCMTokenSaveRequest {
+public class FCMTokenRequest {
 
 	private String token;
 

@@ -11,8 +11,10 @@ import com.shutter.photorize.domain.member.entity.Member;
 
 @Repository
 public interface FCMRepository extends JpaRepository<FCMToken, Long> {
-	
+
 	List<FCMToken> findByMember(Member member);
 
 	Optional<FCMToken> findByToken(String token);
+
+	Optional<FCMToken> findByTokenAndMember(String token, Member member);
 }
