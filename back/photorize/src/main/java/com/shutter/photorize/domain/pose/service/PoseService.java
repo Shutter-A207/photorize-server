@@ -27,8 +27,7 @@ public class PoseService {
 
 	@Transactional(readOnly = true)
 	public Slice<PoseResponse> getAllPoses(Long memberId, Pageable pageable) {
-		Slice<PoseResponse> poses = poseRepository.findAllWithLikes(memberId, pageable);
-		return poses;
+		return poseRepository.findAllWithLikes(memberId, pageable);
 	}
 
 	@Transactional

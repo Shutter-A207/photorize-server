@@ -18,7 +18,6 @@ import com.shutter.photorize.domain.pose.dto.response.PoseResponse;
 import com.shutter.photorize.domain.pose.service.PoseService;
 import com.shutter.photorize.global.jwt.model.ContextMember;
 import com.shutter.photorize.global.response.ApiResponse;
-import com.shutter.photorize.global.response.SliceResponse;
 import com.shutter.photorize.global.security.AuthUser;
 
 import lombok.RequiredArgsConstructor;
@@ -31,13 +30,13 @@ public class PoseController {
 	private final PoseService poseService;
 
 	@GetMapping
-	public ResponseEntity<ApiResponse<SliceResponse<PoseResponse>>> getAllPoses(
+	public ResponseEntity<ApiResponse<Slice<PoseResponse>>> getAllPoses(
 		@RequestParam(defaultValue = "0") int pageNumber,
 		@AuthUser ContextMember contextMember) {
 
 		Pageable pageable = PageRequest.of(pageNumber, POSE_PAGE_SIZE);
 		Slice<PoseResponse> response = poseService.getAllPoses(contextMember.getId(), pageable);
-		return ApiResponse.ok(SliceResponse.of(response));
+		return ApiResponse.ok(response);
 	}
 
 	@PostMapping("/{poseId}/like")
