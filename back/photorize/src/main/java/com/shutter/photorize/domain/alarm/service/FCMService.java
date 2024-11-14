@@ -10,7 +10,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.Notification;
-import com.shutter.photorize.domain.alarm.dto.request.FCMTokenSaveRequest;
+import com.shutter.photorize.domain.alarm.dto.request.FCMTokenRequest;
 import com.shutter.photorize.domain.alarm.entity.AlarmType;
 import com.shutter.photorize.domain.alarm.entity.FCMToken;
 import com.shutter.photorize.domain.alarm.repository.FCMRepository;
@@ -30,12 +30,19 @@ public class FCMService {
 	private final FirebaseMessaging firebaseMessaging;
 
 	@Transactional
-	public void saveToken(Long memberId, FCMTokenSaveRequest fcmTokenSaveRequest) {
+	public void saveToken(Long memberId, FCMTokenRequest fcmTokenRequest) {
 		Member member = memberRepository.getOrThrow(memberId);
-		fcmRepository.findByToken(fcmTokenSaveRequest.getToken())
+		fcmRepository.findByToken(fcmTokenRequest.getToken())
 			.ifPresentOrElse(
 				existingToken -> existingToken.updateMember(member),
-				() -> fcmRepository.save(fcmTokenSaveRequest.from(member)));
+				() -> fcmRepository.save(fcmTokenRequest.from(member)));
+	}
+
+	@Transactional
+	public void deleteToken(Long memberId, FCMTokenRequest fcmTokenRequest) {
+		Member member = memberRepository.getOrThrow(memberId);
+		fcmRepository.findByTokenAndMember(fcmTokenRequest.getToken(), member)
+			.ifPresent(fcmRepository::delete);
 	}
 
 	public void sendPublicAlarm(Member member, Member createMember) {
