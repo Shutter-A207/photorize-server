@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.alarm.dto.request.InviteAlarmRequest;
+import com.shutter.photorize.domain.alarm.dto.request.InviteAlarmResendRequest;
 import com.shutter.photorize.domain.alarm.dto.response.InviteAlarmDetailResponse;
 import com.shutter.photorize.domain.alarm.dto.response.InviteAlarmResponse;
 import com.shutter.photorize.domain.alarm.dto.response.PrivateAlarmResponse;
@@ -114,6 +115,29 @@ public class InviteAlarmService {
 			case PRIVATE -> createPrivateAlarmResponse(inviteAlarm);
 			case PUBLIC -> createPublicAlarmResponse(inviteAlarm);
 		};
+	}
+
+	@Transactional
+	public void resendInviteAlarm(InviteAlarmResendRequest inviteAlarmResendRequest) {
+		//TODO: 메서드 분리 및 리팩토링 수행할 것
+		Member member = memberRepository.getOrThrow(inviteAlarmResendRequest.getMemberId());
+		Album album = albumRepository.getOrThrow(inviteAlarmResendRequest.getAlbumId());
+		//회원의 수락 여부를 확인해야한다.
+		AlbumMemberList albumMemberList = albumMemberListRepository.getByAlbumAndMemberOrThrow(album, member);
+
+		if (albumMemberList.isStatus()) {
+			return;
+		}
+
+		//TODO: 재전송 로직 구현
+		//아니라면 재전송을 한다.
+		InviteAlarm inviteAlarm = inviteAlarmRepository.getByMemberIdAndAlbumIdOrThrow(
+			inviteAlarmResendRequest.getMemberId(), inviteAlarmResendRequest.getAlbumId());
+		//회원이 응답을 할경우
+		if (inviteAlarm.isDeleted()) {
+			inviteAlarm.restore();
+		}
+
 	}
 
 	private InviteAlarmDetailResponse createPrivateAlarmResponse(InviteAlarm inviteAlarm) {
