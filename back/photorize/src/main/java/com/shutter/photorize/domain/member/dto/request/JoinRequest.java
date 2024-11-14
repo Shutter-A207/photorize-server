@@ -1,6 +1,7 @@
 package com.shutter.photorize.domain.member.dto.request;
 
 import com.shutter.photorize.domain.member.entity.Member;
+import com.shutter.photorize.domain.member.entity.ProviderType;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 
@@ -53,6 +54,7 @@ public class JoinRequest {
 			.nickname(this.nickname)
 			.password(password)
 			.img(img)
+			.provider(ProviderType.BASIC)
 			.build();
 	}
 }

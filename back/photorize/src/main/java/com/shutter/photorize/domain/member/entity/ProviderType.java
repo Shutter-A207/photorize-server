@@ -4,10 +4,14 @@ public enum ProviderType {
 	BASIC("basic"),
 	KAKAO("kakao");
 
-	private String type;
+	private final String type;
 
 	ProviderType(String type) {
 		this.type = type;
+	}
+
+	public String type() {
+		return type;
 	}
 
 }
