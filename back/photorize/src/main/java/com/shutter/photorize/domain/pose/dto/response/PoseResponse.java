@@ -14,7 +14,7 @@ public class PoseResponse {
 	private long likeCount;
 	private boolean isLiked;
 
-	private PoseResponse(Long poseId, PoseHeadcount headcount, String img, long likeCount, boolean isLiked) {
+	public PoseResponse(Long poseId, PoseHeadcount headcount, String img, long likeCount, boolean isLiked) {
 		this.poseId = poseId;
 		this.headcount = headcount.name();
 		this.img = img;
