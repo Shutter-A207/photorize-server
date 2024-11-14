@@ -17,6 +17,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +90,15 @@ public class JwtFilter extends OncePerRequestFilter {
 		// Token 정보 존재 여부 및 Bearer 토큰인지 확인
 		if (token != null && token.startsWith("Bearer ")) {
 			return token.substring(7);
+		}
+
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if ("access_token".equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
 		}
 
 		return null;

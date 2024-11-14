@@ -12,10 +12,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.shutter.photorize.domain.member.service.EmailService;
+import com.shutter.photorize.domain.member.service.OauthService;
 import com.shutter.photorize.global.jwt.filter.JwtFilter;
 import com.shutter.photorize.global.jwt.filter.LoginFilter;
 import com.shutter.photorize.global.jwt.handler.JwtAccessDeniedHandler;
 import com.shutter.photorize.global.jwt.handler.JwtAuthenticationEntryPoint;
+import com.shutter.photorize.global.jwt.handler.OAuthLoginFailureHandler;
+import com.shutter.photorize.global.jwt.handler.OAuthLoginSuccessHandler;
 import com.shutter.photorize.global.jwt.service.CustomUserDetailService;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
 
@@ -27,6 +31,8 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 	private final JwtAccessDeniedHandler accessDeniedHandler;
 	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+	private final OAuthLoginSuccessHandler loginSuccessHandler;
+	private final OAuthLoginFailureHandler loginFailureHandler;
 	private final JwtUtil jwtUtil;
 	private final CorsConfig corsConfig;
 	private final CustomUserDetailService userDetailsService;
@@ -44,7 +50,8 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager,
-		JwtFilter jwtFilter) throws
+		JwtFilter jwtFilter,
+		EmailService emailService, OauthService oauthService) throws
 		Exception {
 
 		//http basic 인증 방식 disable
@@ -63,10 +70,22 @@ public class SecurityConfig {
 					.requestMatchers(
 						"/api/v1/auth/**",
 						"api/v1/health",
-						"/api/v1/members/checkNickname"
+						"/api/v1/members/checkNickname",
+						"/oauth2/**"
 					)
 					.permitAll()
 					.anyRequest().authenticated()
+			)
+			.oauth2Login(oauth2 -> oauth2
+				.authorizationEndpoint(authorization -> authorization
+					.baseUri("/oauth2/authorize/**")
+				)
+				.redirectionEndpoint(redirection -> redirection
+					.baseUri("/oauth2/login/code/*"))
+				.userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+					.userService(oauthService))
+				.successHandler(loginSuccessHandler)
+				.failureHandler(loginFailureHandler)
 			)
 			.addFilter(new LoginFilter(authenticationManager, jwtUtil))
 			// JwtFilter 등록
