@@ -32,10 +32,14 @@ public class PoseController {
 	@GetMapping
 	public ResponseEntity<ApiResponse<Slice<PoseResponse>>> getAllPoses(
 		@RequestParam(defaultValue = "0") int pageNumber,
+		@RequestParam(required = false) String headcount,
 		@AuthUser ContextMember contextMember) {
 
 		Pageable pageable = PageRequest.of(pageNumber, POSE_PAGE_SIZE);
-		Slice<PoseResponse> response = poseService.getAllPoses(contextMember.getId(), pageable);
+		Slice<PoseResponse> response = (headcount != null) ?
+			poseService.getPosesByHeadcount(contextMember.getId(), headcount, pageable) :
+			poseService.getAllPoses(contextMember.getId(), pageable);
+
 		return ApiResponse.ok(response);
 	}
 

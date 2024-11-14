@@ -30,6 +30,11 @@ public class PoseService {
 		return poseRepository.findAllWithLikes(memberId, pageable);
 	}
 
+	@Transactional(readOnly = true)
+	public Slice<PoseResponse> getPosesByHeadcount(Long memberId, String headcount, Pageable pageable) {
+		return poseRepository.findByHeadcountWithLikes(memberId, headcount, pageable);
+	}
+
 	@Transactional
 	public void likePose(Long poseId, Long memberId) {
 		Member member = memberRepository.getOrThrow(memberId);
