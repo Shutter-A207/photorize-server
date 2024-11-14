@@ -30,10 +30,9 @@ public class FCMController {
 	}
 
 	@DeleteMapping
-	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> deleteToken(@AuthUser ContextMember contextMember,
 		@RequestBody FCMTokenRequest fcmTokenRequest) {
-		fcmService.saveToken(contextMember.getId(), fcmTokenRequest);
+		fcmService.deleteToken(contextMember.getId(), fcmTokenRequest);
 		return ApiResponse.ok(null);
 	}
 }
