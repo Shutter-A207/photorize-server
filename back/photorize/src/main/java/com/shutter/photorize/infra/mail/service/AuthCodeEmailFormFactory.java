@@ -1,6 +1,6 @@
 package com.shutter.photorize.infra.mail.service;
 
-import com.shutter.photorize.domain.member.strategy.AuthCodeType;
+import com.shutter.photorize.domain.member.strategy.EmailCodeType;
 import com.shutter.photorize.global.util.ResourceUtil;
 import com.shutter.photorize.infra.mail.model.AuthEmailFormData;
 import com.shutter.photorize.infra.mail.model.EmailForm;
@@ -22,14 +22,14 @@ public class AuthCodeEmailFormFactory implements EmailFormFactory {
 
 		var d = (AuthEmailFormData)emailFormData;
 		String body = getMailForm().replace("{{authCode}}", d.getAuthCode())
-			.replace("{{type}}", d.getAuthCodeType().getEmailFormType().getPurpose());
-		String subject = getSubject(d.getAuthCodeType());
+			.replace("{{type}}", d.getEmailCodeType().getEmailFormType().getPurpose());
+		String subject = getSubject(d.getEmailCodeType());
 		return EmailForm.of(to, subject, body, isHtml);
 	}
 
 	// 이메일 제목 생성
-	private String getSubject(AuthCodeType authCodeType) {
-		return authCodeType.getEmailFormType().getPurpose() + "이메일 입니다.";
+	private String getSubject(EmailCodeType emailCodeType) {
+		return emailCodeType.getEmailFormType().getPurpose() + "이메일 입니다.";
 	}
 
 	// 이메일 탬플릿 읽어오기
