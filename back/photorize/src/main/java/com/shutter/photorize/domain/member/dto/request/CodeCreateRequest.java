@@ -1,6 +1,6 @@
 package com.shutter.photorize.domain.member.dto.request;
 
-import com.shutter.photorize.domain.member.strategy.AuthCodeType;
+import com.shutter.photorize.domain.member.strategy.EmailCodeType;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,5 +15,5 @@ public class CodeCreateRequest {
 	private String email;
 
 	@NotNull
-	private AuthCodeType authType;
+	private EmailCodeType authType;
 }

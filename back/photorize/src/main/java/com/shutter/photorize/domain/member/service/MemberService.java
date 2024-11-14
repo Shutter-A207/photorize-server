@@ -19,7 +19,7 @@ import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.dto.request.UpdateNicknameRequest;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
-import com.shutter.photorize.domain.member.strategy.AuthCodeType;
+import com.shutter.photorize.domain.member.strategy.EmailCodeType;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.global.util.S3Utils;
@@ -34,7 +34,7 @@ public class MemberService {
 	private final FileService fileService;
 	private final AlbumRepository albumRepository;
 	private final S3Utils s3Utils;
-	private final AuthCodeService authCodeService;
+	private final EmailCodeService emailCodeService;
 
 	@Transactional
 	public Long createMember(JoinRequest joinRequest) {
@@ -111,7 +111,7 @@ public class MemberService {
 
 	@Transactional
 	public boolean modifyPassword(ChangePasswordRequest changePasswordRequest) {
-		authCodeService.checkAvailable(changePasswordRequest.getEmail(), AuthCodeType.PASSWORD_CHANGE);
+		emailCodeService.checkAvailable(changePasswordRequest.getEmail(), EmailCodeType.PASSWORD_CHANGE);
 
 		changePasswordRequest.valid();
 

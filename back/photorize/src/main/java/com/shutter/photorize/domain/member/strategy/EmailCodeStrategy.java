@@ -3,7 +3,7 @@ package com.shutter.photorize.domain.member.strategy;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-public interface AuthCodeStrategy {
+public interface EmailCodeStrategy {
 
 	// 이메일 인증코드 생성 및 저장
 	default String saveAuthCode(String email) {

@@ -4,7 +4,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
-import com.shutter.photorize.domain.member.strategy.AuthCodeType;
+import com.shutter.photorize.domain.member.strategy.EmailCodeType;
 import com.shutter.photorize.infra.mail.model.EmailForm;
 import com.shutter.photorize.infra.mail.service.MailService;
 
@@ -14,16 +14,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class EmailService {
 
-	private final AuthCodeService authCodeService;
+	private final EmailCodeService emailCodeService;
 	private final MailService mailService;
 
 	@Async
-	public void createEmailAuthCode(String email, AuthCodeType authCodeType) {
+	public void createEmailAuthCode(String email, EmailCodeType emailCodeType) {
 		try {
-			String code = authCodeService.createAuthCode(email, authCodeType);
-			EmailForm emailForm = authCodeService.getAuthEmailForm(email, code, authCodeType);
+			String code = emailCodeService.createAuthCode(email, emailCodeType);
+			EmailForm emailForm = emailCodeService.getAuthEmailForm(email, code, emailCodeType);
 			mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(),
 				emailForm.getContent(), emailForm.isHtml());
 		} catch (Exception e) {
@@ -31,7 +31,7 @@ public class AuthService {
 		}
 	}
 
-	public boolean validAuthCode(EmailAuthRequest emailAuthRequest, AuthCodeType authCodeType) {
-		return authCodeService.checkValidCode(emailAuthRequest, authCodeType);
+	public boolean validAuthCode(EmailAuthRequest emailAuthRequest, EmailCodeType emailCodeType) {
+		return emailCodeService.checkValidCode(emailAuthRequest, emailCodeType);
 	}
 }

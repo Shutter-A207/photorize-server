@@ -1,6 +1,6 @@
 package com.shutter.photorize.infra.mail.model;
 
-import com.shutter.photorize.domain.member.strategy.AuthCodeType;
+import com.shutter.photorize.domain.member.strategy.EmailCodeType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,14 +8,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuthEmailFormData implements EmailFormData {
-	private AuthCodeType authCodeType;
+	private EmailCodeType emailCodeType;
 	private String authCode;
 
 	public AuthEmailFormData() {
 	}
 
-	public AuthEmailFormData(AuthCodeType authCodeType, String authCode) {
-		this.authCodeType = authCodeType;
+	public AuthEmailFormData(EmailCodeType emailCodeType, String authCode) {
+		this.emailCodeType = emailCodeType;
 		this.authCode = authCode;
 	}
 }

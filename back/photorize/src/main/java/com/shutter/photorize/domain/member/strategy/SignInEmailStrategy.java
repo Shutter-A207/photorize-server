@@ -9,7 +9,7 @@ import com.shutter.photorize.infra.redis.service.RedisAuthCodeAdapter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class SignInAuthStrategy implements AuthCodeStrategy {
+public class SignInEmailStrategy implements EmailCodeStrategy {
 
 	private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 	private final MemberRepository memberRepository;

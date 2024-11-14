@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PasswordAuthStrategy implements AuthCodeStrategy {
+public class PasswordEmailStrategy implements EmailCodeStrategy {
 
 	private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 	private final MemberRepository memberRepository;
