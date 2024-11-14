@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.shutter.photorize.domain.pose.dto.response.PoseResponse;
 import com.shutter.photorize.domain.pose.entity.Pose;
+import com.shutter.photorize.domain.pose.entity.PoseHeadcount;
 
 import jakarta.persistence.LockModeType;
 
@@ -32,9 +33,9 @@ public interface PoseRepository extends JpaRepository<Pose, Long> {
 
 	@Query("""
 		    SELECT new com.shutter.photorize.domain.pose.dto.response.PoseResponse(
-		        p.id, 
-		        p.headcount, 
-		        p.img, 
+		        p.id,
+		        p.headcount,
+		        p.img,
 		        (SELECT COUNT(pl) FROM PoseLike pl WHERE pl.pose.id = p.id),
 		        CASE WHEN EXISTS (SELECT 1 FROM PoseLike pl WHERE pl.pose.id = p.id AND pl.member.id = :memberId) 
 		        THEN true ELSE false END
@@ -46,7 +47,7 @@ public interface PoseRepository extends JpaRepository<Pose, Long> {
 		""")
 	Slice<PoseResponse> findByHeadcountWithLikes(
 		@Param("memberId") Long memberId,
-		@Param("headcount") String headcount,
+		@Param("headcount") PoseHeadcount headcount, // ENUM 타입으로 변경
 		Pageable pageable
 	);
 

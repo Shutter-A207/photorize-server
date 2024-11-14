@@ -9,6 +9,7 @@ import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.pose.dto.response.PoseResponse;
 import com.shutter.photorize.domain.pose.entity.Pose;
+import com.shutter.photorize.domain.pose.entity.PoseHeadcount;
 import com.shutter.photorize.domain.pose.entity.PoseLike;
 import com.shutter.photorize.domain.pose.repository.PoseLikeRepository;
 import com.shutter.photorize.domain.pose.repository.PoseRepository;
@@ -32,7 +33,13 @@ public class PoseService {
 
 	@Transactional(readOnly = true)
 	public Slice<PoseResponse> getPosesByHeadcount(Long memberId, String headcount, Pageable pageable) {
-		return poseRepository.findByHeadcountWithLikes(memberId, headcount, pageable);
+		PoseHeadcount headcountEnum;
+		try {
+			headcountEnum = PoseHeadcount.valueOf(headcount.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			throw new PhotorizeException(ErrorType.NO_POSE_FOUND);
+		}
+		return poseRepository.findByHeadcountWithLikes(memberId, headcountEnum, pageable);
 	}
 
 	@Transactional
