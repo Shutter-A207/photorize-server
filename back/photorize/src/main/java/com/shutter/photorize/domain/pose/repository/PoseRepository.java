@@ -19,14 +19,13 @@ public interface PoseRepository extends JpaRepository<Pose, Long> {
 	@Query("""
 		    SELECT new com.shutter.photorize.domain.pose.dto.response.PoseResponse(
 		        p.id,
-		        ANY_VALUE(p.headcount),
-		        ANY_VALUE(p.img),
+		        p.headcount,
+		        p.img,
 		        (SELECT COUNT(pl) FROM PoseLike pl WHERE pl.pose.id = p.id),
-		        CASE WHEN EXISTS (SELECT 1 FROM PoseLike pl WHERE pl.pose.id = p.id AND pl.member.id = :memberId)
-		        THEN true ELSE false END
+		        CASE WHEN EXISTS (SELECT 1 FROM PoseLike pl WHERE pl.pose.id = p.id AND pl.member.id = :memberId) THEN true ELSE false END
 		    )
 		    FROM Pose p
-		    GROUP BY p.id
+		    GROUP BY p.id, p.headcount, p.img
 		    ORDER BY (SELECT COUNT(pl) FROM PoseLike pl WHERE pl.pose.id = p.id) DESC
 		""")
 	Slice<PoseResponse> findAllWithLikes(@Param("memberId") Long memberId, Pageable pageable);
@@ -34,15 +33,15 @@ public interface PoseRepository extends JpaRepository<Pose, Long> {
 	@Query("""
 		    SELECT new com.shutter.photorize.domain.pose.dto.response.PoseResponse(
 		        p.id, 
-		        ANY_VALUE(p.headcount), 
-		        ANY_VALUE(p.img), 
+		        p.headcount, 
+		        p.img, 
 		        (SELECT COUNT(pl) FROM PoseLike pl WHERE pl.pose.id = p.id),
 		        CASE WHEN EXISTS (SELECT 1 FROM PoseLike pl WHERE pl.pose.id = p.id AND pl.member.id = :memberId) 
 		        THEN true ELSE false END
 		    )
 		    FROM Pose p
 		    WHERE (:headcount IS NULL OR p.headcount = :headcount)
-		    GROUP BY p.id
+		    GROUP BY p.id, p.headcount, p.img
 		    ORDER BY (SELECT COUNT(pl) FROM PoseLike pl WHERE pl.pose.id = p.id) DESC
 		""")
 	Slice<PoseResponse> findByHeadcountWithLikes(
