@@ -14,6 +14,12 @@ import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 
 public interface AlbumMemberListRepository extends JpaRepository<AlbumMemberList, Long> {
+
+	default AlbumMemberList getByAlbumAndMemberOrThrow(Album album, Member member) {
+		return findByAlbumAndMember(album, member).orElseThrow(
+			() -> new PhotorizeException(ErrorType.NO_ALLOCATED_ALBUM));
+	}
+
 	@Query("SELECT aml FROM AlbumMemberList aml " +
 		"JOIN aml.member m " +
 		"WHERE aml.album = :album " +
