@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -121,6 +122,23 @@ public class AlbumService {
 		}
 
 		return new SliceImpl<>(publicAlbumInfos, pageable, publicAlbums.hasNext());
+	}
+
+	public List<AlbumListResponse> getAllAlbums(Long memberId) {
+		Member member = memberRepository.getOrThrow(memberId);
+
+		Album privateAlbum = albumRepository.findByMemberAndType(member, AlbumType.PRIVATE)
+			.orElseThrow(() -> new PhotorizeException(
+				ErrorType.NO_ALBUM_FOUND));
+
+		List<Album> publicAlbums = albumRepository.findPublicAlbums(member);
+
+		return Stream.concat(
+				Stream.of(privateAlbum),
+				publicAlbums.stream()
+			)
+			.map(AlbumListResponse::new)
+			.toList();
 	}
 
 	public SliceResponse<AlbumDetailResponse> getAlbumDetail(Pageable pageable, Long albumId, Long memberId) {

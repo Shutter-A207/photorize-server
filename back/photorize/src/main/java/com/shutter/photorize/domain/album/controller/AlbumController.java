@@ -62,6 +62,14 @@ public class AlbumController {
 		return ApiResponse.ok(SliceResponse.of(response));
 	}
 
+	@GetMapping("/all")
+	public ResponseEntity<ApiResponse<List<AlbumListResponse>>> getAllAlbums(
+		@AuthUser ContextMember contextmember) {
+
+		List<AlbumListResponse> response = albumService.getAllAlbums(contextmember.getId());
+		return ApiResponse.ok(response);
+	}
+
 	@GetMapping("/{albumId}")
 	public ResponseEntity<ApiResponse<SliceResponse<AlbumDetailResponse>>> getAlbumDetail(
 		@PathVariable Long albumId, @RequestParam(defaultValue = "0") int pageNumber,

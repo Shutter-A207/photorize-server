@@ -39,6 +39,23 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 		Pageable pageable);
 
 	@Query("""
+		    SELECT DISTINCT a
+		    FROM Album a
+		    INNER JOIN FETCH AlbumMemberList aml
+		        ON a.id = aml.album.id
+		        AND aml.member = :member
+		        AND aml.status = true
+		    WHERE a.type = 'PUBLIC'
+		    ORDER BY (
+		        SELECT MIN(m.updatedAt)
+		        FROM Memory m
+		        WHERE m.album = a
+		    ) DESC NULLS LAST,
+		    a.updatedAt DESC
+		""")
+	List<Album> findPublicAlbums(@Param("member") Member member);
+
+	@Query("""
 		SELECT a
 		FROM Album a
 		WHERE a.type = 'PUBLIC'
