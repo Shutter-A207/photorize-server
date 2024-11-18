@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AlarmType {
 
-	PUBLIC("초대장이 도착했어요.", "초대: {sender}"),
-	PRIVATE("일기가 도착했어요.", "보낸이: {sender}");
+	PUBLIC("앨범 초대장이 도착했어요.", "초대: {sender}"),
+	PRIVATE("추억이 도착했어요.", "보낸이: {sender}");
 
 	private final String title;
 	private final String message;
