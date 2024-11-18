@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorType {
 
 	// global 에러
-	DEFAULT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 예상치 못한 오류가 발생했습니다."),
+	DEFAULT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "현재 앱에 문제가 발생했으니 관리자에게 문의해주세요."),
 	NO_RESOURCE_FOUND(HttpStatus.NOT_FOUND, "요청한 리소스를 찾을 수 없습니다."),
 
 	// member
