@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.CustomOAuthUser;
 import com.shutter.photorize.domain.member.dto.response.KakaoResponse;
@@ -28,6 +29,7 @@ public class OauthService extends DefaultOAuth2UserService {
 	private final MemberRepository memberRepository;
 	private final FileService fileService;
 	private final MemberService memberService;
+	private final AlbumService albumService;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -45,6 +47,7 @@ public class OauthService extends DefaultOAuth2UserService {
 		}
 
 		Member member = insertMember(oAuth2Response);
+		albumService.createPrivateAlbum(member.getId());
 		log.debug("member info: {}, {}, {}", member.getId(), member.getEmail(), member.getProvider());
 
 		return CustomOAuthUser.of(member.getId(), member.getEmail(), member.getProvider());
