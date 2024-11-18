@@ -1,6 +1,5 @@
 package com.shutter.photorize.domain.member.strategy;
 
-import com.shutter.photorize.domain.member.entity.ProviderType;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.global.constant.StringFormat;
 import com.shutter.photorize.global.error.ErrorType;
@@ -18,7 +17,7 @@ public class SignInEmailStrategy implements EmailCodeStrategy {
 	// 인증 코드를 5분동안 redis에 저장
 	@Override
 	public void save(String email, String code) {
-		if (memberRepository.existsByEmailAndProvider(email, ProviderType.BASIC)) {
+		if (memberRepository.existsByEmail(email)) {
 			throw new PhotorizeException(ErrorType.DUPLICATE_EMAIL);
 		}
 

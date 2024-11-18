@@ -11,7 +11,6 @@ import com.shutter.photorize.domain.member.dto.request.ChangePasswordRequest;
 import com.shutter.photorize.domain.member.dto.request.CodeCreateRequest;
 import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
-import com.shutter.photorize.domain.member.entity.ProviderType;
 import com.shutter.photorize.domain.member.service.EmailService;
 import com.shutter.photorize.domain.member.service.MemberService;
 import com.shutter.photorize.domain.member.strategy.EmailCodeType;
@@ -31,7 +30,7 @@ public class AuthController {
 
 	@PostMapping("/join")
 	public ResponseEntity<ApiResponse<Boolean>> createMember(@RequestBody @Valid JoinRequest joinRequest) {
-		memberService.createMember(joinRequest, ProviderType.BASIC);
+		memberService.createMember(joinRequest);
 		return ApiResponse.created();
 	}
 

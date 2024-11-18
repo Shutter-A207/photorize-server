@@ -40,21 +40,25 @@ public class MemberService {
 	private final AlbumService albumService;
 
 	@Transactional
-	public Long createMember(JoinRequest joinRequest, ProviderType providerType) {
+
+	public Long createMember(JoinRequest joinRequest) {
 
 		joinRequest.valid();
-
-		if (memberRepository.existsByEmailAndProvider(joinRequest.getEmail(), providerType)) {
-			throw new PhotorizeException(ErrorType.DUPLICATE_EMAIL);
-		}
 
 		if (memberRepository.existsByNickname(joinRequest.getNickname())) {
 			throw new PhotorizeException(ErrorType.DUPLICATE_NICKNAME);
 		}
+
+		if (memberRepository.existsByEmail(joinRequest.getEmail())) {
+
+			throw new PhotorizeException(ErrorType.DUPLICATE_EMAIL);
+		}
+
 		String password = passwordEncoder.encode(joinRequest.getPassword());
 		String defaultImg = fileService.getDefaultProfile();
 
-		Member member = joinRequest.toMember(password, defaultImg, providerType);
+		Member member = joinRequest.toMember(password, defaultImg, ProviderType.BASIC);
+		memberRepository.save(member);
 
 		Member savedMember = memberRepository.save(member);
 		albumService.createPrivateAlbum(savedMember.getId());

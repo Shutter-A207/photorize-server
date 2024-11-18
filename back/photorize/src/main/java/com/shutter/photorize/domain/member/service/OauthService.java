@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.CustomOAuthUser;
-import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.dto.response.KakaoResponse;
 import com.shutter.photorize.domain.member.dto.response.OAuth2Response;
 import com.shutter.photorize.domain.member.entity.Member;
@@ -54,17 +53,16 @@ public class OauthService extends DefaultOAuth2UserService {
 
 	@Transactional
 	protected Member insertMember(OAuth2Response oAuth2Response) {
+
+		String defaultImg = fileService.getDefaultProfile();
+
+		String emailPrefix = oAuth2Response.getEmail().split("@")[0];
+		String randomStr = UUID.randomUUID().toString().substring(0, 2);
+		String nickname = emailPrefix + "_" + randomStr;
+
 		return memberRepository.findByEmail(oAuth2Response.getEmail())
-			.orElseGet(() -> {
-				String emailPrefix = oAuth2Response.getEmail().split("@")[0];
-				String randomStr = UUID.randomUUID().toString().substring(0, 2);
-				String nickname = emailPrefix + "_" + randomStr;
-
-				JoinRequest joinRequest = JoinRequest.ofOauth(oAuth2Response.getEmail(), nickname);
-
-				Long memberId = memberService.createMember(joinRequest, oAuth2Response.getProviderType());
-
-				return memberRepository.getOrThrow(memberId);
-			});
+			.orElseGet(() -> memberRepository.save(
+				Member.of(oAuth2Response.getEmail(), nickname, null, defaultImg, oAuth2Response.getProviderType())
+			));
 	}
 }
