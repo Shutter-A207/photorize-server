@@ -51,6 +51,7 @@ public interface CookieUtil {
 		cookie.setHttpOnly(false); // JavaScript에서 접근 불가
 		cookie.setMaxAge(maxAge);
 		cookie.setAttribute("SameSite", "None");
+		cookie.setDomain("photorize.co.kr");
 		cookie.setPath("/"); // 전체 도메인에서 접근 가능
 		response.addCookie(cookie);
 	}
