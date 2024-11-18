@@ -1,5 +1,6 @@
 package com.shutter.photorize.domain.member.strategy;
 
+import com.shutter.photorize.domain.member.entity.ProviderType;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.global.constant.StringFormat;
 import com.shutter.photorize.global.error.ErrorType;
@@ -18,7 +19,7 @@ public class PasswordEmailStrategy implements EmailCodeStrategy {
 
 	@Override
 	public void save(String email, String code) {
-		if (!memberRepository.existsByEmail(email)) {
+		if (!memberRepository.existsByEmailAndProvider(email, ProviderType.BASIC)) {
 			throw new PhotorizeException(ErrorType.USER_NOT_FOUND);
 		}
 		redisAuthCodeAdapter.saveOrUpdate(generateSaveKey(email), code, 5);
