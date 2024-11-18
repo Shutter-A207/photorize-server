@@ -1,10 +1,12 @@
 package com.shutter.photorize.domain.alarm.service;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.api.core.ApiFuture;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -63,18 +65,25 @@ public class FCMService {
 
 	private void sendAlarm(FCMToken fcmToken, AlarmType alarmType, Member writerMember) {
 		Notification notification = makeNotification(alarmType, writerMember);
-		try {
-			firebaseMessaging.send(makeMessage(notification, fcmToken));
-		} catch (FirebaseMessagingException e) {
-			if (e.getMessagingErrorCode().equals(MessagingErrorCode.UNREGISTERED)) {
-				fcmRepository.delete(fcmToken);
-				log.warn("{}", e.getMessage());
-			} else if (e.getMessagingErrorCode().equals(MessagingErrorCode.INVALID_ARGUMENT)) {
-				fcmRepository.delete(fcmToken);
-				log.warn("{}", e.getMessage());
-			} else
-				throw new RuntimeException(e);
-		}
+		ApiFuture<String> apiFuture = firebaseMessaging.sendAsync(makeMessage(notification, fcmToken));
+		apiFuture.addListener(() -> {
+			try {
+				String messageId = apiFuture.get();
+				log.info("Message sent successfully with ID: {}", messageId);
+			} catch (Exception e) {
+				if (e.getCause() instanceof FirebaseMessagingException firebaseEx) {
+					if (firebaseEx.getMessagingErrorCode().equals(MessagingErrorCode.UNREGISTERED)) {
+						fcmRepository.delete(fcmToken);
+						log.warn("Token unregistered: {}", firebaseEx.getMessage());
+					} else if (firebaseEx.getMessagingErrorCode().equals(MessagingErrorCode.INVALID_ARGUMENT)) {
+						fcmRepository.delete(fcmToken);
+						log.warn("Invalid argument: {}", firebaseEx.getMessage());
+					} else {
+						log.error("Unexpected Firebase error", firebaseEx);
+					}
+				}
+			}
+		}, Executors.newSingleThreadExecutor());
 	}
 
 	private Notification makeNotification(AlarmType type, Member member) {
