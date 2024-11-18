@@ -55,9 +55,11 @@ public class MemberService {
 		String defaultImg = fileService.getDefaultProfile();
 
 		Member member = joinRequest.toMember(password, defaultImg, providerType);
-		albumService.createPrivateAlbum(member.getId());
 
-		return member.getId();
+		Member savedMember = memberRepository.save(member);
+		albumService.createPrivateAlbum(savedMember.getId());
+
+		return savedMember.getId();
 	}
 
 	public LoginMemberProfileDto getLoginMemberProfile(Long memberId) {
