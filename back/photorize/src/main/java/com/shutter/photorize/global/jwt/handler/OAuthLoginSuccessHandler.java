@@ -41,7 +41,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
 		// getRedirectStrategy().sendRedirect(request, response, "https://photorize.co.kr/home");
 		// getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080");
-		getRedirectStrategy().sendRedirect(request, response, "https://localhost:5173/home");
+		getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/home");
 
 	}
 }
