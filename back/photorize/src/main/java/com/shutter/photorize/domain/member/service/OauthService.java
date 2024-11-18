@@ -47,7 +47,6 @@ public class OauthService extends DefaultOAuth2UserService {
 		}
 
 		Member member = insertMember(oAuth2Response);
-		albumService.createPrivateAlbum(member.getId());
 		log.debug("member info: {}, {}, {}", member.getId(), member.getEmail(), member.getProvider());
 
 		return CustomOAuthUser.of(member.getId(), member.getEmail(), member.getProvider());
@@ -64,8 +63,12 @@ public class OauthService extends DefaultOAuth2UserService {
 		String nickname = emailPrefix + "_" + randomStr;
 
 		return memberRepository.findByEmail(oAuth2Response.getEmail())
-			.orElseGet(() -> memberRepository.save(
-				Member.of(oAuth2Response.getEmail(), nickname, null, defaultImg, oAuth2Response.getProviderType())
-			));
+			.orElseGet(() -> {
+				Member newMember = memberRepository.save(
+					Member.of(oAuth2Response.getEmail(), nickname, null, defaultImg, oAuth2Response.getProviderType())
+				);
+				albumService.createPrivateAlbum(newMember.getId());
+				return newMember;
+			});
 	}
 }
