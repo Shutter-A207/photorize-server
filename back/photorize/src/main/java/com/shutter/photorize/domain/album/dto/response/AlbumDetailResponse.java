@@ -13,20 +13,24 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AlbumDetailResponse {
+
+	private Long albumId;
 	private String name;
 	private List<AlbumMemberProfileDto> members;
 	private List<MemoryInfoDto> memories;
 
 	@Builder
-	private AlbumDetailResponse(String name, List<AlbumMemberProfileDto> members, List<MemoryInfoDto> memories) {
+	private AlbumDetailResponse(Long albumId, String name, List<AlbumMemberProfileDto> members,
+		List<MemoryInfoDto> memories) {
+		this.albumId = albumId;
 		this.name = name;
 		this.members = members;
 		this.memories = memories;
 	}
 
-	public static AlbumDetailResponse of(String name, List<AlbumMemberProfileDto> members,
+	public static AlbumDetailResponse of(Long albumId, String name, List<AlbumMemberProfileDto> members,
 		List<MemoryInfoDto> memories) {
-		return new AlbumDetailResponse(name, members, memories);
+		return new AlbumDetailResponse(albumId, name, members, memories);
 	}
 
 }

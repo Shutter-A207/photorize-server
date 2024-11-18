@@ -157,7 +157,8 @@ public class AlbumService {
 
 		Slice<MemoryInfoDto> memories = memoryRepository.findMemoryInfoDtosByAlbum(album, pageable);
 
-		AlbumDetailResponse albumDetail = AlbumDetailResponse.of(album.getName(), albumMemberProfileDtoList,
+		AlbumDetailResponse albumDetail = AlbumDetailResponse.of(album.getId(), album.getName(),
+			albumMemberProfileDtoList,
 			memories.getContent());
 
 		return SliceResponse.of(new SliceImpl<>(
