@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.shutter.photorize.domain.member.entity.Member;
+import com.shutter.photorize.domain.member.entity.ProviderType;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 
@@ -26,6 +27,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	boolean existsByNickname(String nickname);
 
 	boolean existsByEmail(String email);
+
+	boolean existsByEmailAndProvider(String email, ProviderType provider);
 
 	List<Member> findByNicknameContainingAndIdNot(String keyword, Long memberId);
 

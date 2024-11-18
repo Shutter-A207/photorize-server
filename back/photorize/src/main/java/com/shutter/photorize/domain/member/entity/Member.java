@@ -29,7 +29,7 @@ public class Member extends UpdatableEntity {
 	@Column(nullable = false, unique = true)
 	private String nickname;
 
-	@Column(nullable = true)
+	@Column(nullable = false)
 	private String password;
 
 	@Column(nullable = false)

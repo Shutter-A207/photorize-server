@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
+import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.file.entity.FileType;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.LoginMemberProfileDto;
@@ -18,6 +19,7 @@ import com.shutter.photorize.domain.member.dto.request.ChangePasswordRequest;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.dto.request.UpdateNicknameRequest;
 import com.shutter.photorize.domain.member.entity.Member;
+import com.shutter.photorize.domain.member.entity.ProviderType;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.member.strategy.EmailCodeType;
 import com.shutter.photorize.global.error.ErrorType;
@@ -35,28 +37,27 @@ public class MemberService {
 	private final AlbumRepository albumRepository;
 	private final S3Utils s3Utils;
 	private final EmailCodeService emailCodeService;
+	private final AlbumService albumService;
 
 	@Transactional
-	public Long createMember(JoinRequest joinRequest) {
+	public Long createMember(JoinRequest joinRequest, ProviderType providerType) {
 
 		joinRequest.valid();
+
+		if (memberRepository.existsByEmailAndProvider(joinRequest.getEmail(), providerType)) {
+			throw new PhotorizeException(ErrorType.DUPLICATE_EMAIL);
+		}
 
 		if (memberRepository.existsByNickname(joinRequest.getNickname())) {
 			throw new PhotorizeException(ErrorType.DUPLICATE_NICKNAME);
 		}
-
-		if (memberRepository.existsByEmail(joinRequest.getEmail())) {
-			throw new PhotorizeException(ErrorType.DUPLICATE_EMAIL);
-		}
-
 		String password = passwordEncoder.encode(joinRequest.getPassword());
 		String defaultImg = fileService.getDefaultProfile();
 
-		Member member = joinRequest.toMember(password, defaultImg);
-		memberRepository.save(member);
+		Member member = joinRequest.toMember(password, defaultImg, providerType);
+		albumService.createPrivateAlbum(member.getId());
 
 		return member.getId();
-
 	}
 
 	public LoginMemberProfileDto getLoginMemberProfile(Long memberId) {

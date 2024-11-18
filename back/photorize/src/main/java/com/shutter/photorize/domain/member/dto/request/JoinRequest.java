@@ -1,5 +1,7 @@
 package com.shutter.photorize.domain.member.dto.request;
 
+import java.util.UUID;
+
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.entity.ProviderType;
 import com.shutter.photorize.global.error.ErrorType;
@@ -9,6 +11,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -48,13 +51,31 @@ public class JoinRequest {
 		}
 	}
 
-	public Member toMember(String password, String img) {
+	@Builder
+	private JoinRequest(String email, String nickname, String password, String passwordCheck) {
+		this.email = email;
+		this.nickname = nickname;
+		this.password = password;
+		this.passwordCheck = passwordCheck;
+	}
+
+	public static JoinRequest ofOauth(String email, String nickname) {
+		String uuid = UUID.randomUUID().toString();
+		return JoinRequest.builder()
+			.email(email)
+			.nickname(nickname)
+			.password(uuid)
+			.passwordCheck(uuid)
+			.build();
+	}
+
+	public Member toMember(String password, String img, ProviderType providerType) {
 		return Member.builder()
 			.email(this.email)
 			.nickname(this.nickname)
 			.password(password)
 			.img(img)
-			.provider(ProviderType.BASIC)
+			.provider(providerType)
 			.build();
 	}
 }
