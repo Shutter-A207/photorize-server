@@ -48,7 +48,7 @@ public interface CookieUtil {
 		String cookieName, String cookieContents, int maxAge) {
 		Cookie cookie = new Cookie(cookieName, cookieContents);
 		cookie.setSecure(true); // HTTPS 에서만 전송
-		cookie.setHttpOnly(true); // JavaScript에서 접근 불가
+		cookie.setHttpOnly(false); // JavaScript에서 접근 불가
 		cookie.setMaxAge(maxAge);
 		cookie.setAttribute("SameSite", "None");
 		cookie.setPath("/"); // 전체 도메인에서 접근 가능
