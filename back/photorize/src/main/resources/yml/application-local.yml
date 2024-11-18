@@ -51,7 +51,7 @@ spring:
             client-id: ${CLIENT_ID}  # REST API 키
             client-secret: ${CLIENT_SECRET} # Client Secret
             client-authentication-method: client_secret_post
-            redirect-uri: https://photorize.co.kr/oauth2/login/code/kakao  # Redirect_URI
+            redirect-uri: http://localhost:5173/oauth2/login/code/kakao  # Redirect_URI
             authorization-grant-type: authorization_code
             client-name: kakao
             scope:

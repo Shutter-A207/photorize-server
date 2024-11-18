@@ -39,8 +39,9 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 		CookieUtil.setCookie(response, "access_token", accessToken, 60 * 30);
 		// response.addHeader("Authorization", "Bearer " + accessToken);
 
-		getRedirectStrategy().sendRedirect(request, response, "https://photorize.co.kr/home");
+		// getRedirectStrategy().sendRedirect(request, response, "https://photorize.co.kr/home");
 		// getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080");
+		getRedirectStrategy().sendRedirect(request, response, "https://localhost:5173/home");
 
 	}
 }
