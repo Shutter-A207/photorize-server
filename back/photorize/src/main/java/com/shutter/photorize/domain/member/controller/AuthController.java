@@ -36,24 +36,24 @@ public class AuthController {
 
 	@PostMapping("/email/code")
 	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(
-		@RequestBody @Valid CodeCreateRequest codeCreateRequest) {
+			@RequestBody @Valid CodeCreateRequest codeCreateRequest) {
 
 		emailService.createEmailAuthCode(codeCreateRequest.getEmail(),
-			EmailCodeType.of(String.valueOf(codeCreateRequest.getAuthType())));
+				codeCreateRequest.getAuthType());
 		return ApiResponse.ok(true);
 	}
 
 	@PostMapping("/email/verifyCode")
 	public ResponseEntity<ApiResponse<Boolean>> validEmailAuthCode(
-		@RequestBody @Valid EmailAuthRequest emailAuthRequest) {
+			@RequestBody @Valid EmailAuthRequest emailAuthRequest) {
 		boolean result = emailService.validAuthCode(emailAuthRequest,
-			EmailCodeType.of(String.valueOf(emailAuthRequest.getAuthType())));
+				emailAuthRequest.getAuthType());
 		return ApiResponse.ok(result);
 	}
 
 	@PostMapping("/password")
 	public ResponseEntity<ApiResponse<Boolean>> changePassword(
-		@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+			@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
 		boolean result = memberService.modifyPassword(changePasswordRequest);
 
 		return ApiResponse.ok(result);
