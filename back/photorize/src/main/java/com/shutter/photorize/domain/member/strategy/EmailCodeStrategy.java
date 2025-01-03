@@ -12,6 +12,10 @@ public interface EmailCodeStrategy {
 		return code;
 	}
 
+	default boolean isProcessingEmail(String email) {
+		return false;
+	}
+
 	// 인증 코드 생성
 	private String createCode() {
 		int length = 6;

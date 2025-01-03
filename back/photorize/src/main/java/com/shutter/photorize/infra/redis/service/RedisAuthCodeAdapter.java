@@ -40,4 +40,13 @@ public class RedisAuthCodeAdapter implements RedisAdapter {
 	public void delete(String key) {
 		redisTemplate.delete(key);
 	}
+
+	public boolean hasKey(String key) {
+		return redisTemplate.hasKey(key);
+	}
+
+	public Long getExpireTime(String key){
+		return redisTemplate.getExpire(key, TimeUnit.SECONDS);
+	}
+
 }

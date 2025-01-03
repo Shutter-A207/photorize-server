@@ -22,6 +22,7 @@ public enum ErrorType {
 	INVALID_EMAIL_VERIFIED(HttpStatus.BAD_REQUEST, "인증되지 않은 이메일입니다."),
 	INVALID_EMAIL_CODE(HttpStatus.BAD_REQUEST, "유효하지 않은 인증 코드 입니다. 다시 시도해주세요"),
 	OAUTH2_AUTHENTICATION_FAILED(HttpStatus.FORBIDDEN, "OAuth2 인증 과정에 실패했습니다."),
+	EMAIL_IN_PROGRESS(HttpStatus.BAD_REQUEST,"이미 인증요청을 한 이메일 입니다. 잠시 후 다시 시도해주세요."),
 
 	// album
 	NO_ALLOCATED_ALBUM(HttpStatus.FORBIDDEN, "해당 앨범 멤버가 아닙니다."),
