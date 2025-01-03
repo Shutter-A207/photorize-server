@@ -1,5 +1,7 @@
 package com.shutter.photorize.domain.member.service;
 
+import com.shutter.photorize.global.error.ErrorType;
+import com.shutter.photorize.global.exception.PhotorizeException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +24,16 @@ public class EmailService {
 	@Async
 	public void createEmailAuthCode(String email, EmailCodeType emailCodeType) {
 		try {
+
+			if(emailCodeService.isProcessingEmail(email,emailCodeType)){
+				log.warn("Email already processed for email code: {}", email);
+				throw new PhotorizeException(ErrorType.EMAIL_IN_PROGRESS);
+			}
+
 			String code = emailCodeService.createAuthCode(email, emailCodeType);
 			EmailForm emailForm = emailCodeService.getAuthEmailForm(email, code, emailCodeType);
 			mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(),
-				emailForm.getContent(), emailForm.isHtml());
+					emailForm.getContent(), emailForm.isHtml());
 		} catch (Exception e) {
 			log.error("Failed to send authentication email to: {}", email, e);
 		}

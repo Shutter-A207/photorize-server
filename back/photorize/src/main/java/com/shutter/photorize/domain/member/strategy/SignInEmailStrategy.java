@@ -24,11 +24,18 @@ public class SignInEmailStrategy implements EmailCodeStrategy {
 		redisAuthCodeAdapter.saveOrUpdate(generateSaveKey(email), code, 5);
 	}
 
+	@Override
+	public boolean isProcessingEmail(String email){
+		String key = generateSaveKey(email);
+		return redisAuthCodeAdapter.hasKey(key) &&
+				redisAuthCodeAdapter.getExpireTime(key) > 0;
+	}
+
 	// 입력받은 인증코드의 유효성 검증
 	@Override
 	public boolean validAuthCode(String email, String code) {
 		String getCode = redisAuthCodeAdapter.getValue(generateSaveKey(email))
-			.orElseThrow(() -> new PhotorizeException(ErrorType.EXPIRED_EMAIL_CODE));
+				.orElseThrow(() -> new PhotorizeException(ErrorType.EXPIRED_EMAIL_CODE));
 		return getCode.equals(code);
 	}
 
@@ -47,7 +54,7 @@ public class SignInEmailStrategy implements EmailCodeStrategy {
 	@Override
 	public void checkAvailableEmail(String email) {
 		redisAuthCodeAdapter.getValue(generateAvailableKey(email))
-			.orElseThrow(() -> new PhotorizeException(ErrorType.INVALID_EMAIL_VERIFIED));
+				.orElseThrow(() -> new PhotorizeException(ErrorType.INVALID_EMAIL_VERIFIED));
 	}
 
 	private String generateAvailableKey(String email) {
