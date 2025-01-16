@@ -45,7 +45,7 @@ public class RedisAuthCodeAdapter implements RedisAdapter {
 		return redisTemplate.hasKey(key);
 	}
 
-	public Long getExpireTime(String key){
+	public Long getExpireTime(String key) {
 		return redisTemplate.getExpire(key, TimeUnit.SECONDS);
 	}
 

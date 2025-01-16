@@ -13,7 +13,6 @@ import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.service.EmailService;
 import com.shutter.photorize.domain.member.service.MemberService;
-import com.shutter.photorize.domain.member.strategy.EmailCodeType;
 import com.shutter.photorize.global.response.ApiResponse;
 
 import jakarta.validation.Valid;
@@ -36,24 +35,24 @@ public class AuthController {
 
 	@PostMapping("/email/code")
 	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(
-			@RequestBody @Valid CodeCreateRequest codeCreateRequest) {
+		@RequestBody @Valid CodeCreateRequest codeCreateRequest) {
 
 		emailService.createEmailAuthCode(codeCreateRequest.getEmail(),
-				codeCreateRequest.getAuthType());
+			codeCreateRequest.getAuthType());
 		return ApiResponse.ok(true);
 	}
 
 	@PostMapping("/email/verifyCode")
 	public ResponseEntity<ApiResponse<Boolean>> validEmailAuthCode(
-			@RequestBody @Valid EmailAuthRequest emailAuthRequest) {
+		@RequestBody @Valid EmailAuthRequest emailAuthRequest) {
 		boolean result = emailService.validAuthCode(emailAuthRequest,
-				emailAuthRequest.getAuthType());
+			emailAuthRequest.getAuthType());
 		return ApiResponse.ok(result);
 	}
 
 	@PostMapping("/password")
 	public ResponseEntity<ApiResponse<Boolean>> changePassword(
-			@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+		@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
 		boolean result = memberService.modifyPassword(changePasswordRequest);
 
 		return ApiResponse.ok(result);
