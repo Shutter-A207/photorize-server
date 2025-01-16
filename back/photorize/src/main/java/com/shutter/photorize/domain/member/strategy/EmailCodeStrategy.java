@@ -11,7 +11,7 @@ public interface EmailCodeStrategy {
 		save(email, code);
 		return code;
 	}
-
+	
 	default boolean isProcessingEmail(String email) {
 		return false;
 	}

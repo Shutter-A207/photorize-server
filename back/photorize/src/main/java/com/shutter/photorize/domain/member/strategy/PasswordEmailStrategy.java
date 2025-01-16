@@ -24,7 +24,7 @@ public class PasswordEmailStrategy implements EmailCodeStrategy {
 		}
 
 		String key = generateSaveKey(email);
-		if(redisAuthCodeAdapter.hasKey(key)){
+		if (redisAuthCodeAdapter.hasKey(key)) {
 			throw new PhotorizeException(ErrorType.EMAIL_IN_PROGRESS);
 		}
 
@@ -32,16 +32,15 @@ public class PasswordEmailStrategy implements EmailCodeStrategy {
 	}
 
 	@Override
-	public boolean isProcessingEmail(String email){
+	public boolean isProcessingEmail(String email) {
 		String key = generateSaveKey(email);
-		return redisAuthCodeAdapter.hasKey(key) &&
-				redisAuthCodeAdapter.getExpireTime(key) > 0;
+		return redisAuthCodeAdapter.hasKey(key) && redisAuthCodeAdapter.getExpireTime(key) > 0;
 	}
-
+	
 	@Override
 	public boolean validAuthCode(String email, String code) {
 		String getCode = redisAuthCodeAdapter.getValue(generateSaveKey(email))
-				.orElseThrow(() -> new PhotorizeException(ErrorType.EXPIRED_EMAIL_CODE));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.EXPIRED_EMAIL_CODE));
 
 		log.info("validAuthCode:{}", getCode);
 
@@ -56,7 +55,7 @@ public class PasswordEmailStrategy implements EmailCodeStrategy {
 	@Override
 	public void checkAvailableEmail(String email) {
 		redisAuthCodeAdapter.getValue(generateAvailableKey(email))
-				.orElseThrow(() -> new PhotorizeException(ErrorType.INVALID_EMAIL_VERIFIED));
+			.orElseThrow(() -> new PhotorizeException(ErrorType.INVALID_EMAIL_VERIFIED));
 	}
 
 	private String generateSaveKey(String email) {

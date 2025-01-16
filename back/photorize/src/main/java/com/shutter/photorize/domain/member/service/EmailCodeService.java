@@ -33,7 +33,7 @@ public class EmailCodeService {
 	// 이메일 인증 폼 생성
 	public EmailForm getAuthEmailForm(String email, String code, EmailCodeType emailCodeType) {
 		AuthEmailFormData emailFormData = (AuthEmailFormData)EmailFormDataFactory.getEmailFormData(
-				emailCodeType.getEmailFormType());
+			emailCodeType.getEmailFormType());
 		emailFormData.setEmailCodeType(emailCodeType);
 		emailFormData.setAuthCode(code);
 
@@ -63,7 +63,5 @@ public class EmailCodeService {
 		EmailCodeStrategy strategy = authCodeStrategyMap.get(emailCodeType);
 		return strategy.isProcessingEmail(email);
 	}
-
-
 
 }
