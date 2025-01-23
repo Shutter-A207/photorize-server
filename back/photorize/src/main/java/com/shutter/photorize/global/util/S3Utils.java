@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,11 +37,11 @@ public class S3Utils {
 	private String s3Url;
 
 	public String uploadFile(MultipartFile file, FileType type) {
-		String fileName = generateFileName(file, type);
+		String s3Key = generateS3Key(file, type);
 
-		uploadToS3(file, fileName);
+		uploadToS3(file, s3Key);
 
-		return String.format(s3Url, bucket, region, fileName);
+		return String.format(s3Url, bucket, region, s3Key);
 	}
 
 	public void deleteFile(String fileUrl) {
@@ -55,22 +57,26 @@ public class S3Utils {
 			.build());
 	}
 
-	private void uploadToS3(MultipartFile file, String fileName) {
+	@Async("fileUploadExecutor")
+	public CompletableFuture<String> uploadToS3(MultipartFile file, String s3Key) {
 		try {
 			s3Client.putObject(
 				PutObjectRequest.builder()
 					.bucket(bucket)
-					.key(fileName)
+					.key(s3Key)
 					.contentType(file.getContentType())
 					.build(),
 				RequestBody.fromBytes(file.getBytes())
 			);
+
+			String url = String.format(s3Url, bucket, region, s3Key);
+			return CompletableFuture.completedFuture(url);
 		} catch (IOException e) {
 			throw new PhotorizeException(ErrorType.FILE_UPLOAD_ERROR);
 		}
 	}
 
-	private String generateFileName(MultipartFile file, FileType type) {
+	public String generateS3Key(MultipartFile file, FileType type) {
 		String folder = type.name().toLowerCase();
 		return folder + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 	}
