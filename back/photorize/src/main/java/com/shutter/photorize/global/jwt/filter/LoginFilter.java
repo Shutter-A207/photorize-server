@@ -1,16 +1,14 @@
 package com.shutter.photorize.global.jwt.filter;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.shutter.photorize.global.jwt.model.CustomUserDetails;
+import com.shutter.photorize.global.jwt.model.TokenDto;
+import com.shutter.photorize.global.jwt.service.TokenService;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
 
 import jakarta.servlet.FilterChain;
@@ -21,10 +19,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtil jwtUtil;
+	private final TokenService tokenService;
 
-	public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+	public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, TokenService tokenService) {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
+		this.tokenService = tokenService;
 		setFilterProcessesUrl("/api/v1/auth/login");
 	}
 
@@ -52,16 +52,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		CustomUserDetails customUserDetails = (CustomUserDetails)authentication.getPrincipal();
 
-		String username = customUserDetails.getUsername();
+		String userEmail = customUserDetails.getUsername(); // 사용자 이메일
 
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-		GrantedAuthority auth = iterator.next();
+		TokenDto tokens = tokenService.createToken(userEmail);
 
-		String accessToken = jwtUtil.createAccessToken(username);
-		String refreshToken = jwtUtil.createRefreshToken(username);
-
-		response.addHeader("Authorization", "Bearer " + accessToken);
+		response.addHeader("Authorization", "Bearer " + tokens.getAccessToken());
+		response.addHeader("Refresh-Token", tokens.getRefreshToken());
 	}
 
 	// 로그인 실패시 실행하는 메서드

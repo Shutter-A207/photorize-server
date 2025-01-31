@@ -20,7 +20,7 @@ import com.shutter.photorize.global.jwt.handler.JwtAccessDeniedHandler;
 import com.shutter.photorize.global.jwt.handler.JwtAuthenticationEntryPoint;
 import com.shutter.photorize.global.jwt.handler.OAuthLoginFailureHandler;
 import com.shutter.photorize.global.jwt.handler.OAuthLoginSuccessHandler;
-import com.shutter.photorize.global.jwt.service.CustomUserDetailService;
+import com.shutter.photorize.global.jwt.service.TokenService;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class SecurityConfig {
 	private final OAuthLoginFailureHandler loginFailureHandler;
 	private final JwtUtil jwtUtil;
 	private final CorsConfig corsConfig;
-	private final CustomUserDetailService userDetailsService;
+	private final TokenService tokenService;
 
 	//AuthenticationManager Bean 등록
 	@Bean
@@ -87,7 +87,7 @@ public class SecurityConfig {
 				.successHandler(loginSuccessHandler)
 				.failureHandler(loginFailureHandler)
 			)
-			.addFilter(new LoginFilter(authenticationManager, jwtUtil))
+			.addFilter(new LoginFilter(authenticationManager, jwtUtil, tokenService))
 			// JwtFilter 등록
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 			// 세션 설정
