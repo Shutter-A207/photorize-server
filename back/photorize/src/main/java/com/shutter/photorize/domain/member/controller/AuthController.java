@@ -6,15 +6,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.member.dto.request.ChangePasswordRequest;
 import com.shutter.photorize.domain.member.dto.request.CodeCreateRequest;
 import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
-import com.shutter.photorize.domain.member.service.EmailService;
+import com.shutter.photorize.domain.member.dto.request.ReissueRequest;
+import com.shutter.photorize.domain.member.service.AuthService;
 import com.shutter.photorize.domain.member.service.MemberService;
 import com.shutter.photorize.global.response.ApiResponse;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
 	private final MemberService memberService;
-	private final AlbumService albumService;
-	private final EmailService emailService;
+	private final AuthService authService;
 
 	@PostMapping("/join")
 	public ResponseEntity<ApiResponse<Boolean>> createMember(@RequestBody @Valid JoinRequest joinRequest) {
@@ -33,11 +33,18 @@ public class AuthController {
 		return ApiResponse.created();
 	}
 
+	@PostMapping("/reissue")
+	public ResponseEntity<ApiResponse<Boolean>> reissue(@RequestBody @Valid ReissueRequest reissue,
+		HttpServletResponse response) {
+		authService.reissueToken(reissue.getRefreshToken(), response);
+		return ApiResponse.ok(true);
+	}
+
 	@PostMapping("/email/code")
 	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(
 		@RequestBody @Valid CodeCreateRequest codeCreateRequest) {
 
-		emailService.createEmailAuthCode(codeCreateRequest.getEmail(),
+		authService.createEmailAuthCode(codeCreateRequest.getEmail(),
 			codeCreateRequest.getAuthType());
 		return ApiResponse.ok(true);
 	}
@@ -45,7 +52,7 @@ public class AuthController {
 	@PostMapping("/email/verifyCode")
 	public ResponseEntity<ApiResponse<Boolean>> validEmailAuthCode(
 		@RequestBody @Valid EmailAuthRequest emailAuthRequest) {
-		boolean result = emailService.validAuthCode(emailAuthRequest,
+		boolean result = authService.validAuthCode(emailAuthRequest,
 			emailAuthRequest.getAuthType());
 		return ApiResponse.ok(result);
 	}

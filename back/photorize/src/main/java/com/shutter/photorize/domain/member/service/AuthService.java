@@ -7,19 +7,26 @@ import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
 import com.shutter.photorize.domain.member.strategy.EmailCodeType;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
+import com.shutter.photorize.global.jwt.service.TokenService;
 import com.shutter.photorize.infra.mail.model.EmailForm;
 import com.shutter.photorize.infra.mail.service.MailService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EmailService {
+public class AuthService {
 
 	private final EmailCodeService emailCodeService;
 	private final MailService mailService;
+	private final TokenService tokenService;
+
+	public void reissueToken(String refreshToken, HttpServletResponse response) {
+		tokenService.reissueToken(refreshToken, response);
+	}
 
 	@Async
 	public void createEmailAuthCode(String email, EmailCodeType emailCodeType) {
