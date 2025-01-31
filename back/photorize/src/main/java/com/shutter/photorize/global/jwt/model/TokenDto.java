@@ -7,17 +7,17 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class JwtDto {
+public class TokenDto {
 	private String accessToken;
 	private String refreshToken;
 
 	@Builder
-	private JwtDto(String accessToken, String refreshToken) {
+	private TokenDto(String accessToken, String refreshToken) {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 	}
 
-	public static JwtDto of(String accessToken, String refreshToken) {
-		return new JwtDto(accessToken, refreshToken);
+	public static TokenDto of(String accessToken, String refreshToken) {
+		return new TokenDto(accessToken, refreshToken);
 	}
 }

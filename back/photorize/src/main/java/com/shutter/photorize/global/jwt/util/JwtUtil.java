@@ -30,25 +30,6 @@ public class JwtUtil {
 		this.expireRefreshToken = expireRefreshToken;
 	}
 
-	public String getUsername(String token) {
-		return Jwts.parser()
-			.verifyWith(secretKey)
-			.build()
-			.parseSignedClaims(token)
-			.getPayload()
-			.get("username", String.class);
-	}
-
-	public Boolean isExpired(String token) {
-		return Jwts.parser()
-			.verifyWith(secretKey)
-			.build()
-			.parseSignedClaims(token)
-			.getPayload()
-			.getExpiration()
-			.before(new Date());
-	}
-
 	public String createAccessToken(String username) {
 		return Jwts.builder()
 			.claim("username", username)
@@ -83,25 +64,4 @@ public class JwtUtil {
 
 		return false;
 	}
-
-	// public Authentication getAuthentication(String token) {
-	// 	Claims claims = Jwts.parser()
-	// 		.verifyWith(secretKey)
-	// 		.build()
-	// 		.parseSignedClaims(token)
-	// 		.getPayload();
-	//
-	// 	String email = claims.get("username", String.class);
-	// 	List<?> rawAuthorities = claims.get("authorities", List.class);
-	//
-	// 	log.info("getAuthentication {}", email);
-	//
-	// 	List<SimpleGrantedAuthority> authorities =
-	// 		rawAuthorities.stream()
-	// 			.filter(authority -> authority instanceof String)
-	// 			.map(authority -> new SimpleGrantedAuthority((String)authority))
-	// 			.toList();
-	//
-	// 	return new UsernamePasswordAuthenticationToken(email, token, authorities);
-	// }
 }
