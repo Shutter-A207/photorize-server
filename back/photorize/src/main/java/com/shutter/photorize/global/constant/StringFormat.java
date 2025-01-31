@@ -4,6 +4,7 @@ public class StringFormat {
 	public static final String PRIVATE_ALBUM_NAME_FORMAT = "나만의 앨범";
 
 	public static final String EMAIL_AUTH_PREFIX = "emailAuth:";
+	public static final String EMAIL_PROGRESS_PREFIX = "emailProgress:";
 	public static final String EMAIL_AVAILABLE_PREFIX = "validEmail";
 
 	public static final String PASSWORD_AUTH_PREFIX = "passwordAuth:";

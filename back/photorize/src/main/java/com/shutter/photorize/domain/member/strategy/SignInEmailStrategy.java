@@ -38,15 +38,19 @@ public class SignInEmailStrategy implements EmailCodeStrategy {
 		return getCode.equals(code);
 	}
 
-	private String generateSaveKey(String email) {
+	private String generateSaveAuthKey(String email) {
 		return StringFormat.EMAIL_AUTH_PREFIX + email;
+	}
+
+	private String generateSaveKey(String email) {
+		return StringFormat.EMAIL_PROGRESS_PREFIX + email;
 	}
 
 	// 인증된 이메일을 유효한 상태로 표시
 	// Redis에 해당 이메일을 23시간동안 유효하다고 저장
 	@Override
 	public void pushAvailableEmail(String email) {
-		redisAuthCodeAdapter.saveOrUpdate(generateSaveKey(email), String.valueOf(true), 1400);
+		redisAuthCodeAdapter.saveOrUpdate(generateSaveAuthKey(email), String.valueOf(true), 1400);
 	}
 
 	// 이메일이 유효한 상태인지 확인
