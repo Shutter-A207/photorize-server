@@ -8,6 +8,7 @@ import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.global.jwt.model.TokenDto;
 import com.shutter.photorize.global.jwt.repository.RefreshTokenRepository;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
+import com.shutter.photorize.global.util.CookieUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +32,7 @@ public class TokenService {
 	@Transactional
 	public TokenDto reissueToken(String refreshToken, HttpServletResponse response) {
 		try {
-			validateRefreshToken(refreshToken);
-
-			String userEmail = jwtUtil.getEmail(refreshToken);
-			validateRedisRefreshToken(userEmail, refreshToken);
-
-			refreshTokenRepository.deleteByEmail(userEmail);
-
-			TokenDto newToken = createToken(userEmail);
-
+			TokenDto newToken = reissueTokenProcess(refreshToken);
 			response.addHeader("Authorization", "Bearer " + newToken.getAccessToken());
 			response.addHeader("Refresh-Token", newToken.getRefreshToken());
 
@@ -47,6 +40,26 @@ public class TokenService {
 		} catch (Exception e) {
 			throw new PhotorizeException(ErrorType.TOKEN_REISSUE_FAILED);
 		}
+	}
+
+	@Transactional
+	public TokenDto reissueOAuthToken(String refreshToken, HttpServletResponse response) {
+		try {
+			TokenDto newToken = reissueTokenProcess(refreshToken);
+			CookieUtil.setCookie(response, "access_token", newToken.getAccessToken(), 60 * 60);
+			CookieUtil.setCookie(response, "refresh_token", newToken.getRefreshToken(), 60 * 60 * 24 * 14);
+			return newToken;
+		} catch (Exception e) {
+			throw new PhotorizeException(ErrorType.TOKEN_REISSUE_FAILED);
+		}
+	}
+
+	private TokenDto reissueTokenProcess(String refreshToken) {
+		validateRefreshToken(refreshToken);
+		String userEmail = jwtUtil.getEmail(refreshToken);
+		validateRedisRefreshToken(userEmail, refreshToken);
+		refreshTokenRepository.deleteByEmail(userEmail);
+		return createToken(userEmail);
 	}
 
 	private void validateRefreshToken(String refreshToken) {

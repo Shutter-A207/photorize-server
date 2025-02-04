@@ -1,6 +1,7 @@
 package com.shutter.photorize.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,14 @@ public class AuthController {
 	public ResponseEntity<ApiResponse<Boolean>> reissue(@RequestBody @Valid ReissueRequest reissue,
 		HttpServletResponse response) {
 		authService.reissueToken(reissue.getRefreshToken(), response);
+		return ApiResponse.ok(true);
+	}
+
+	@PostMapping("/oauth/reissue")
+	public ResponseEntity<ApiResponse<Boolean>> reissueOAuth(
+		@CookieValue(name = "refresh_token") String refreshToken,
+		HttpServletResponse response) {
+		authService.reissueOAuthToken(refreshToken, response);
 		return ApiResponse.ok(true);
 	}
 
