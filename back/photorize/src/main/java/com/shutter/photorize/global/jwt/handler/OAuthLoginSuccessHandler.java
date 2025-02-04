@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shutter.photorize.domain.member.dto.CustomOAuthUser;
+import com.shutter.photorize.global.jwt.model.TokenDto;
+import com.shutter.photorize.global.jwt.service.TokenService;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
 import com.shutter.photorize.global.util.CookieUtil;
 
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	private final JwtUtil jwtUtil;
+	private final TokenService tokenService;
 
 	@Transactional
 	@Override
@@ -30,18 +33,18 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 		Authentication authentication) throws IOException, ServletException {
 
 		CustomOAuthUser principal = (CustomOAuthUser)authentication.getPrincipal();
-		String email = principal.getName();
+		String userEmail = principal.getName();
 
-		String accessToken = jwtUtil.createAccessToken(email);
+		TokenDto tokens = tokenService.createToken(userEmail);
+		String accessToken = tokens.getAccessToken();
+		String refreshToken = tokens.getRefreshToken();
 
 		log.debug("accessToken: {}", accessToken);
 
 		CookieUtil.setCookie(response, "access_token", accessToken, 60 * 60);
-		// response.addHeader("Authorization", "Bearer " + accessToken);
+		CookieUtil.setCookie(response, "refresh_token", refreshToken, 60 * 60 * 24 * 14);
 
 		getRedirectStrategy().sendRedirect(request, response, "https://photorize.co.kr/home");
-		// getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080");
-		// getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/home");
 
 	}
 }

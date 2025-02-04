@@ -28,6 +28,10 @@ public class AuthService {
 		tokenService.reissueToken(refreshToken, response);
 	}
 
+	public void reissueOAuthToken(String refreshToken, HttpServletResponse response) {
+		tokenService.reissueOAuthToken(refreshToken, response);
+	}
+
 	@Async
 	public void createEmailAuthCode(String email, EmailCodeType emailCodeType) {
 		try {
