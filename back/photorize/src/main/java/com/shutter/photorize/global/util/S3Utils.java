@@ -76,8 +76,7 @@ public class S3Utils {
 				RequestBody.fromBytes(file.getBytes())
 			);
 
-			String url = String.format(s3Url, bucket, region, s3Key);
-			return CompletableFuture.completedFuture(url);
+			return CompletableFuture.completedFuture(s3Key);
 		} catch (IOException e) {
 			throw new PhotorizeException(ErrorType.FILE_UPLOAD_ERROR);
 		}
