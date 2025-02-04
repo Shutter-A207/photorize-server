@@ -3,6 +3,7 @@ package com.shutter.photorize.global.util;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -19,13 +20,17 @@ import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
 @Service
 @RequiredArgsConstructor
 public class S3Utils {
 
 	private final S3Client s3Client;
+	private final S3Presigner s3Presigner;
 
 	@Value("${spring.cloud.aws.s3.bucket}")
 	private String bucket;
@@ -35,6 +40,9 @@ public class S3Utils {
 
 	@Value("${spring.cloud.aws.base-url}")
 	private String s3Url;
+
+	@Value("${spring.cloud.s3.presigned-url.expiration-minutes}")
+	private long expirationMinutes;
 
 	public String uploadFile(MultipartFile file, FileType type) {
 		String s3Key = generateS3Key(file, type);
@@ -79,6 +87,27 @@ public class S3Utils {
 	public String generateS3Key(MultipartFile file, FileType type) {
 		String folder = type.name().toLowerCase();
 		return folder + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+	}
+
+	public String generatePreSignedUrl(String s3Key) {
+		GetObjectRequest getObjectRequest = createGetObjectRequest(s3Key);
+		return createPreSignedUrl(getObjectRequest);
+	}
+
+	private GetObjectRequest createGetObjectRequest(String s3Key) {
+		return GetObjectRequest.builder()
+			.bucket(bucket)
+			.key(s3Key)
+			.build();
+	}
+
+	private String createPreSignedUrl(GetObjectRequest getObjectRequest) {
+		GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
+			.getObjectRequest(getObjectRequest)
+			.signatureDuration(Duration.ofMinutes(expirationMinutes))
+			.build();
+
+		return s3Presigner.presignGetObject(getObjectPresignRequest).url().toString();
 	}
 
 	private String extractFileName(String fileUrl) {
