@@ -26,6 +26,9 @@ spring:
       s3:
         bucket: ${S3_BUCKET_NAME}
       base-url: ${S3_BASE_URL}
+    s3:
+      presigned-url:
+        expiration-minutes: ${S3_PRESIGNED_EXPIRATION:10} # 기본값 10분
   servlet:
     multipart:
       max-file-size: 500MB
