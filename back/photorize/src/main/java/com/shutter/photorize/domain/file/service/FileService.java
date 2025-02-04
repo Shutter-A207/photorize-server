@@ -38,7 +38,10 @@ public class FileService {
 	}
 
 	public List<FileResponse> getFilesByMemory(Memory memory) {
-		return convertFilesToResponses(fileRepository.findFilesByMemory(memory));
+		return fileRepository.findFilesByMemory(memory)
+			.stream()
+			.map(file -> FileResponse.of(file, s3Utils.generatePreSignedUrl(file.getUrl())))
+			.toList();
 	}
 
 	public void updateFile(List<MultipartFile> files, Memory memory) {
@@ -68,12 +71,6 @@ public class FileService {
 
 	private String getFileExtension(MultipartFile file) {
 		return StringUtils.getFilenameExtension(file.getOriginalFilename());
-	}
-
-	private List<FileResponse> convertFilesToResponses(List<File> files) {
-		return files.stream()
-			.map(FileResponse::from)
-			.toList();
 	}
 
 	private boolean hasNewFiles(List<MultipartFile> files) {
