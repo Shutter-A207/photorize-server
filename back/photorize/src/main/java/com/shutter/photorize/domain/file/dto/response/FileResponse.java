@@ -20,9 +20,9 @@ public class FileResponse {
 		this.type = type;
 	}
 
-	public static FileResponse from(File file) {
+	public static FileResponse of(File file, String url) {
 		return FileResponse.builder()
-			.url(file.getUrl())
+			.url(url)
 			.type(file.getType())
 			.build();
 	}
