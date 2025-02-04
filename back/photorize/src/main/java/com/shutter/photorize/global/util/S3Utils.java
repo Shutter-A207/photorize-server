@@ -45,8 +45,7 @@ public class S3Utils {
 	private long expirationMinutes;
 
 	public String uploadFile(MultipartFile file, FileType type) {
-		String s3Key = generateS3Key(file, type);
-
+		String s3Key = generateS3Key(type);
 		uploadToS3(file, s3Key);
 
 		return String.format(s3Url, bucket, region, s3Key);
@@ -84,9 +83,9 @@ public class S3Utils {
 		}
 	}
 
-	public String generateS3Key(MultipartFile file, FileType type) {
+	public String generateS3Key(FileType type) {
 		String folder = type.name().toLowerCase();
-		return folder + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+		return folder + "/" + UUID.randomUUID();
 	}
 
 	public String generatePreSignedUrl(String s3Key) {
