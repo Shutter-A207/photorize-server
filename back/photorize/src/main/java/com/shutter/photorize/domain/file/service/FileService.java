@@ -25,7 +25,7 @@ public class FileService {
 	public void saveFile(MultipartFile file, Memory memory) {
 		String extension = getFileExtension(file);
 		FileType type = FileType.fromExtension(extension);
-		String s3Key = s3Utils.generateS3Key(file, type);
+		String s3Key = s3Utils.generateS3Key(type);
 
 		s3Utils.uploadToS3(file, s3Key)
 			.thenAccept(url -> {
