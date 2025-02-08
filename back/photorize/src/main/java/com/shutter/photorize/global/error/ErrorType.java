@@ -24,8 +24,8 @@ public enum ErrorType {
 	OAUTH2_AUTHENTICATION_FAILED(HttpStatus.FORBIDDEN, "OAuth2 인증 과정에 실패했습니다."),
 	EMAIL_IN_PROGRESS(HttpStatus.BAD_REQUEST, "이미 인증요청을 한 이메일 입니다. 잠시 후 다시 시도해주세요."),
 	EXPIRED_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "만료된 리프레시토큰입니다. 재로그인을 해주세요."),
-	INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "리프레시토큰이 일치하지않습니다."),
-	TOKEN_REISSUE_FAILED(HttpStatus.BAD_REQUEST, "어세스토큰 재발급이 실패했습니다."),
+	INVALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "리프레시토큰이 일치하지않습니다."),
+	TOKEN_REISSUE_FAILED(HttpStatus.FORBIDDEN, "어세스토큰 재발급이 실패했습니다."),
 
 	// album
 	NO_ALLOCATED_ALBUM(HttpStatus.FORBIDDEN, "해당 앨범 멤버가 아닙니다."),
