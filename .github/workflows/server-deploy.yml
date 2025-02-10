@@ -39,6 +39,10 @@ jobs:
           chmod +x ./gradlew
       #     ./gradlew clean build -x test 2>&1 | tee -a $GITHUB_WORKSPACE/failure.log
 
+      # 디버깅 단계 추가
+      - name: Verify FCM Config File
+        run: cat back/photorize/src/main/resources/firebase/photorize-firebase-adminsdk-vx10f-50340d63d9.json
+
       # 5. Docker 이미지 빌드 (Dockerfile은 back/photorize/ 내에 존재한다고 가정)
       - name: Build Docker Image
         working-directory: back/photorize
