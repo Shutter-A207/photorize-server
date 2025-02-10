@@ -80,7 +80,7 @@ jobs:
               -e "S3_BASE_URL=${{ secrets.S3_BASE_URL }}" \
               -e "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" \
               -e "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" \
-              yangshutter/photorize-server:2.0.0 2>&1 | tee -a $GITHUB_WORKSPACE/failure.log
+              yangshutter/photorize-server:2.0.0
 
 
       # 9. 배포 후 알림 전송 등 추가 단계 가능
@@ -94,9 +94,12 @@ jobs:
           if [ "$JOB_STATUS" = "success" ]; then
             MESSAGE="**[Deploy] - #${JOB_NUMBER}**\n✅ **빌드 및 배포 완료**!\nBranch: **${BRANCH}**\nJob Status: ${JOB_STATUS}"
           else
-            MESSAGE="**[Deploy] - #${JOB_NUMBER}**\n❌ **배포 실패**!\nBranch: **${BRANCH}**\nJob Status: ${JOB_STATUS}\nFailure log:\n**- ${FAIL_LOG}**"
+            MESSAGE="**[Deploy] - #${JOB_NUMBER}**\n❌ **배포 실패**!\nBranch: **${BRANCH}**\nJob Status: ${JOB_STATUS}\nFailure log:\n**${FAIL_LOG}**"
           fi
+          PAYLOAD=$(jq -c -n --arg content "$MESSAGE" '{content: $content}')
+          echo "Payload: $PAYLOAD"  # 디버깅용 출력
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d "{\"content\": \"${MESSAGE}\"}" \
+            -d "$PAYLOAD" \
             ${{ secrets.DISCORD_WEBHOOK_URL }}
+
