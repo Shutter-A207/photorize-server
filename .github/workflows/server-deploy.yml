@@ -32,12 +32,12 @@ jobs:
           echo "${{ secrets.BACKEND_FIREBASE_FILE }}" > back/photorize/src/main/resources/firebase/photorize-firebase-adminsdk-vx10f-50340d63d9.json
           echo "Configuration files setup completed." >> $GITHUB_WORKSPACE/failure.log
 
-      # 4. Spring Boot 애플리케이션 빌드 (Gradle)
-      - name: Build Spring Boot Application
-        working-directory: back/photorize
-        run: |
-          chmod +x ./gradlew
-          ./gradlew clean build -x test 2>&1 | tee -a $GITHUB_WORKSPACE/failure.log
+      # # 4. Spring Boot 애플리케이션 빌드 (Gradle)
+      # - name: Build Spring Boot Application
+      #   working-directory: back/photorize
+      #   run: |
+      #     chmod +x ./gradlew
+      #     ./gradlew clean build -x test 2>&1 | tee -a $GITHUB_WORKSPACE/failure.log
 
       # 5. Docker 이미지 빌드 (Dockerfile은 back/photorize/ 내에 존재한다고 가정)
       - name: Build Docker Image
@@ -92,9 +92,9 @@ jobs:
           BRANCH="${{ github.ref_name }}"
           FAIL_LOG=$(cat $GITHUB_WORKSPACE/failure.log)
           if [ "$JOB_STATUS" = "success" ]; then
-            MESSAGE="**[Deploy] - #${JOB_NUMBER}**\n✅ **빌드 및 배포 완료**!\nBranch: **${BRANCH}**\nJob Status: ${JOB_STATUS}"
+            MESSAGE=$'**[Deploy] - #'${JOB_NUMBER}'**\n✅ **빌드 및 배포 완료**!\nBranch: **'${BRANCH}'**\nJob Status: '${JOB_STATUS}
           else
-            MESSAGE="**[Deploy] - #${JOB_NUMBER}**\n❌ **배포 실패**!\nBranch: **${BRANCH}**\nJob Status: ${JOB_STATUS}\nFailure log:\n**${FAIL_LOG}**"
+            MESSAGE=$'**[Deploy] - #'${JOB_NUMBER}'**\n❌ **배포 실패**!\nBranch: **'${BRANCH}'**\nJob Status: '${JOB_STATUS}'\nFailure log:\n**'${FAIL_LOG}'**'
           fi
           PAYLOAD=$(jq -c -n --arg content "$MESSAGE" '{content: $content}')
           echo "Payload: $PAYLOAD"  # 디버깅용 출력
@@ -102,4 +102,5 @@ jobs:
             -H "Content-Type: application/json" \
             -d "$PAYLOAD" \
             ${{ secrets.DISCORD_WEBHOOK_URL }}
+
 
