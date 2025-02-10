@@ -35,7 +35,9 @@ jobs:
       # 4. Spring Boot 애플리케이션 빌드 (Gradle)
       - name: Build Spring Boot Application
         working-directory: back/photorize
-        run: ./gradlew clean build -x test 2>&1 | tee -a $GITHUB_WORKSPACE/failure.log
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test 2>&1 | tee -a $GITHUB_WORKSPACE/failure.log
 
       # 5. Docker 이미지 빌드 (Dockerfile은 back/photorize/ 내에 존재한다고 가정)
       - name: Build Docker Image
@@ -88,7 +90,7 @@ jobs:
           JOB_NUMBER="${{ github.run_number }}"
           JOB_STATUS="${{ job.status }}"
           BRANCH="${{ github.ref_name }}"
-          FAIL_LOG=$(cat failure.log)
+          FAIL_LOG=$(cat $GITHUB_WORKSPACE/failure.log)
           if [ "$JOB_STATUS" = "success" ]; then
             MESSAGE="**[Deploy] - #${JOB_NUMBER}**\n✅ **빌드 및 배포 완료**!\nBranch: **${BRANCH}**\nJob Status: ${JOB_STATUS}"
           else
