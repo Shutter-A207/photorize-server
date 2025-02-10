@@ -22,15 +22,22 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17.0.13'
-
-      # 3. application-local.yml 및 관련 파일 설정
+    
+      # 3-2. 경로 만들기 및 json 파일 넣기
       - name: Setup Application Configuration Files
         run: |
           chmod -R 777 back/photorize/src/main/resources
-
           mkdir -p back/photorize/src/main/resources/firebase
-          echo "${{ secrets.BACKEND_FIREBASE_FILE }}" > back/photorize/src/main/resources/firebase/photorize-firebase-adminsdk-vx10f-50340d63d9.json
-          echo "Configuration files setup completed." >> $GITHUB_WORKSPACE/failure.log
+          
+      # 3-1. firebase json 만들기
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.3
+        with:
+          name: "photorize-firebase-adminsdk-vx10f-50340d63d9.json"
+          json: ${{ secrets.BACKEND_FIREBASE_FILE }}
+          dir: 'back/photorize/src/main/resources/firebase/'
+
 
       # 4. Spring Boot 애플리케이션 빌드 (Gradle)
       - name: Build Spring Boot Application
