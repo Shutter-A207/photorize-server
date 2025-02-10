@@ -43,7 +43,7 @@ spring:
     certification-path: ${FCM_CERTIFICATION_FILE_PATH}
   data:
     redis:
-      host: localhost
+      host: ${REDIS_HOST}
       port: 6379
 
   security:
