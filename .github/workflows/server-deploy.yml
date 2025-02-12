@@ -92,6 +92,8 @@ jobs:
               -e "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" \
               -e "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" \
               -e "REDIS_HOST=${{ secrets.REDIS_HOST }}" \
+              -e "CLIENT_ID=${{ secrets.CLIENT_ID }}" \
+              -e "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" \
               yangshutter/photorize-server:2.0.0
 
 
