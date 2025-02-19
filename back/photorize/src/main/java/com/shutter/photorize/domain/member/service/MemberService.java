@@ -11,7 +11,7 @@ import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
 import com.shutter.photorize.domain.album.service.AlbumService;
-import com.shutter.photorize.domain.file.entity.FileType;
+import com.shutter.photorize.domain.file.entity.S3Folder;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.LoginMemberProfileDto;
 import com.shutter.photorize.domain.member.dto.MemberListDto;
@@ -88,7 +88,7 @@ public class MemberService {
 	@Transactional
 	public LoginMemberProfileDto updateImg(Long memberId, MultipartFile file) {
 		Member member = memberRepository.getOrThrow(memberId);
-		String url = s3Utils.uploadFile(file, FileType.PHOTO);
+		String url = s3Utils.uploadProFile(file, S3Folder.PROFILE);
 
 		member.updateProfile(url);
 
