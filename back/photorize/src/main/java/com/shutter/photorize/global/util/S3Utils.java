@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.shutter.photorize.domain.file.entity.FileType;
+import com.shutter.photorize.domain.file.entity.S3Folder;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
 
@@ -44,8 +44,8 @@ public class S3Utils {
 	@Value("${spring.cloud.s3.presigned-url.expiration-minutes}")
 	private long expirationMinutes;
 
-	public String uploadFile(MultipartFile file, FileType type) {
-		String s3Key = generateS3Key(type);
+	public String uploadProFile(MultipartFile file, S3Folder s3Folder) {
+		String s3Key = generateS3Key(s3Folder);
 		uploadToS3(file, s3Key);
 
 		return String.format(s3Url, bucket, region, s3Key);
@@ -82,9 +82,8 @@ public class S3Utils {
 		}
 	}
 
-	public String generateS3Key(FileType type) {
-		String folder = type.name().toLowerCase();
-		return folder + "/" + UUID.randomUUID();
+	public String generateS3Key(S3Folder s3Folder) {
+		return s3Folder.getFolderPath() + "/" + UUID.randomUUID();
 	}
 
 	public String generatePreSignedUrl(String s3Key) {
