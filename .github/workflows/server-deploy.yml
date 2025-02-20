@@ -1,7 +1,9 @@
 name: Server Deploy
 
 on:
-  workflow_dispatch:   # 수동 실행 방식
+  push:
+    branches:
+      - dev-server
 
 jobs:
   deploy:
