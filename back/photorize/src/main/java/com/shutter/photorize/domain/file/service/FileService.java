@@ -45,10 +45,8 @@ public class FileService {
 			.toList();
 	}
 
-	public String getFileByMemory(Memory memory) {
-		return fileRepository.findFirstByMemoryAndTypeOrderByIdAsc(memory, FileType.PHOTO)
-			.map(file -> s3Utils.generatePreSignedUrl(file.getUrl()))
-			.orElse(null);
+	public String getPreSignedUrlByFile(File file) {
+		return s3Utils.generatePreSignedUrl(file.getUrl());
 	}
 
 	public void updateFile(List<MultipartFile> files, Memory memory) {
