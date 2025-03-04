@@ -44,7 +44,7 @@ public interface MemoryRepository extends JpaRepository<Memory, Long> {
 	Optional<Memory> findMemoryWithMemberAndSpotById(@Param("memoryId") Long memoryId);
 
 	@Query("""
-		SELECT DISTINCT m, f.url
+		SELECT DISTINCT m, f
 		FROM Memory m
 		JOIN FETCH m.album a
 		LEFT JOIN File f ON f.memory = m AND f.type = 'PHOTO' 
