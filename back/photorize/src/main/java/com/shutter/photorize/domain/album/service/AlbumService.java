@@ -29,6 +29,7 @@ import com.shutter.photorize.domain.album.entity.Color;
 import com.shutter.photorize.domain.album.repository.AlbumMemberListRepository;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
 import com.shutter.photorize.domain.album.repository.ColorRepository;
+import com.shutter.photorize.domain.file.entity.File;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.AlbumMemberProfileDto;
 import com.shutter.photorize.domain.member.entity.Member;
@@ -158,14 +159,22 @@ public class AlbumService {
 			.map(albumMember -> AlbumMemberProfileDto.from(albumMember.getMember(), albumMember.isStatus()))
 			.toList();
 
-		Slice<Memory> memories = memoryRepository.findMemoryByAlbum(album, pageable);
+		Slice<Object[]> memories = memoryRepository.findMemoryByWithFileByAlbum(album, pageable);
 
-		Slice<MemoryInfoDto> memoryDtos = memories.map(m ->
-			MemoryInfoDto.of(m, fileService.getFileByMemory(m), m.getSpot().getName()));
+		List<MemoryInfoDto> memoryInfoDtos = memories.getContent().stream()
+			.map(result -> {
+				Memory memory = (Memory)result[0];
+				File file = (File)result[1];
+
+				String preSignedUrl = fileService.getPreSignedUrlByFile(file);
+
+				return MemoryInfoDto.of(memory, preSignedUrl, memory.getSpot().getName());
+			})
+			.toList();
 
 		AlbumDetailResponse albumDetail = AlbumDetailResponse.of(album.getId(), album.getName(),
 			albumMemberProfileDtoList,
-			memoryDtos.getContent());
+			memoryInfoDtos);
 
 		return SliceResponse.of(new SliceImpl<>(
 			List.of(albumDetail),
