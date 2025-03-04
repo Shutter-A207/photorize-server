@@ -29,11 +29,13 @@ import com.shutter.photorize.domain.album.entity.Color;
 import com.shutter.photorize.domain.album.repository.AlbumMemberListRepository;
 import com.shutter.photorize.domain.album.repository.AlbumRepository;
 import com.shutter.photorize.domain.album.repository.ColorRepository;
+import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.dto.AlbumMemberProfileDto;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
 import com.shutter.photorize.domain.memory.dto.MemoryInfoDto;
 import com.shutter.photorize.domain.memory.dto.request.MemoryCreateRequest;
+import com.shutter.photorize.domain.memory.entity.Memory;
 import com.shutter.photorize.domain.memory.repository.MemoryRepository;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
@@ -53,6 +55,7 @@ public class AlbumService {
 	private final MemoryRepository memoryRepository;
 	private final ColorRepository colorRepository;
 	private final InviteAlarmService inviteAlarmService;
+	private final FileService fileService;
 
 	@Transactional
 	public AlbumCreateResponse createPublicAlbum(AlbumCreateRequest albumCreateRequest, Long memberId) {
@@ -155,11 +158,14 @@ public class AlbumService {
 			.map(albumMember -> AlbumMemberProfileDto.from(albumMember.getMember(), albumMember.isStatus()))
 			.toList();
 
-		Slice<MemoryInfoDto> memories = memoryRepository.findMemoryInfoDtosByAlbum(album, pageable);
+		Slice<Memory> memories = memoryRepository.findMemoryByAlbum(album, pageable);
+
+		Slice<MemoryInfoDto> memoryDtos = memories.map(m ->
+			MemoryInfoDto.of(m, fileService.getFileByMemory(m), m.getSpot().getName()));
 
 		AlbumDetailResponse albumDetail = AlbumDetailResponse.of(album.getId(), album.getName(),
 			albumMemberProfileDtoList,
-			memories.getContent());
+			memoryDtos.getContent());
 
 		return SliceResponse.of(new SliceImpl<>(
 			List.of(albumDetail),

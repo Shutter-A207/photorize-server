@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import com.shutter.photorize.domain.album.entity.Album;
 import com.shutter.photorize.domain.member.entity.Member;
-import com.shutter.photorize.domain.memory.dto.MemoryInfoDto;
 import com.shutter.photorize.domain.memory.entity.Memory;
 import com.shutter.photorize.global.error.ErrorType;
 import com.shutter.photorize.global.exception.PhotorizeException;
@@ -29,15 +28,7 @@ public interface MemoryRepository extends JpaRepository<Memory, Long> {
 			() -> new PhotorizeException(ErrorType.MEMORY_NOT_FOUND));
 	}
 
-	@Query("SELECT new com.shutter.photorize.domain.memory.dto.MemoryInfoDto(" +
-		"m.id, f.url, s.name, m.date) " +
-		"FROM Memory m " +
-		"LEFT JOIN m.spot s " +
-		"LEFT JOIN File f ON f.memory = m " +
-		"WHERE m.album = :album " +
-		"AND f.type = 'PHOTO' " +
-		"ORDER BY m.date DESC")
-	Slice<MemoryInfoDto> findMemoryInfoDtosByAlbum(Album album, Pageable pageable);
+	Slice<Memory> findMemoryByAlbum(Album album, Pageable pageable);
 
 	@Query("SELECT m FROM Memory m " +
 		"JOIN FETCH m.member " +
