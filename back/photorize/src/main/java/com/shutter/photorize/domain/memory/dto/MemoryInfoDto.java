@@ -32,7 +32,7 @@ public class MemoryInfoDto {
 			.memoryId(memory.getId())
 			.url(url)
 			.spotName(spotName)
-			.date(memory.getCreatedAt())
+			.date(memory.getDate())
 			.build();
 	}
 }
