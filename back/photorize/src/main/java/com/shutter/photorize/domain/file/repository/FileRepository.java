@@ -23,4 +23,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
 	List<File> findFilesByMemory(Memory memory);
 
 	Optional<File> findFilesByMemoryAndType(Memory memory, FileType type);
+
+	Optional<File> findFirstByMemoryAndTypeOrderByIdAsc(Memory memory, FileType type);
 }
