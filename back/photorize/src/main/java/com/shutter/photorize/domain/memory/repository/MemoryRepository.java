@@ -28,7 +28,14 @@ public interface MemoryRepository extends JpaRepository<Memory, Long> {
 			() -> new PhotorizeException(ErrorType.MEMORY_NOT_FOUND));
 	}
 
-	Slice<Memory> findMemoryByAlbum(Album album, Pageable pageable);
+	@Query("SELECT m,f,min(m.date) as m2 "
+		+ "FROM Memory m "
+		+ "LEFT JOIN fetch m.spot s "
+		+ "LEFT JOIN fetch File f On f.memory = m AND f.type = 'PHOTO'"
+		+ "WHERE m.album = :album "
+		+ "group by m.id,f.id "
+		+ "ORDER BY m2 DESC")
+	Slice<Object[]> findMemoryByWithFileByAlbum(@Param("album") Album album, Pageable pageable);
 
 	@Query("SELECT m FROM Memory m " +
 		"JOIN FETCH m.member " +
