@@ -13,6 +13,7 @@ import com.shutter.photorize.domain.album.entity.AlbumType;
 import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.comment.service.CommentService;
+import com.shutter.photorize.domain.file.entity.File;
 import com.shutter.photorize.domain.file.repository.FileRepository;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.entity.Member;
@@ -119,9 +120,9 @@ public class MemoryService {
 		return memories.stream()
 			.map(result -> {
 				Memory memory = (Memory)result[0];
-				String url = (String)result[1];
+				File file = (File)result[1];
 
-				return MainMemoryResponse.of(memory, url);
+				return MainMemoryResponse.of(memory, fileService.getPreSignedUrlByFile(file));
 			})
 			.toList();
 
