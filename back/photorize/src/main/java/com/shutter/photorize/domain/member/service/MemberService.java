@@ -44,9 +44,10 @@ public class MemberService {
 
 	public Long createMember(JoinRequest joinRequest) {
 
-		validateDuplicateEmail(joinRequest.getEmail());
-		checkNickname(joinRequest.getNickname());
-		joinRequest.valid();
+		emailCodeService.checkAvailable(joinRequest.getEmail(), EmailCodeType.SIGNUP); // 이메일 인증여부 확인
+		validateDuplicateEmail(joinRequest.getEmail()); // 중복 가입 이메일 확인
+		checkNickname(joinRequest.getNickname()); // 중복 닉네임 확인
+		joinRequest.valid(); // 비밀번호와 비밀번호확인 일치 확인
 
 		String password = passwordEncoder.encode(joinRequest.getPassword());
 		String defaultImg = fileService.getDefaultProfile();
