@@ -25,6 +25,9 @@ public class ApiResponse<T> {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T data;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String errorCode;
+
 	// OK 응답 생성 메서드
 	public static <T> ResponseEntity<ApiResponse<T>> ok(T data) {
 		return ResponseEntity.status(HttpStatus.OK)
@@ -56,6 +59,7 @@ public class ApiResponse<T> {
 		return ResponseEntity.status(errorType.getStatus())
 			.body(ApiResponse.<Void>builder()
 				.status(errorType.getStatus().value())
+				.errorCode(errorType.getErrorCode())
 				.message(errorType.getMessage())
 				.build());
 	}
