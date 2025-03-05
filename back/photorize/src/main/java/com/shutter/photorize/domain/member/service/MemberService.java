@@ -44,13 +44,9 @@ public class MemberService {
 
 	public Long createMember(JoinRequest joinRequest) {
 
-		joinRequest.valid();
-
-		if (memberRepository.existsByNickname(joinRequest.getNickname())) {
-			throw new PhotorizeException(ErrorType.DUPLICATE_NICKNAME);
-		}
-
 		validateDuplicateEmail(joinRequest.getEmail());
+		checkNickname(joinRequest.getNickname());
+		joinRequest.valid();
 
 		String password = passwordEncoder.encode(joinRequest.getPassword());
 		String defaultImg = fileService.getDefaultProfile();
@@ -99,9 +95,7 @@ public class MemberService {
 	public LoginMemberProfileDto updateNickname(Long memberId, UpdateNicknameRequest updateNicknameRequest) {
 		Member member = memberRepository.getOrThrow(memberId);
 
-		if (!validateNickname(updateNicknameRequest.getNickname())) {
-			throw new PhotorizeException(ErrorType.DUPLICATE_NICKNAME);
-		}
+		checkNickname(updateNicknameRequest.getNickname());
 
 		member.updateNickname(updateNicknameRequest.getNickname());
 
@@ -110,7 +104,13 @@ public class MemberService {
 		return profileDto;
 	}
 
-	public Boolean validateNickname(String nickname) {
+	public void checkNickname(String nickname) {
+		if (memberRepository.existsByNickname(nickname)) {
+			throw new PhotorizeException(ErrorType.DUPLICATE_NICKNAME);
+		}
+	}
+
+	public boolean validateNickname(String nickname) {
 		return !memberRepository.existsByNickname(nickname);
 	}
 
