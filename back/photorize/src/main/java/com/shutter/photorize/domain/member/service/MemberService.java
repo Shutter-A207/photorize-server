@@ -1,6 +1,7 @@
 package com.shutter.photorize.domain.member.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,10 +50,7 @@ public class MemberService {
 			throw new PhotorizeException(ErrorType.DUPLICATE_NICKNAME);
 		}
 
-		if (memberRepository.existsByEmail(joinRequest.getEmail())) {
-
-			throw new PhotorizeException(ErrorType.DUPLICATE_EMAIL);
-		}
+		validateDuplicateEmail(joinRequest.getEmail());
 
 		String password = passwordEncoder.encode(joinRequest.getPassword());
 		String defaultImg = fileService.getDefaultProfile();
@@ -125,6 +123,19 @@ public class MemberService {
 		Member member = memberRepository.getOrThrow(changePasswordRequest.getEmail());
 		member.updatePassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
 		return true;
+	}
+
+	public void validateDuplicateEmail(String email) {
+		getProviderType(email).ifPresent(providerType -> {
+			throw new PhotorizeException(
+				providerType.equals(ProviderType.BASIC) ? ErrorType.BASIC_DUPLICATE_EMAIL :
+					ErrorType.KAKAO_DUPLICATE_EMAIL
+			);
+		});
+	}
+
+	private Optional<ProviderType> getProviderType(String email) {
+		return memberRepository.findByEmail(email).map(Member::getProvider);
 	}
 
 }
