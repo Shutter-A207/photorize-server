@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
 import com.shutter.photorize.domain.member.strategy.EmailCodeType;
-import com.shutter.photorize.global.error.ErrorType;
-import com.shutter.photorize.global.exception.PhotorizeException;
 import com.shutter.photorize.global.jwt.service.TokenService;
 import com.shutter.photorize.infra.mail.model.EmailForm;
 import com.shutter.photorize.infra.mail.service.MailService;
@@ -32,15 +30,10 @@ public class AuthService {
 		tokenService.reissueOAuthToken(refreshToken, response);
 	}
 
-	@Async
+	@Async("mailSendExecutor")
 	public void createEmailAuthCode(String email, EmailCodeType emailCodeType) {
+		log.info("Executing createEmailAuthCode in thread: {}", Thread.currentThread().getName());
 		try {
-
-			if (emailCodeService.isProcessingEmail(email, emailCodeType)) {
-				log.warn("Email already processed for email code: {}", email);
-				throw new PhotorizeException(ErrorType.EMAIL_IN_PROGRESS);
-			}
-
 			String code = emailCodeService.createAuthCode(email, emailCodeType);
 			EmailForm emailForm = emailCodeService.getAuthEmailForm(email, code, emailCodeType);
 			mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(),
