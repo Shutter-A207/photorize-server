@@ -26,8 +26,8 @@ public enum ErrorType {
 	EXPIRED_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "01-010", "만료된 리프레시토큰입니다. 재로그인을 해주세요."),
 	INVALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "01-011", "리프레시토큰이 일치하지않습니다."),
 	TOKEN_REISSUE_FAILED(HttpStatus.FORBIDDEN, "01-012", "어세스토큰 재발급이 실패했습니다."),
-	KAKAO_DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "01-013", "이미 카카오로 로그인된 이메일입니다."),
-	BASIC_DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "01-014", "이미 기본로그인으로 로그인된 이메일입니다."),
+	KAKAO_DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "01-013", "이미 카카오로 가입된 이메일입니다."),
+	BASIC_DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "01-014", "이미 기본로그인으로 가입된 이메일입니다."),
 
 	// album (02)
 	NO_ALLOCATED_ALBUM(HttpStatus.FORBIDDEN, "02-001", "해당 앨범 멤버가 아닙니다."),
