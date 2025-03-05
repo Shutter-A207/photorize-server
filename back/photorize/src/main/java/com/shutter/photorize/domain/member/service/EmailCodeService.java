@@ -59,7 +59,14 @@ public class EmailCodeService {
 		strategy.checkAvailableEmail(email);
 	}
 
-	public boolean isProcessingEmail(String email, EmailCodeType emailCodeType) {
+	// 5분 이내에 이메일 인증 코드를 요청했는지 확인
+	public void checkProcessingEmail(String email, EmailCodeType emailCodeType) {
+		if (isProcessingEmail(email, emailCodeType)) {
+			throw new PhotorizeException(ErrorType.EMAIL_IN_PROGRESS);
+		}
+	}
+
+	private boolean isProcessingEmail(String email, EmailCodeType emailCodeType) {
 		EmailCodeStrategy strategy = authCodeStrategyMap.get(emailCodeType);
 		return strategy.isProcessingEmail(email);
 	}
