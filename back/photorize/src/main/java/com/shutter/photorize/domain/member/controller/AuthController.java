@@ -13,13 +13,16 @@ import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
 import com.shutter.photorize.domain.member.dto.request.JoinRequest;
 import com.shutter.photorize.domain.member.dto.request.ReissueRequest;
 import com.shutter.photorize.domain.member.service.AuthService;
+import com.shutter.photorize.domain.member.service.EmailCodeService;
 import com.shutter.photorize.domain.member.service.MemberService;
 import com.shutter.photorize.global.response.ApiResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class AuthController {
 
 	private final MemberService memberService;
 	private final AuthService authService;
+	private final EmailCodeService emailCodeService;
 
 	@PostMapping("/join")
 	public ResponseEntity<ApiResponse<Boolean>> createMember(@RequestBody @Valid JoinRequest joinRequest) {
@@ -52,7 +56,10 @@ public class AuthController {
 	@PostMapping("/email/code")
 	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(
 		@RequestBody @Valid CodeCreateRequest codeCreateRequest) {
-
+		log.info("Executing createEmailAuthCode in thread: {}", Thread.currentThread().getName());
+		memberService.validateDuplicateEmail(codeCreateRequest.getEmail());
+		emailCodeService.checkProcessingEmail(codeCreateRequest.getEmail(),
+			codeCreateRequest.getAuthType());
 		authService.createEmailAuthCode(codeCreateRequest.getEmail(),
 			codeCreateRequest.getAuthType());
 		return ApiResponse.ok(true);
