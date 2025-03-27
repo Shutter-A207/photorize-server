@@ -1,6 +1,5 @@
 package com.shutter.photorize.domain.member.service;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.shutter.photorize.domain.member.dto.request.EmailAuthRequest;
@@ -21,6 +20,7 @@ public class AuthService {
 	private final EmailCodeService emailCodeService;
 	private final MailService mailService;
 	private final TokenService tokenService;
+	private final MemberService memberService;
 
 	public void reissueToken(String refreshToken, HttpServletResponse response) {
 		tokenService.reissueToken(refreshToken, response);
@@ -30,10 +30,11 @@ public class AuthService {
 		tokenService.reissueOAuthToken(refreshToken, response);
 	}
 
-	@Async("mailSendExecutor")
 	public void createEmailAuthCode(String email, EmailCodeType emailCodeType) {
-		log.info("Executing createEmailAuthCode in thread: {}", Thread.currentThread().getName());
 		try {
+			memberService.validateDuplicateEmail(email);
+			emailCodeService.checkProcessingEmail(email,
+				emailCodeType);
 			String code = emailCodeService.createAuthCode(email, emailCodeType);
 			EmailForm emailForm = emailCodeService.getAuthEmailForm(email, code, emailCodeType);
 			mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(),

@@ -56,10 +56,6 @@ public class AuthController {
 	@PostMapping("/email/code")
 	public ResponseEntity<ApiResponse<Boolean>> createEmailAuthCode(
 		@RequestBody @Valid CodeCreateRequest codeCreateRequest) {
-		log.info("Executing createEmailAuthCode in thread: {}", Thread.currentThread().getName());
-		memberService.validateDuplicateEmail(codeCreateRequest.getEmail());
-		emailCodeService.checkProcessingEmail(codeCreateRequest.getEmail(),
-			codeCreateRequest.getAuthType());
 		authService.createEmailAuthCode(codeCreateRequest.getEmail(),
 			codeCreateRequest.getAuthType());
 		return ApiResponse.ok(true);
