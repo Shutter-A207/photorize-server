@@ -60,7 +60,6 @@ public class ApiResponse<T> {
 			.body(ApiResponse.<Void>builder()
 				.status(errorType.getStatus().value())
 				.errorCode(errorType.getErrorCode())
-				.message(errorType.getMessage())
 				.build());
 	}
 }
