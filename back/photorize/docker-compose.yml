@@ -1,12 +1,13 @@
 version: '3'
 
+
 services:
   mysql:
     container_name: photorize-mysql
     image: mysql:8.0.33
     restart: always
     ports:
-      - "3306:3306"
+      - "3307:3306"
     command:
       - '--character-set-server=utf8mb4'
       - '--collation-server=utf8mb4_unicode_ci'
@@ -29,9 +30,24 @@ services:
     networks:
       - photorize-backend
 
+  elasticsearch:
+    container_name: photorize-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - photorize-backend
+
 networks:
   photorize-backend:
     driver: bridge
 
 volumes:
   mysql_data:
+  elasticsearch_data:

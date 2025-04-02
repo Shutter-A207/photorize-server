@@ -46,6 +46,11 @@ spring:
       host: ${REDIS_HOST}
       port: 6379
 
+    elasticsearch:
+      uris: ${ELASTICSEARCH_URL}
+      username: ${ELASTICSEARCH_USERNAME}
+      password: ${ELASTICSEARCH_PASSWORD}
+
   security:
     oauth2:
       client:
