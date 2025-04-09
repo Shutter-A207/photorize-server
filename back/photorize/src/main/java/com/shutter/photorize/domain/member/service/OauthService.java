@@ -59,6 +59,9 @@ public class OauthService extends DefaultOAuth2UserService {
 		String defaultImg = fileService.getDefaultProfile();
 
 		String emailPrefix = oAuth2Response.getEmail().split("@")[0];
+		if (emailPrefix.length() > 7) {
+			emailPrefix = emailPrefix.substring(0, 7);
+		}
 		String randomStr = UUID.randomUUID().toString().substring(0, 2);
 		String nickname = emailPrefix + "_" + randomStr;
 
