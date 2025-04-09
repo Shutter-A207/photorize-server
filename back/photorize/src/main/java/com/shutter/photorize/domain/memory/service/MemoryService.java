@@ -14,7 +14,6 @@ import com.shutter.photorize.domain.album.service.AlbumService;
 import com.shutter.photorize.domain.comment.dto.response.CommentResponse;
 import com.shutter.photorize.domain.comment.service.CommentService;
 import com.shutter.photorize.domain.file.entity.File;
-import com.shutter.photorize.domain.file.repository.FileRepository;
 import com.shutter.photorize.domain.file.service.FileService;
 import com.shutter.photorize.domain.member.entity.Member;
 import com.shutter.photorize.domain.member.repository.MemberRepository;
@@ -43,7 +42,6 @@ public class MemoryService {
 	private final CommentService commentService;
 	private final AlbumService albumService;
 	private final InviteAlarmService inviteAlarmService;
-	private final FileRepository fileRepository;
 
 	@Transactional
 	public void createMemory(Long memberId, MemoryCreateRequest memoryCreateRequest, List<MultipartFile> files) {
@@ -79,8 +77,7 @@ public class MemoryService {
 	}
 
 	@Transactional
-	public void updateMemory(Long memberId, Long memoryId, MemoryUpdateRequest memoryUpdateRequest,
-		List<MultipartFile> files) {
+	public void updateMemory(Long memberId, Long memoryId, MemoryUpdateRequest memoryUpdateRequest) {
 		Memory memory = memoryRepository.getOrThrow(memoryId);
 		Member member = memberRepository.getOrThrow(memberId);
 
@@ -91,8 +88,6 @@ public class MemoryService {
 		memory.updateContent(memoryUpdateRequest.getContent());
 		memory.updateSpot(spot);
 		memory.updateDate(memoryUpdateRequest.getDate().atStartOfDay());
-
-		fileService.updateFile(files, memory);
 	}
 
 	@Transactional
