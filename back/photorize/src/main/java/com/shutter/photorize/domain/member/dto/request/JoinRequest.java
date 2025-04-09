@@ -21,7 +21,7 @@ public class JoinRequest {
 	private String email;
 
 	@NotBlank
-	@Size(min = 2, max = 8)
+	@Size(min = 2, max = 10)
 	@Pattern(
 		regexp = "^[가-힣a-zA-Z0-9]*$",
 		message = "닉네임은 한글과 영문자만 사용 가능합니다"
