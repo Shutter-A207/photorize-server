@@ -30,18 +30,16 @@ public class AuthService {
 		tokenService.reissueOAuthToken(refreshToken, response);
 	}
 
-	public void createEmailAuthCode(String email, EmailCodeType emailCodeType) {
-		try {
-			memberService.validateDuplicateEmail(email);
-			emailCodeService.checkProcessingEmail(email,
-				emailCodeType);
-			String code = emailCodeService.createAuthCode(email, emailCodeType);
-			EmailForm emailForm = emailCodeService.getAuthEmailForm(email, code, emailCodeType);
-			mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(),
-				emailForm.getContent(), emailForm.isHtml());
-		} catch (Exception e) {
-			log.error("Failed to send authentication email to: {}", email, e);
-		}
+	public boolean createEmailAuthCode(String email, EmailCodeType emailCodeType) {
+		memberService.validateDuplicateEmail(email);
+		emailCodeService.checkProcessingEmail(email,
+			emailCodeType);
+		String code = emailCodeService.createAuthCode(email, emailCodeType);
+		EmailForm emailForm = emailCodeService.getAuthEmailForm(email, code, emailCodeType);
+		mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(),
+			emailForm.getContent(), emailForm.isHtml());
+
+		return true;
 	}
 
 	public boolean validAuthCode(EmailAuthRequest emailAuthRequest, EmailCodeType emailCodeType) {
