@@ -14,15 +14,10 @@ public class RedisAuthCodeAdapter implements RedisAdapter {
 
 	private final RedisTemplate<String, Object> redisTemplate;
 
-	// key-value를 redis에 저장
 	@Override
-	public void saveOrUpdate(String key, String value) {
-		redisTemplate.opsForValue().set(key, value);
-	}
-
 	// 만료 시간 설정 저장 메소드
-	public void saveOrUpdate(String key, String value, int min) {
-		redisTemplate.opsForValue().set(key, value, min, TimeUnit.MINUTES);
+	public void saveOrUpdate(String key, String value, int sec) {
+		redisTemplate.opsForValue().set(key, value, sec, TimeUnit.SECONDS);
 	}
 
 	// 값 조회 메소드

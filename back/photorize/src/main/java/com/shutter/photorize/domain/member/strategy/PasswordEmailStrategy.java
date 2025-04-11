@@ -28,7 +28,7 @@ public class PasswordEmailStrategy implements EmailCodeStrategy {
 			throw new PhotorizeException(ErrorType.EMAIL_IN_PROGRESS);
 		}
 
-		redisAuthCodeAdapter.saveOrUpdate(key, code, 5);
+		redisAuthCodeAdapter.saveOrUpdate(key, code, 10);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class PasswordEmailStrategy implements EmailCodeStrategy {
 		String key = generateSaveKey(email);
 		return redisAuthCodeAdapter.hasKey(key) && redisAuthCodeAdapter.getExpireTime(key) > 0;
 	}
-	
+
 	@Override
 	public boolean validAuthCode(String email, String code) {
 		String getCode = redisAuthCodeAdapter.getValue(generateSaveKey(email))
@@ -49,7 +49,7 @@ public class PasswordEmailStrategy implements EmailCodeStrategy {
 
 	@Override
 	public void pushAvailableEmail(String email) {
-		redisAuthCodeAdapter.saveOrUpdate(generateAvailableKey(email), String.valueOf(true), 5);
+		redisAuthCodeAdapter.saveOrUpdate(generateAvailableKey(email), String.valueOf(true), 300);
 	}
 
 	@Override
