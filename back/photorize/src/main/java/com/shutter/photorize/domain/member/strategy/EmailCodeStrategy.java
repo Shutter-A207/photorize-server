@@ -11,7 +11,7 @@ public interface EmailCodeStrategy {
 		save(email, code);
 		return code;
 	}
-	
+
 	default boolean isProcessingEmail(String email) {
 		return false;
 	}
@@ -41,7 +41,7 @@ public interface EmailCodeStrategy {
 	// 인증 코드 유효한지 검증
 	boolean validAuthCode(String email, String code);
 
-	// 인증 가능한 이메일 등록
+	// 인증된 이메일 등록
 	void pushAvailableEmail(String email);
 
 	// 해당 이메일이 인증 가능한 상태인지 확인

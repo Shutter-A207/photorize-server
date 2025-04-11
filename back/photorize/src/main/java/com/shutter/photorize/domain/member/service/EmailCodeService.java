@@ -59,7 +59,7 @@ public class EmailCodeService {
 		strategy.checkAvailableEmail(email);
 	}
 
-	// 5분 이내에 이메일 인증 코드를 요청했는지 확인
+	// 10초 이내에 이메일 인증 코드를 요청했는지 확인
 	public void checkProcessingEmail(String email, EmailCodeType emailCodeType) {
 		if (isProcessingEmail(email, emailCodeType)) {
 			throw new PhotorizeException(ErrorType.EMAIL_IN_PROGRESS);
