@@ -1,6 +1,7 @@
 package com.shutter.photorize.domain.memory.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -83,11 +84,11 @@ public class MemoryService {
 
 		validateWriter(memory, member);
 
-		Spot spot = spotRepository.getOrThrow(memoryUpdateRequest.getSpotId());
+		Spot spot = Optional.ofNullable(memoryUpdateRequest.getSpotId())
+			.map(spotRepository::getOrThrow)
+			.orElse(null);
 
-		memory.updateContent(memoryUpdateRequest.getContent());
-		memory.updateSpot(spot);
-		memory.updateDate(memoryUpdateRequest.getDate().atStartOfDay());
+		memoryUpdateRequest.applyTo(memory, spot);
 	}
 
 	@Transactional
