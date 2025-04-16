@@ -22,7 +22,7 @@ public class CorsConfig implements WebMvcConfigurer {
 			List.of("http://localhost:5173", "http://photorize.co.kr.s3-website.ap-northeast-2.amazonaws.com",
 				"https://photorize.co.kr"));
 		// 허용 메서드 지정
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		// 클라이언트 요청 허용 헤더
 		configuration.setAllowedHeaders(List.of("*"));
 		// preflight 요청 결과 캐시
@@ -42,7 +42,7 @@ public class CorsConfig implements WebMvcConfigurer {
 		registry.addMapping("/**")
 			.allowedOrigins("http://localhost:5173", "http://photorize.co.kr.s3-website.ap-northeast-2.amazonaws.com",
 				"https://photorize.co.kr")
-			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+			.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 			.allowedHeaders("*")
 			.allowCredentials(true)
 			.maxAge(3600);
