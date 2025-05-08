@@ -28,10 +28,8 @@ public class FileService {
 		FileType type = FileType.fromExtension(extension);
 		String s3Key = s3Utils.generateS3Key(S3Folder.from(type));
 
-		s3Utils.uploadToS3(file, s3Key)
-			.thenAccept(url -> {
-				fileRepository.save(File.of(memory, type, url));
-			});
+		String url = s3Utils.uploadToS3(file, s3Key).join();
+		fileRepository.save(File.of(memory, type, url));
 	}
 
 	public void saveFiles(List<MultipartFile> files, Memory memory) {
