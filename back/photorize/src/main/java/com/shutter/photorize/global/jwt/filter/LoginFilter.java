@@ -10,6 +10,7 @@ import com.shutter.photorize.global.jwt.model.CustomUserDetails;
 import com.shutter.photorize.global.jwt.model.TokenDto;
 import com.shutter.photorize.global.jwt.service.TokenService;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
+import com.shutter.photorize.global.util.CookieUtil;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,6 +59,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		response.addHeader("Authorization", "Bearer " + tokens.getAccessToken());
 		response.addHeader("Refresh-Token", tokens.getRefreshToken());
+
+		// 2. 쿠키에 JWT 저장
+		CookieUtil.setCookie(response, "access_token", tokens.getAccessToken(), 60 * 60); // 1시간
+		CookieUtil.setCookie(response, "refresh_token", tokens.getRefreshToken(), 60 * 60 * 24 * 14); // 14일
+
 	}
 
 	// 로그인 실패시 실행하는 메서드
