@@ -26,14 +26,17 @@ public interface CookieUtil {
 
 	// 쿠키 삭제, maxAge를 0으로 설정해서 브라우저가 파기하도록 함.
 	static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
-		Optional<Cookie> optionalCookie = resolveCookie(request, name);
-		if (optionalCookie.isPresent()) {
-			Cookie cookie = optionalCookie.get();
-			cookie.setValue("");
-			cookie.setPath("/");
-			cookie.setMaxAge(0);
-			response.addCookie(cookie);
-		}
+		Cookie cookie = new Cookie(name, "");
+		cookie.setPath("/"); // 생성 시와 일치해야 함
+		cookie.setDomain("photorize.co.kr"); // 생성 시와 일치해야 함
+		cookie.setHttpOnly(false); // 생성 시와 일치 (원래 true가 안전)
+		cookie.setSecure(true); // Secure 쿠키는 Secure로만 삭제 가능
+		cookie.setMaxAge(0); // 즉시 만료
+
+		// SameSite=None을 지원하려면 setAttribute 사용
+		cookie.setAttribute("SameSite", "None");
+
+		response.addCookie(cookie);
 	}
 
 	/**
