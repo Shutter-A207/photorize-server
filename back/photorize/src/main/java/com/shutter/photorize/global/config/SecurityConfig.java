@@ -16,6 +16,7 @@ import com.shutter.photorize.domain.member.service.AuthService;
 import com.shutter.photorize.domain.member.service.OauthService;
 import com.shutter.photorize.global.jwt.filter.JwtFilter;
 import com.shutter.photorize.global.jwt.filter.LoginFilter;
+import com.shutter.photorize.global.jwt.handler.CustomLogoutHandler;
 import com.shutter.photorize.global.jwt.handler.JwtAccessDeniedHandler;
 import com.shutter.photorize.global.jwt.handler.JwtAuthenticationEntryPoint;
 import com.shutter.photorize.global.jwt.handler.OAuthLoginFailureHandler;
@@ -23,6 +24,7 @@ import com.shutter.photorize.global.jwt.handler.OAuthLoginSuccessHandler;
 import com.shutter.photorize.global.jwt.service.TokenService;
 import com.shutter.photorize.global.jwt.util.JwtUtil;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -33,6 +35,7 @@ public class SecurityConfig {
 	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 	private final OAuthLoginSuccessHandler loginSuccessHandler;
 	private final OAuthLoginFailureHandler loginFailureHandler;
+	private final CustomLogoutHandler customLogoutHandler;
 	private final JwtUtil jwtUtil;
 	private final CorsConfig corsConfig;
 	private final TokenService tokenService;
@@ -90,7 +93,15 @@ public class SecurityConfig {
 			.exceptionHandling(exceptionHandling ->
 				exceptionHandling
 					.accessDeniedHandler(accessDeniedHandler)
-					.authenticationEntryPoint(authenticationEntryPoint));
+					.authenticationEntryPoint(authenticationEntryPoint))
+			// 로그아웃
+			.logout(logout -> logout
+				.logoutUrl("/api/v1/auth/logout")  // 프론트에서 POST 요청할 경로
+				.addLogoutHandler(customLogoutHandler)
+				.logoutSuccessHandler((request, response, authentication) -> {
+					response.setStatus(HttpServletResponse.SC_OK);
+				})
+			);
 
 		return http.build();
 	}
